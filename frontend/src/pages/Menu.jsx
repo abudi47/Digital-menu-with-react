@@ -1,4 +1,4 @@
-import React from "react";
+import RatedMenuCard from "../components/RatedMenuCard";
 
 export default function Menu() {
   return (
@@ -17,7 +17,14 @@ export default function Menu() {
         </div>
       </div>
       {/* Menu Categories */}
-      <div className="border">
+      <div className="overflow-hidden overflow-y-scroll">
+        <h1 className="text-3xl font-semibold pb-1 text-secondary px-2">Our Lovely Dishes</h1>
+        <div className="flex flex-row gap-4 overflow-x-scroll px-1">
+            <RatedMenuCard />
+            <RatedMenuCard />
+            <RatedMenuCard />
+            <RatedMenuCard />
+        </div>
 
       </div>
       <div className="border"></div>
