@@ -16,7 +16,10 @@ export default function Menu() {
             <input type="text" placeholder="Search..." className="p-2 rounded-md" />
         </div>
       </div>
-      <div className="border"></div>
+      {/* Menu Categories */}
+      <div className="border">
+
+      </div>
       <div className="border"></div>
     </div>
   );
