@@ -6,8 +6,8 @@ import "./App.css";
 import SplashScreen from "./pages/SplashScreen";
 import Menu from "./pages/Menu";
 import Order from "./pages/Order";
+import { Trending } from "./pages/Trending";
 import Cart from "./pages/Cart";
-
 
 function App() {
   const [count, setCount] = useState(0);
@@ -17,8 +17,10 @@ function App() {
       <div className="overflow-hidden">
         {/* <SplashScreen /> */}
         <Menu />
+        {/* <Menu /> */}
         {/* <Cart /> */}
         {/* <Order /> */}
+
       </div>
     </>
   );
