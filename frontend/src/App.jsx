@@ -16,8 +16,8 @@ function App() {
     <>
       <div className="overflow-hidden">
         {/* <SplashScreen /> */}
-        {/* <Menu /> */}
-        <Cart />
+        <Menu />
+        {/* <Cart /> */}
         {/* <Order /> */}
       </div>
     </>

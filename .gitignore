@@ -1,9 +1,11 @@
 
 # Sensitive data
-
+backeend/config.js
+backend/.env
 
 
 ## Backend
+backeend/node_modules
 
 
 
