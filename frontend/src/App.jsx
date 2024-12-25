@@ -7,6 +7,7 @@ import SplashScreen from "./pages/SplashScreen";
 import Menu from "./pages/Menu";
 import Order from "./pages/Order";
 import Cart from "./pages/Cart";
+import { Trending } from "./pages/Trending";
 
 
 function App() {
@@ -19,6 +20,8 @@ function App() {
         {/* <Menu /> */}
         <Cart />
         {/* <Order /> */}
+        <Trending />
+
       </div>
     </>
   );
