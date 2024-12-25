@@ -16,11 +16,11 @@ function App() {
     <>
       <div className="overflow-hidden">
         {/* <SplashScreen /> */}
-        <Menu />
         {/* <Menu /> */}
+        <Menu />
         {/* <Cart /> */}
         {/* <Order /> */}
-
+        {/* <Trending /> */}
       </div>
     </>
   );
