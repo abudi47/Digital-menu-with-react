@@ -4,9 +4,9 @@ const color = {
     reset: '\x1b[0m',
     red: '\x1b[311m',
     green: '\x1b[32m',
-    blue: 'x1b[34m',
+    blue: '\x1b[34m',
     magenta: '\x1b[35m',
-    cyan: 'x1b[36m',
+    cyan: '\x1b[36m',
 }
 
 const customLog = {

@@ -44,8 +44,15 @@ const Menu = db.define("menu", {
         defaultValue: "unknown",
     },
     imageUrl: {
-        type: DataTypes.ARRAY(DataTypes.STRING(400)),
+        type: DataTypes.TEXT,
         allowNull: false,
+        // JSON.stringify() and JSON.parse() are used to store an array of image URLs
+        get() {
+            return JSON.parse(this.getDataValue("imageUrl"));
+        },
+        set(value) {
+            this.setDataValue("imageUrl", JSON.stringify(value));
+        },
     },
     isAvailable: {
         type: DataTypes.BOOLEAN,

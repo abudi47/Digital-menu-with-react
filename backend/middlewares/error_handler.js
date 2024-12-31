@@ -1,8 +1,16 @@
+/**
+ * Error handler middleware
+ *
+ */
 import { StatusCodes } from "http-status-codes";
 import customLog from "../utils/custom_log.js";
 
-
-const errorHandler = (err, req, res, next) => {
+/**
+ * Error handler middleware
+ * only custom errors are included in the response others are logged and marked as internal server error
+ *
+ */
+export default function errorHandler(err, req, res, next) {
     const error = {
         message: "Internal server error",
         status: err.status || StatusCodes.INTERNAL_SERVER_ERROR,
@@ -19,5 +27,3 @@ const errorHandler = (err, req, res, next) => {
         .status(error.status)
         .json({ success: false, error: error.message });
 };
-
-export default errorHandler;
