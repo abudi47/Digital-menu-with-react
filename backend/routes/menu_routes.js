@@ -10,5 +10,6 @@ import MenuController from "../controllers/menu_controller.js";
 const router = express.Router();
 
 router.get("/", MenuController.getMenus);
+router.get("/:id", MenuController.getMenu);
 
 export default router;
