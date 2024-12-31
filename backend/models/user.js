@@ -61,7 +61,8 @@ const User = db.define("user", {
 });
 
 User.prototype.isPasswordCorrect = async function (password) {
-    return password === this.password;
+    const isCorrect = await bcrypt.compare(password, this.password);
+    return isCorrect;
 };
 
 // salt the password before it' saved
