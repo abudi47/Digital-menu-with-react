@@ -1,4 +1,5 @@
 import "dotenv/config";
+import QRcode from "qrcode";
 import Restaurant from "./models/restaurant.js";
 
 async function restaurantFunc() {
@@ -15,7 +16,7 @@ async function restaurantFunc() {
 }
 
 async function test() {
-    // await restaurantFunc();  
+    // await restaurantFunc();
 }
 
 test();
