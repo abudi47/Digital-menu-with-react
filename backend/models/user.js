@@ -5,6 +5,7 @@
  * @module models/user
  */
 import { DataTypes } from "sequelize";
+import bcrypt from "bcryptjs";
 import db from "../db/db.js";
 
 /**
@@ -62,5 +63,11 @@ const User = db.define("user", {
 User.prototype.isPasswordCorrect = async function (password) {
     return password === this.password;
 };
+
+// salt the password before it' saved salting 
+User.beforeCreate(async (user) => {
+    const salt = await bcrypt.genSalt(5);
+    user.password = await bcrypt.hash(user.password, salt);s
+});
 
 export default User;
