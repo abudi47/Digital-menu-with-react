@@ -64,7 +64,7 @@ User.prototype.isPasswordCorrect = async function (password) {
     return password === this.password;
 };
 
-// salt the password before it' saved salting 
+// salt the password before it' saved
 User.beforeCreate(async (user) => {
     const salt = await bcrypt.genSalt(5);
     user.password = await bcrypt.hash(user.password, salt);s
