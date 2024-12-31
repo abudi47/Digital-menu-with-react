@@ -5,12 +5,12 @@
  * @module models/user
  */
 import { DataTypes } from "sequelize";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 import db from "../db/db.js";
 
 /**
  * Defines the User model
- * @typedef {Object} User
+ * @typedef {Object} user
  * @property {UUIDV4} id - The unique identifier for the user
  * @property {string} firstName - The first name of the user
  * @property {string} lastName - The last name of the user
