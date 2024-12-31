@@ -5,7 +5,35 @@ import User from "../models/user.js";
 
 const AuthController = {
     login: async (req, res) => {
-        // Your login logic here
+        const { phone, email, password } = req.body;
+        if ((!phone && !email) || !password) {
+            throw new CustomError(
+                StatusCodes.BAD_REQUEST,
+                "Please provide phone or email and password"
+            );
+        }
+
+        // check if user provided phone or email
+        let user;
+        if (phone) {
+            user = await User.findOne({ where: { phone } });
+        } else {
+            user = await User.findOne({ where: { email } });
+        }
+
+        if (!user) {
+            throw new CustomError(StatusCodes.UNAUTHORIZED, "Invalid credentials");
+        }
+
+        // check if password is correct
+        const isPasswordCorrect = await user.isPasswordCorrect(password);
+        if (!isPasswordCorrect) {
+            throw new CustomError(StatusCodes.UNAUTHORIZED, "Invalid credentials");
+        }
+
+        // generate token
+        // const token = await user.generateToken();
+
         res.status(StatusCodes.OK).json({ message: "Login successful" });
     },
 

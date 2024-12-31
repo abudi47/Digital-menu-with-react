@@ -7,7 +7,6 @@
 import { DataTypes } from "sequelize";
 import db from "../db/db.js";
 
-
 /**
  * Defines the User model
  * @typedef {Object} User
@@ -19,7 +18,7 @@ import db from "../db/db.js";
  * @property {string} password - The password of the user
  * @property {string} role - The role of the user
  * @property {string} imageUrl - The URL of the user's image
- * 
+ *
  * @type {Model}
  */
 const User = db.define("user", {
@@ -59,5 +58,9 @@ const User = db.define("user", {
         allowNull: true,
     },
 });
+
+User.prototype.isPasswordCorrect = async function (password) {
+    return password === this.password;
+};
 
 export default User;
