@@ -1,3 +1,4 @@
-import MenuRoutes from "./menu_routes.js";
+import MenuRoute from "./menu_routes.js";
+import AuthRoute from "./auth_routes.js";
 
-export { MenuRoutes }
+export { MenuRoute, AuthRoute };

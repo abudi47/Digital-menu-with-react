@@ -7,7 +7,7 @@ import redisClient from "./db/redis.js";
 import errorHandler from "./middlewares/error_handler.js";
 
 // Routes
-import MenuRoute from "./routes/menu_routes.js";
+import { MenuRoute, AuthRoute } from "./routes/index.js";
 
 const app = express();
 // middlewares for security and parsing
@@ -17,6 +17,8 @@ const app = express();
 const APIVersion1 = express.Router();
 app.use("/api/v1", APIVersion1);
 APIVersion1.use("/menu", MenuRoute);
+APIVersion1.use("/auth", AuthRoute);
+
 
 
 app.use(errorHandler);

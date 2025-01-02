@@ -30,6 +30,9 @@ const AuthController = {
 
         // generate token
 
+        console.log(user);
+        
+
         res.status(StatusCodes.OK).json({ message: "Login successful" });
     },
 

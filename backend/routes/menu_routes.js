@@ -1,4 +1,3 @@
-// add jsDoc standard documentation for this file
 /**
  * @module backend/routes/menu_routes
  * @file menu_routes.js
