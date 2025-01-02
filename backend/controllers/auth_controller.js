@@ -99,16 +99,15 @@ const AuthController = {
 
     updateProfile: async (req, res) => {
         // Your update profile logic here
+
         res.status(StatusCodes.OK).json({
             message: "Update profile successful",
         });
     },
 
     getProfile: async (req, res) => {
-        // Your get profile logic here
         const user = req.user;
-        res.status(StatusCodes.OK).json({ user });
-        res.status(StatusCodes.OK).json({ message: "Get profile successful" });
+        res.status(StatusCodes.OK).json({ message: "Get profile successful", data: { user } });
     },
 
     logout: async (req, res) => {
