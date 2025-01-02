@@ -106,11 +106,16 @@ const AuthController = {
 
     getProfile: async (req, res) => {
         // Your get profile logic here
+        const user = req.user;
+        res.status(StatusCodes.OK).json({ user });
         res.status(StatusCodes.OK).json({ message: "Get profile successful" });
     },
 
     logout: async (req, res) => {
-        // Your logout logic here
+        const authorization = req.headers?.authorization || req.cookies?.token;
+        await redisClient.del(authorization);
+        res.clearCookie("token");
+
         res.status(StatusCodes.OK).json({ message: "Logout successful" });
     },
 

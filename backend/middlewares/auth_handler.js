@@ -8,7 +8,7 @@ import { StatusCodes } from "http-status-codes";
 import redisClient from "../db/redis.js";
 
 export default async function authHandler(req, res, next) {
-    const authorization = req.headers?.authorization || req.cookies?.token;    
+    const authorization = req.headers?.authorization || req.cookies?.token;
     if (!authorization) {
         return res
             .status(StatusCodes.UNAUTHORIZED)
@@ -22,7 +22,6 @@ export default async function authHandler(req, res, next) {
             .json({ success: false, error: "Unauthorized" });
     }
     req.user = JSON.parse(user);
-    console.log(req.user);
 
     next();
 }
