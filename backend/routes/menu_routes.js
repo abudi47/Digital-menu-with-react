@@ -29,5 +29,11 @@ router.post(
     roleHandler([roles.admin]),
     MenuController.createMenu
 );
+router.put(
+    "/:id/availability",
+    authHandler,
+    roleHandler([roles.admin, roles.barista, roles.foodRunner]),
+    MenuController.updateAvailability
+);
 
 export default router;

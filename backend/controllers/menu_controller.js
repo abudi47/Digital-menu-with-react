@@ -54,7 +54,7 @@ const MenuController = {
             description,
             price,
             category,
-            imageUrl,
+            imageUrl: [imageUrl],
             isAvailable,
         });
         return res
@@ -79,7 +79,7 @@ const MenuController = {
         if (!menu) {
             throw new CustomError.NotFound("Menu not found");
         }
-        menu.isAvailable = isAvailable;
+        menu.isAvailable = isAvailable ? true : false;
         await menu.save();
         return res.status(StatusCodes.OK).json({ success: true, message: "Availability changed", data: menu });
     },
