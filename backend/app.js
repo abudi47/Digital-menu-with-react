@@ -6,11 +6,12 @@ import db from "./db/db.js";
 import redisClient from "./db/redis.js";
 import errorHandler from "./middlewares/error_handler.js";
 
-// Routes
 import { MenuRoute, AuthRoute } from "./routes/index.js";
 
 const app = express();
-// middlewares for security and parsing
+app.use(express.urlencoded({ extended: false }))
+app.use(express.json())
+
 
 
 // for all v1 api routes
@@ -29,13 +30,6 @@ app.use("*", async (req, res) => {
 });
 
 
-
-
-
-// test import
-import User from "./models/user.js";
-import Order from "./models/order.js";
-import Restaurant from "./models/restaurant.js";
 
 async function main() {
     try {

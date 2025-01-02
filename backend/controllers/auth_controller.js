@@ -1,13 +1,18 @@
 import { StatusCodes } from "http-status-codes";
+import process from "process";
 import CustomError from "../error/index.js";
 import redisClient from "../db/redis.js";
 import User from "../models/user.js";
+import { generateToken, signUser } from "../utils/index.js";
 
 const AuthController = {
     login: async (req, res) => {
         const { phone, email, password } = req.body;
+
         if ((!phone && !email) || !password) {
-            throw new CustomError.BadRequest("Please provide phone or email and password");
+            throw new CustomError.BadRequest(
+                "Please provide phone or email and password"
+            );
         }
 
         // check if user provided phone or email
@@ -29,11 +34,30 @@ const AuthController = {
         }
 
         // generate token
+        const token = await generateToken();
 
-        console.log(user);
-        
+        // login for month
+        await redisClient.set(
+            token,
+            JSON.stringify(user.toJSON()),
+            process.env.REDIS_EX
+        );
 
-        res.status(StatusCodes.OK).json({ message: "Login successful" });
+        // signed user info
+        const userInfo = signUser(user.toJSON());
+
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'Strict',
+            maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+        });
+
+        res.status(StatusCodes.OK).json({
+            message: "Login successful",
+            token: token,
+            user: userInfo,
+        });
     },
 
     register: async (req, res) => {
@@ -78,6 +102,7 @@ const AuthController = {
 
     logout: async (req, res) => {
         // Your logout logic here
+
         res.status(StatusCodes.OK).json({ message: "Logout successful" });
     },
 

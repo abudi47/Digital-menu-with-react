@@ -32,12 +32,12 @@ async function menuFunc() {
 
 async function userFunc() {
     const user = await User.create({
-        firstName: "Jessica",
-        lastName: "Chung",
-        email: "foodrunner@gmail.com",
-        phone: "+251912131558",
+        firstName: "John",
+        lastName: "Deo",
+        email: "admin@gmail.com",
+        phone: "+251912131552",
         password: "password",
-        role: "food_runner",
+        role: "admin",
         imageUrl: "https://example.com",
     });
 

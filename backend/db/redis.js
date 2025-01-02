@@ -8,7 +8,10 @@ class RedisClient {
         this.isReady = true;
 
         this.client.on("error", (error) => {
-            customLog.error('Redis client not connected to the server: ', error);
+            customLog.error(
+                "Redis client not connected to the server: ",
+                error
+            );
             this.isReady = false;
         });
     }
@@ -21,7 +24,7 @@ class RedisClient {
      */
     async connect() {
         this.client.connect();
-        customLog.success('Redis client connected to the server');
+        customLog.success("Redis client connected to the server");
     }
 
     /**
@@ -50,8 +53,8 @@ class RedisClient {
      * @apiDescription This function sets a value in the Redis client.
      * @apiVersion 0.1.0
      */
-    async set(key, value, duration=0) {
-        return this.client.set(key, value, 'EX', duration);
+    async set(key, value, duration = 0) {
+        return this.client.set(key, value, "EX", duration);
     }
 
     /**
