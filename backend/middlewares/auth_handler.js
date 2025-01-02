@@ -22,6 +22,5 @@ export default async function authHandler(req, res, next) {
             .json({ success: false, error: "Unauthorized" });
     }
     req.user = JSON.parse(user);
-
     next();
 }

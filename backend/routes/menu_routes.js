@@ -11,6 +11,23 @@ const router = express.Router();
 
 router.get("/", MenuController.getMenus);
 router.get("/:id", MenuController.getMenu);
-router.put("/:id", authHandler, roleHandler([roles.admin]), MenuController.updateMenu);
+router.put(
+    "/:id",
+    authHandler,
+    roleHandler([roles.admin]),
+    MenuController.updateMenu
+);
+router.delete(
+    "/:id",
+    authHandler,
+    roleHandler([roles.admin]),
+    MenuController.deleteMenu
+);
+router.post(
+    "/",
+    authHandler,
+    roleHandler([roles.admin]),
+    MenuController.createMenu
+);
 
 export default router;

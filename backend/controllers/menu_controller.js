@@ -59,7 +59,7 @@ const MenuController = {
         });
         return res
             .status(StatusCodes.CREATED)
-            .json({ success: true, data: menu });
+            .json({ success: true, message: "Menu created", data: menu });
     },
 
     deleteMenu: async (req, res) => {
@@ -69,7 +69,7 @@ const MenuController = {
             throw new CustomError.NotFound("Menu not found");
         }
         await menu.destroy();
-        return res.status(StatusCodes.OK).json({ success: true, data: {} });
+        return res.status(StatusCodes.OK).json({ success: true, message: "Menu deleted", data: {} });
     },
 
     changeAvailability: async (req, res) => {
@@ -81,7 +81,7 @@ const MenuController = {
         }
         menu.isAvailable = isAvailable;
         await menu.save();
-        return res.status(StatusCodes.OK).json({ success: true, data: menu });
+        return res.status(StatusCodes.OK).json({ success: true, message: "Availability changed", data: menu });
     },
 
     updateMenu: async (req, res) => {
@@ -101,7 +101,7 @@ const MenuController = {
         if (isAvailable !== undefined) menu.isAvailable = isAvailable;
 
         await menu.save();
-        return res.status(StatusCodes.OK).json({ success: true, data: menu });
+        return res.status(StatusCodes.OK).json({ success: true, message: "Menu updated", data: menu });
     },
 };
 
