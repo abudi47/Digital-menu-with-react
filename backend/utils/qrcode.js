@@ -1,3 +1,10 @@
+/**
+ * @module backend/utils/qrcode
+ * @file qrcode.js
+ * @description QR code utility functions
+ * This module provides utility functions for generating QR codes.
+ * 
+ */
 import QRcode from "qrcode";
 
 async function QRcodeGenerator(string) {

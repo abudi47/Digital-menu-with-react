@@ -3,7 +3,7 @@ import process from "process";
 import CustomError from "../error/index.js";
 import redisClient from "../db/redis.js";
 import User from "../models/user.js";
-import { generateToken, signUser } from "../utils/index.js";
+import { generateToken, signUser, sanitizedUser } from "../utils/index.js";
 
 const AuthController = {
     login: async (req, res) => {
@@ -18,9 +18,15 @@ const AuthController = {
         // check if user provided phone or email
         let user;
         if (phone) {
-            user = await User.findOne({ where: { phone } });
+            user = await User.findOne({
+                where: { phone },
+                attributes: { exclude: ["createdAt", "updatedAt"] },
+            });
         } else {
-            user = await User.findOne({ where: { email } });
+            user = await User.findOne({
+                where: { email },
+                attributes: { exclude: ["createdAt", "updatedAt"] },
+            });
         }
 
         if (!user) {
@@ -33,23 +39,26 @@ const AuthController = {
             throw new CustomError.UnauthorizedRequest("Invalid credentials");
         }
 
+        // sanitize user
+        const sanitizeUser = sanitizedUser(user.toJSON());
+
         // generate token
         const token = await generateToken();
 
         // login for month
         await redisClient.set(
             token,
-            JSON.stringify(user.toJSON()),
+            JSON.stringify(sanitizeUser),
             process.env.REDIS_EX
         );
 
         // signed user info
-        const userInfo = signUser(user.toJSON());
+        const userInfo = signUser(sanitizeUser);
 
-        res.cookie('token', token, {
+        res.cookie("token", token, {
             httpOnly: true,
             secure: true,
-            sameSite: 'Strict',
+            sameSite: "Strict",
             maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
         });
 
