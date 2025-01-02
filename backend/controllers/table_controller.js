@@ -2,7 +2,7 @@
  * @file table_controller.js
  * @module TableController
  * @description Contains the controller functions for table routes
- * 
+ *
  */
 import { StatusCodes } from "http-status-codes";
 import CustomError from "../error/index.js";
@@ -22,9 +22,8 @@ const TableController = {
         const tables = await Table.findAll({
             limit: limit,
             offset: offset,
-            attributes: { exclude: ["createdAt", "updatedAt"] },
         });
     },
-}
+};
 
 export default TableController;

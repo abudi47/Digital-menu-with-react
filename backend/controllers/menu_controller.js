@@ -21,7 +21,6 @@ const MenuController = {
         const menus = await Menu.findAll({
             limit: limit,
             offset: offset,
-            attributes: { exclude: ["createdAt", "updatedAt"] },
         });
         return res.status(StatusCodes.OK).json({ success: true, data: menus });
     },
@@ -30,7 +29,6 @@ const MenuController = {
         const { id } = req.params;
         const menu = await Menu.findOne({
             where: { id: id },
-            attributes: { exclude: ["createdAt", "updatedAt"] },
         });
         if (!menu) {
             throw new CustomError.NotFound("Menu not found");
