@@ -2,7 +2,7 @@
  * @module backend/utils/sanitized_user
  * @file sanitized_user.js
  * @description Sanitize user object
- * 
+ *
  */
 export default function sanitizedUser(user) {
     return {
@@ -11,5 +11,6 @@ export default function sanitizedUser(user) {
         lastName: user.lastName,
         email: user.email,
         phone: user.phone,
+        role: user.role,
     };
 }

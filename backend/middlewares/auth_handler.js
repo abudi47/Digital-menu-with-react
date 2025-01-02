@@ -8,19 +8,21 @@ import { StatusCodes } from "http-status-codes";
 import redisClient from "../db/redis.js";
 
 export default async function authHandler(req, res, next) {
-    const { authorization } = req.headers;
+    const authorization = req.headers?.authorization || req.cookies?.token;    
     if (!authorization) {
         return res
             .status(StatusCodes.UNAUTHORIZED)
             .json({ success: false, error: "Unauthorized" });
     }
-    const token = authorization.split(" ")[1];
-    const user = await redisClient.get(token);
+    // const token = authorization.split(" ")[1];
+    const user = await redisClient.get(authorization);
     if (!user) {
         return res
             .status(StatusCodes.UNAUTHORIZED)
             .json({ success: false, error: "Unauthorized" });
     }
     req.user = JSON.parse(user);
+    console.log(req.user);
+
     next();
 }
