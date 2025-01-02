@@ -5,9 +5,11 @@
  */
 import express from "express";
 import AuthController from "../controllers/auth_controller.js";
+import { authHandler, roleHandler, roles } from "../middlewares/index.js";
 
 const router = express.Router();
 
 router.post("/login", AuthController.login);
+
 
 export default router;

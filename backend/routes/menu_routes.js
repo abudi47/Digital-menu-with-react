@@ -4,9 +4,8 @@
  * @description Express router for menu in MERN stack
  */
 import express from "express";
-import { roles } from "../config/config.js";
 import MenuController from "../controllers/menu_controller.js";
-import { authHandler, roleHandler } from "../middlewares/index.js";
+import { authHandler, roleHandler, roles } from "../middlewares/index.js";
 
 const router = express.Router();
 
