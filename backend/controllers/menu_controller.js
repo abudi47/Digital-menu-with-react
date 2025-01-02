@@ -9,7 +9,7 @@ import Menu from "../models/menu.js";
 
 const MenuController = {
     getMenus: async (req, res) => {
-        const { page=1, limit=5 } = req.query;
+        const { page = 1, limit = 5 } = req.query;
         const offset = page * limit - limit;
         const menus = await Menu.findAll({
             limit: limit,
@@ -69,7 +69,9 @@ const MenuController = {
             throw new CustomError.NotFound("Menu not found");
         }
         await menu.destroy();
-        return res.status(StatusCodes.OK).json({ success: true, message: "Menu deleted", data: {} });
+        return res
+            .status(StatusCodes.OK)
+            .json({ success: true, message: "Menu deleted", data: {} });
     },
 
     changeAvailability: async (req, res) => {
@@ -79,9 +81,15 @@ const MenuController = {
         if (!menu) {
             throw new CustomError.NotFound("Menu not found");
         }
-        menu.isAvailable = isAvailable ? true : false;
+        menu.isAvailable = isAvailable == "true" ? true : false;
         await menu.save();
-        return res.status(StatusCodes.OK).json({ success: true, message: "Availability changed", data: menu });
+        return res
+            .status(StatusCodes.OK)
+            .json({
+                success: true,
+                message: "Availability changed",
+                data: menu,
+            });
     },
 
     updateMenu: async (req, res) => {
@@ -101,7 +109,9 @@ const MenuController = {
         if (isAvailable !== undefined) menu.isAvailable = isAvailable;
 
         await menu.save();
-        return res.status(StatusCodes.OK).json({ success: true, message: "Menu updated", data: menu });
+        return res
+            .status(StatusCodes.OK)
+            .json({ success: true, message: "Menu updated", data: menu });
     },
 };
 

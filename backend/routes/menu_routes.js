@@ -33,7 +33,7 @@ router.put(
     "/:id/availability",
     authHandler,
     roleHandler([roles.admin, roles.barista, roles.foodRunner]),
-    MenuController.updateAvailability
+    MenuController.changeAvailability
 );
 
 export default router;
