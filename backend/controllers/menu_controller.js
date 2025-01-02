@@ -9,8 +9,15 @@ import Menu from "../models/menu.js";
 
 const MenuController = {
     getMenus: async (req, res) => {
-        const { page = 1, limit = 5 } = req.query;
+        let { page = 1, limit = 5 } = req.query;
+        page = parseInt(page, 10);
+        limit = parseInt(limit, 10);
+
+        if (isNaN(page) || page < 1 || isNaN(limit) || limit < 1) {
+            throw new CustomError.BadRequest("Invalid pagination values");
+        }
         const offset = page * limit - limit;
+
         const menus = await Menu.findAll({
             limit: limit,
             offset: offset,
@@ -83,13 +90,11 @@ const MenuController = {
         }
         menu.isAvailable = isAvailable == "true" ? true : false;
         await menu.save();
-        return res
-            .status(StatusCodes.OK)
-            .json({
-                success: true,
-                message: "Availability changed",
-                data: menu,
-            });
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Availability changed",
+            data: menu,
+        });
     },
 
     updateMenu: async (req, res) => {
