@@ -2,7 +2,6 @@
  * @file table_controller.js
  * @module TableController
  * @description Contains the controller functions for table routes
- *
  */
 import { StatusCodes } from "http-status-codes";
 import CustomError from "../error/index.js";
