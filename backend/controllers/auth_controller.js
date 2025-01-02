@@ -111,7 +111,6 @@ const AuthController = {
 
     logout: async (req, res) => {
         // Your logout logic here
-
         res.status(StatusCodes.OK).json({ message: "Logout successful" });
     },
 
@@ -125,11 +124,6 @@ const AuthController = {
         res.status(StatusCodes.OK).json({
             message: "Resend verification email successful",
         });
-    },
-
-    googleLogin: async (req, res) => {
-        // Your google login logic here
-        res.status(StatusCodes.OK).json({ message: "Google login successful" });
     },
 };
 
