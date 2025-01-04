@@ -5,7 +5,8 @@
  */
 import express from "express";
 import MenuController from "../controllers/menu_controller.js";
-import { authHandler, roleHandler, roles } from "../middlewares/index.js";
+import { imageFieldsName } from "../config/config.js";
+import { authHandler, roleHandler, roles, upload } from "../middlewares/index.js";
 
 const router = express.Router();
 
@@ -27,6 +28,7 @@ router.post(
     "/",
     authHandler,
     roleHandler([roles.admin]),
+    upload.single(imageFieldsName.menuImage),
     MenuController.createMenu
 );
 router.put(

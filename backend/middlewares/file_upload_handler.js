@@ -1,19 +1,20 @@
 import multer from "multer";
 import fs from "fs";
 import path from "path";
-import { filePath } from "../config/config.js";
+import {
+    imageFields,
+    filePath,
+    allowedImageFileTypes,
+} from "../config/config.js";
 import CustomError from "../error/index.js";
 import customLog from "../utils/custom_log.js";
-import { config } from "process";
-
-const image_fields = ["menu_image", "profile_image"];
 
 const storage = multer.diskStorage({
     destination: async function (req, file, cb) {
         customLog.warning("=========== File Controller", file);
 
         try {
-            if (image_fields.includes(file.fieldname)) {
+            if (imageFields.includes(file.fieldname)) {
                 await fs.promises.mkdir(filePath.qrPath, { recursive: true });
             } else {
                 throw new CustomError.BadRequest(
@@ -33,9 +34,9 @@ const storage = multer.diskStorage({
 
 const fileFilter = (req, file, cb) => {
     try {
-        if (image_fields.includes(file.fieldname)) {
-            const mimetype = config.allowedImageFileTypes.test(file.mimetype);
-            const extname = config.allowedImageFileTypes.test(
+        if (imageFields.includes(file.fieldname)) {
+            const mimetype = allowedImageFileTypes.test(file.mimetype);
+            const extname = allowedImageFileTypes.test(
                 path.extname(file.originalname?.toLowerCase())
             );
             if (mimetype && extname) {

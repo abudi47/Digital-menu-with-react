@@ -8,7 +8,13 @@ export const roles = {
 export const filePath = {
     qrPath: "./uploads/images/qr",
     imagePath: "./uploads/images",
-}
+};
+
+export const imageFields = ["menu_image", "profile_image"];
+export const imageFieldsName = {
+    menuImage: "menu_image",
+    profileImage: "profile_image",
+};
 
 export const allowedImageFileTypes = /jpeg|jpg|png|gif/;
 
