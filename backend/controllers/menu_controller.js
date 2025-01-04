@@ -28,9 +28,11 @@ const MenuController = {
 
     getMenu: async (req, res) => {
         const { id } = req.params;
+
         if (!isUuidv4(id)) {
             throw new CustomError.BadRequest("Unsupported id");
         }
+
         const menu = await Menu.findOne({
             where: { id: id },
         });
@@ -77,6 +79,11 @@ const MenuController = {
 
     deleteMenu: async (req, res) => {
         const { id } = req.params;
+
+        if (!isUuidv4(id)) {
+            throw new CustomError.BadRequest("Unsupported id");
+        }
+
         const menu = await Menu.findOne({ where: { id: id } });
         if (!menu) {
             throw new CustomError.NotFound("Menu not found");
@@ -89,7 +96,15 @@ const MenuController = {
 
     changeAvailability: async (req, res) => {
         const { id } = req.params;
+
+        if (!isUuidv4(id)) {
+            throw new CustomError.BadRequest("Unsupported id");
+        }
+
         const { isAvailable } = req.body;
+        if (isAvailable === undefined) {
+            throw new CustomError.BadRequest("isAvailable field is required");
+        }
         const menu = await Menu.findOne({ where: { id: id } });
         if (!menu) {
             throw new CustomError.NotFound("Menu not found");
@@ -105,6 +120,11 @@ const MenuController = {
 
     updateMenu: async (req, res) => {
         const { id } = req.params;
+
+        if (!isUuidv4(id)) {
+            throw new CustomError.BadRequest("Unsupported id");
+        }
+
         const { name, description, price, category, imageUrl, isAvailable } =
             req.body;
         const menu = await Menu.findOne({ where: { id: id } });
