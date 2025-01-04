@@ -5,6 +5,13 @@ export const roles = {
     foodRunner: "food_runner",
 };
 
+export const filePath = {
+    qrPath: "./uploads/images/qr",
+    imagePath: "./uploads/images",
+}
+
+export const allowedImageFileTypes = /jpeg|jpg|png|gif/;
+
 export const dbConfig = {
     development: {
         username: "root",
