@@ -6,8 +6,8 @@ export const roles = {
 };
 
 export const filePath = {
-    qrPath: "./uploads/images/qr",
-    imagePath: "./uploads/images",
+    qrPath: "../uploads/images/qr",
+    imagePath: "../uploads/images",
 };
 
 export const imageFields = ["menu_image", "profile_image"];
