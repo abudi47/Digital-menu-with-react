@@ -6,6 +6,7 @@
 import { StatusCodes } from "http-status-codes";
 import CustomError from "../error/index.js";
 import Menu from "../models/menu.js";
+import { isUuidv4 } from "../utils/index.js";
 
 const MenuController = {
     getMenus: async (req, res) => {
@@ -27,6 +28,9 @@ const MenuController = {
 
     getMenu: async (req, res) => {
         const { id } = req.params;
+        if (!isUuidv4(id)) {
+            throw new CustomError.BadRequest("Unsupported id");
+        }
         const menu = await Menu.findOne({
             where: { id: id },
         });
@@ -50,6 +54,10 @@ const MenuController = {
             throw new CustomError.BadRequest("All fields are required");
         }
 
+        if (isNaN(parseInt(price, 10))) {
+            throw new CustomError.BadRequest("Price must be number");
+        }
+
         const existingMenu = await Menu.findOne({ where: { name: name } });
         if (existingMenu) {
             throw new CustomError.BadRequest("Menu already exists");
@@ -60,7 +68,7 @@ const MenuController = {
             price,
             category,
             imageUrl: [imageUrl],
-            isAvailable,
+            isAvailable: isAvailable == "true" ? true : false,
         });
         return res
             .status(StatusCodes.CREATED)

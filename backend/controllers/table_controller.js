@@ -6,6 +6,8 @@
 import { StatusCodes } from "http-status-codes";
 import CustomError from "../error/index.js";
 import Table from "../models/table.js";
+import { tableCategories } from "../config/config.js";
+import { isUuidv4 } from "../utils/index.js";
 
 const TableController = {
     async getTables(req, res) {
@@ -22,6 +24,48 @@ const TableController = {
             limit: limit,
             offset: offset,
         });
+        return res.status(StatusCodes.OK).json({ success: true, data: tables });
+    },
+    async getTable(req, res) {
+        const { id } = req.params;
+        if (!isUuidv4(id)) {
+            throw new CustomError.BadRequest("Unsupported id");
+        }
+        const table = await Table.findOne({
+            where: { id: id },
+        });
+        if (!table) {
+            throw new CustomError.NotFound("Table not found");
+        }
+        return res.status(StatusCodes.OK).json({ success: true, data: table });
+    },
+
+    createTable: async (req, res) => {
+        const { number, price, category, imageUrl, isAvailable } = req.body;
+        if (!number || !price || !category || isAvailable === undefined) {
+            throw new CustomError.BadRequest("All fields are required");
+        }
+
+        if (!tableCategories.includes(category)) {
+            throw new CustomError.BadRequest("Unsupported category");
+        }
+
+        const existingTable = await Table.findOne({
+            where: { number: number },
+        });
+        if (existingTable) {
+            throw new CustomError.BadRequest("Table already exists");
+        }
+        const table = await Table.create({
+            number,
+            price,
+            category,
+            imageUrl: [imageUrl],
+            isAvailable,
+        });
+        return res
+            .status(StatusCodes.CREATED)
+            .json({ success: true, message: "Table created", data: table });
     },
 };
 

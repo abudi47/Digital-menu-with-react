@@ -1,11 +1,12 @@
 /**
  * Table Model
  * This model represents a table in the database.
- * 
+ *
  * @module models/table
  */
 import { DataTypes } from "sequelize";
 import db from "../db/db.js";
+import { tableCategories } from "../config/config.js";
 
 /**
  * Defines the Table model
@@ -16,7 +17,7 @@ import db from "../db/db.js";
  * @property {string} category - The category of the table
  * @property {string} imageUrl - The URL of the table's image
  * @property {boolean} isAvailable - The availability of the table
- * 
+ *
  * @type {Model}
  */
 const Table = db.define("table", {
@@ -28,6 +29,7 @@ const Table = db.define("table", {
     number: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        unique: true,
     },
     price: {
         type: DataTypes.DECIMAL,
@@ -35,7 +37,7 @@ const Table = db.define("table", {
         defaultValue: 0,
     },
     category: {
-        type: DataTypes.ENUM("vip", "normal", "couple"),
+        type: DataTypes.ENUM(...tableCategories),
         allowNull: false,
         defaultValue: "normal",
     },

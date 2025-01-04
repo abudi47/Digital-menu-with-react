@@ -3,5 +3,6 @@ import QRcodeGenerator from "./qrcode.js";
 import generateToken from "./token.js";
 import signUser from "./jwt.js";
 import sanitizedUser from "./sanitized_user.js";
+import { isUuidv4 } from "./utils.js";
 
-export { customLog, QRcodeGenerator, generateToken, signUser, sanitizedUser };
+export { customLog, QRcodeGenerator, generateToken, signUser, sanitizedUser, isUuidv4 };

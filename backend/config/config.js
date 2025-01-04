@@ -5,6 +5,9 @@ export const roles = {
     foodRunner: "food_runner",
 };
 
+export const menuCategories = ["starter", "soft_drink", "unknown"];
+export const tableCategories = ["vip", "normal", "couple"];
+
 export const filePath = {
     qrPath: "../uploads/images/qr",
     imagePath: "../uploads/images",

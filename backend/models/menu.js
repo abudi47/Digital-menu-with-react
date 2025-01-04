@@ -6,6 +6,7 @@
  */
 import { DataTypes } from "sequelize";
 import db from "../db/db.js";
+import { menuCategories } from "../config/config.js";
 
 /**
  * Defines the Menu model
@@ -39,7 +40,7 @@ const Menu = db.define("menu", {
         allowNull: false,
     },
     category: {
-        type: DataTypes.ENUM("starter", "soft_drink", "unknown"),
+        type: DataTypes.ENUM(...menuCategories),
         allowNull: false,
         defaultValue: "unknown",
     },
