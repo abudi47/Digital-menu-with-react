@@ -11,6 +11,7 @@ import {
     roles,
     upload,
 } from "../middlewares/index.js";
+import { imageFieldsName } from "../config/config.js";
 
 const router = express.Router();
 
@@ -19,7 +20,7 @@ router.post("/logout", authHandler, AuthController.logout);
 router.post(
     "/register",
     authHandler,
-    upload.single("profile_image"),
+    upload.single(imageFieldsName.profileImage),
     roleHandler([roles.admin]),
 
     AuthController.register

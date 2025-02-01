@@ -7,7 +7,6 @@ import {
     generateToken,
     signUser,
     sanitizedUser,
-    isUuidv4,
 } from "../utils/index.js";
 import { allowedRoles } from "../config/config.js";
 
@@ -133,9 +132,7 @@ const AuthController = {
             imageUrl: req.file ? req.file?.filename : null,
         });
 
-        console.log("============= New user: ", req.file);
-
-        // await newUser.save();
+        await newUser.save();
 
         const sanitizeUser = sanitizedUser(newUser.toJSON());
 
