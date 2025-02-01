@@ -11,8 +11,8 @@ export const menuCategories = ["starter", "soft_drink", "unknown"];
 export const tableCategories = ["vip", "normal", "couple"];
 
 export const filePath = {
-  qrPath: "../uploads/images/qr",
-  imagePath: "../uploads/images",
+  qrPath: "uploads/images/qr/",
+  imagePath: "uploads/images/",
 };
 
 export const imageFields = ["menu_image", "profile_image"];
@@ -21,7 +21,8 @@ export const imageFieldsName = {
   profileImage: "profile_image",
 };
 
-export const allowedImageFileTypes = /jpeg|jpg|png|gif/;
+export const allowedImageFileTypes = ["image/png", "image/jpeg", "image/jpg", "image/gif"];
+export const allowedImageExtTypes = /jpeg|jpg|png|gif/;
 
 export const dbConfig = {
   development: {

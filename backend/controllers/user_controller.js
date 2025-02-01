@@ -26,13 +26,11 @@ const UserController = {
     // Update only the fields provided in the request body
     if (firstName !== undefined) user.firstName = firstName;
     if (lastName !== undefined) user.lastName = lastName;
-    if (imageUrl !== undefined) user.imageUrl = imageUrl;
+    // if (imageUrl !== undefined) user.imageUrl = imageUrl;
 
     await user.save();
 
     const sanitizeUser = sanitizedUser(user.toJSON());
-
-    console.log("===================: ", sanitizeUser);
 
     res.status(StatusCodes.OK).json({
       success: true,

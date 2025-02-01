@@ -18,6 +18,9 @@ export default function errorHandler(err, req, res, next) {
 
     if (err?.name === "customError") {
         error.message = err.message;
+    } else if (err.code === "LIMIT_UNEXPECTED_FILE") {
+        error.message = `Unsupporeted file fileld ${String(err?.field)}`;
+        error.status = StatusCodes.BAD_REQUEST;
     } else {
         // Critical error
         customLog.warning(err);
@@ -26,4 +29,4 @@ export default function errorHandler(err, req, res, next) {
     return res
         .status(error.status)
         .json({ success: false, error: error.message });
-};
+}

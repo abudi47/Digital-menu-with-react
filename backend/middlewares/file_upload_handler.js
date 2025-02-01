@@ -1,4 +1,4 @@
-// add JSDoc standard documentation on this file 
+// add JSDoc standard documentation on this file
 
 import multer from "multer";
 import fs from "fs";
@@ -6,18 +6,28 @@ import path from "path";
 import {
     imageFields,
     filePath,
+    imageFieldsName,
     allowedImageFileTypes,
+    allowedImageExtTypes,
 } from "../config/config.js";
 import CustomError from "../error/index.js";
 import customLog from "../utils/custom_log.js";
 
 const storage = multer.diskStorage({
     destination: async function (req, file, cb) {
-        customLog.warning("=========== File Controller", file);
-
         try {
+            // if it is image file
             if (imageFields.includes(file.fieldname)) {
-                await fs.promises.mkdir(filePath.qrPath, { recursive: true });
+                let imagePath = filePath.imagePath;
+                if (file.fieldname === imageFieldsName.menuImage) {
+                    imagePath += imageFieldsName.menuImage;
+                } else if (file.fieldname === imageFieldsName.profileImage) {
+                    imagePath += imageFieldsName.profileImage;
+                }
+                await fs.promises.mkdir(imagePath, { recursive: true });
+                cb(null, imagePath);
+
+                // add else if for other file types
             } else {
                 throw new CustomError.BadRequest(
                     `Unknown field name ${file.fieldname}`
@@ -36,9 +46,10 @@ const storage = multer.diskStorage({
 
 const fileFilter = (req, file, cb) => {
     try {
+        // if it is image file
         if (imageFields.includes(file.fieldname)) {
-            const mimetype = allowedImageFileTypes.test(file.mimetype);
-            const extname = allowedImageFileTypes.test(
+            const mimetype = allowedImageFileTypes.includes(file.mimetype);
+            const extname = allowedImageExtTypes.test(
                 path.extname(file.originalname?.toLowerCase())
             );
             if (mimetype && extname) {
@@ -46,6 +57,7 @@ const fileFilter = (req, file, cb) => {
             } else {
                 throw new CustomError.BadRequest(`Unsupported field type`);
             }
+            // add else if for other file types
         } else {
             throw new CustomError.BadRequest(
                 `Unknown field name ${file.fieldname}`

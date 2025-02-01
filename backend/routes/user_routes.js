@@ -10,6 +10,6 @@ import { authHandler, roleHandler, roles } from "../middlewares/index.js";
 const router = express.Router();
 
 router.get("/", authHandler, UserController.getProfile);
-router.post("/", authHandler, UserController.updateProfile);
+router.put("/", authHandler, UserController.updateProfile);
 
 export default router;
