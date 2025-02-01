@@ -1,0 +1,12 @@
+/**
+ * @module backend/routes/order_routes
+ * @file order_routes.js
+ * @description Express router for order in MERN stack
+ */
+import express from "express";
+import OrderController from "../controllers/order_controller";
+import { authHandler, roleHandler, roles } from "../middlewares/index.js";
+
+const router = express.Router();
+
+export default router;
