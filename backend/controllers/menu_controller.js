@@ -7,6 +7,7 @@ import { StatusCodes } from "http-status-codes";
 import CustomError from "../error/index.js";
 import Menu from "../models/menu.js";
 import { isUuidv4 } from "../utils/index.js";
+import { menuCategories } from "../config/config.js";
 
 const MenuController = {
     getMenus: async (req, res) => {
@@ -43,8 +44,9 @@ const MenuController = {
     },
 
     createMenu: async (req, res) => {
-        const { name, description, price, category, menu_image, isAvailable } =
-            req.body;
+        const menu_image = req.file;
+        let { name, description, price, category, isAvailable } = req.body;
+
         if (
             !name ||
             !description ||
@@ -60,8 +62,12 @@ const MenuController = {
             throw new CustomError.BadRequest("Price must be number");
         }
 
+        if (!menuCategories.includes(category)) {
+            category = "unknown";
+        }
+
         if (!req.file) {
-            throw new CustomError.BadRequest("image field is requiredI");
+            throw new CustomError.BadRequest("image field is required");
         }
 
         const existingMenu = await Menu.findOne({ where: { name: name } });
@@ -73,12 +79,12 @@ const MenuController = {
             description,
             price,
             category,
-            imageUrl: req.file ? [req.file?.filename] : [],
+            imageUrl: menu_image ? [menu_image?.filename] : [],
             isAvailable: isAvailable == "true" ? true : false,
         });
         return res
             .status(StatusCodes.CREATED)
-            .json({ success: true, message: "Menu created", data: menu });
+            .json({ success: true, message: "Menu created", data: { menu } });
     },
 
     deleteMenu: async (req, res) => {
