@@ -8,6 +8,8 @@ import Menu from "./pages/Menu";
 import Order from "./pages/Order";
 import { Trending } from "./pages/Trending";
 import Cart from "./pages/Cart";
+import MenuDetail from "./pages/MenuDetail";
+import PaymentMethod from "./pages/PaymentMethod";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -16,11 +18,14 @@ function App() {
     <>
       <div className="overflow-hidden">
         {/* <SplashScreen /> */}
-        {/* <Menu /> */}
         <Menu />
         {/* <Cart /> */}
+        {/* <PaymentMethod /> */}
+
+
         {/* <Order /> */}
         {/* <Trending /> */}
+        {/* <MenuDetail /> */}
       </div>
     </>
   );
