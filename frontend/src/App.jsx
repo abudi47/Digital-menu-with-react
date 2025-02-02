@@ -10,7 +10,9 @@ import { Trending } from "./pages/Trending";
 import Cart from "./pages/Cart";
 import MenuDetail from "./pages/MenuDetail";
 import PaymentMethod from "./pages/PaymentMethod";
+
 import Login from "./pages/staff/Login";
+import DashboardLayout from "./pages/staff/DashboardLayout";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -18,7 +20,8 @@ function App() {
   return (
     <>
       <div className="overflow-hidden">
-        <Login />
+        {/* <Login /> */}
+        <DashboardLayout />
 
 
 
