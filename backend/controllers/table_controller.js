@@ -60,7 +60,6 @@ const TableController = {
       number,
       price,
       category,
-      imageUrl: [imageUrl],
       isAvailable: isAvailable == "true" ? true : false,
     });
     return res

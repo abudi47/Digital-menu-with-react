@@ -4,9 +4,11 @@
  * @description Express router for order in MERN stack
  */
 import express from "express";
-import OrderController from "../controllers/order_controller";
+import OrderController from "../controllers/order_controller.js";
 import { authHandler, roleHandler, roles } from "../middlewares/index.js";
 
 const router = express.Router();
+
+router.post("/create", OrderController.createOrder);
 
 export default router;
