@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Routes, Route } from "react-router-dom"
+import { Routes, Route } from "react-router-dom";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
@@ -14,31 +14,38 @@ import PaymentMethod from "./pages/PaymentMethod";
 
 import Login from "./pages/staff/Login";
 import DashboardLayout from "./pages/staff/DashboardLayout";
+// staff pages
+import NewOrder from "./pages/staff/NewOrder";
+import StaffMember from "./pages/staff/StaffMember";
 
 function App() {
-  const [count, setCount] = useState(0);
+    const [count, setCount] = useState(0);
 
-  return (
-    <>
-      <div className="overflow-hidden">
-        {/* <Login /> */}
-        <DashboardLayout />
+    return (
+        <>
+            <div className="overflow-hidden">
+                <Routes>
+                    {/* <Route path="/login" element={< Login />} /> */}
 
+                    <Route path="/dashboard" element={<DashboardLayout />}>
+                        <Route path="new-order" Component={NewOrder} />
+                        <Route path="staff-member" Component={StaffMember} />
 
+                    </Route>
+                </Routes>
 
-        {/* client side pages  */}
-        {/* <SplashScreen /> */}
-        {/* <Menu /> */}
-        {/* <Cart /> */}
-        {/* <PaymentMethod /> */}
+                {/* client side pages  */}
+                {/* <SplashScreen /> */}
+                {/* <Menu /> */}
+                {/* <Cart /> */}
+                {/* <PaymentMethod /> */}
 
-
-        {/* <Order /> */}
-        {/* <Trending /> */}
-        {/* <MenuDetail /> */}
-      </div>
-    </>
-  );
+                {/* <Order /> */}
+                {/* <Trending /> */}
+                {/* <MenuDetail /> */}
+            </div>
+        </>
+    );
 }
 
 export default App;
