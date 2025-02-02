@@ -189,8 +189,8 @@ export default function DashboardLayout() {
                     {/* main content */}
                     <div className="flexx justify-between items-center rounded-xl bg-white text-gray-700 py-4 px-8 shadow-md shadow-slate-200">
                         {/* Table Header */}
-                        <div className="p-4 bg-gray-200 text-gray-700 font-semibold">
-                            Staff Data
+                        <div className="p-4 font-bold">
+                            Staff Members
                         </div>
 
                         <div className="overflow-x-auto">
@@ -261,14 +261,14 @@ export default function DashboardLayout() {
                         </div>
 
                         {/* Pagination */}
-                        <div className="flex justify-between items-center p-4 bg-gray-100">
-                            <button className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
+                        <div className="flex justify-between items-center p-4">
+                            <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-400">
                                 Previous
                             </button>
                             <span className="text-gray-600 text-sm">
                                 Page 1 of 5
                             </span>
-                            <button className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
+                            <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-400">
                                 Next
                             </button>
                         </div>
