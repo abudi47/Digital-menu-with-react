@@ -1,10 +1,61 @@
-import React from 'react'
+import React from "react";
+import SearchField from "../../components/SearchField";
 
 export default function Menu() {
-  return (
-    <div>
+    const truncateText = (text, limit = 20) =>
+        text.length > limit ? text.substring(0, limit) + "..." : text;
+
+    const menuItems = [
+        {
+            id: 1,
+            name: "Margherita Pizza",
+            description:
+                "Classic pizza with fresh tomatoes, mozzarella, and basil.",
+            price: 12.99,
+            category: "Pizza",
+            imageUrl: "https://via.placeholder.com/100",
+            isAvailable: true,
+        },
+        {
+            id: 2,
+            name: "Grilled Chicken Salad",
+            description:
+                "Fresh greens with grilled chicken, cherry tomatoes, and dressing.",
+            price: 9.99,
+            category: "Salads",
+            imageUrl: "https://via.placeholder.com/100",
+            isAvailable: true,
+        },
+        {
+            id: 3,
+            name: "Cheeseburger",
+            description:
+                "Juicy beef patty with cheddar cheese, lettuce, and tomato.",
+            price: 8.99,
+            category: "Burgers",
+            imageUrl: "https://via.placeholder.com/100",
+            isAvailable: false,
+        },
+        {
+            id: 4,
+            name: "Chocolate Cake",
+            description: "Rich and moist chocolate cake topped with ganache.",
+            price: 6.99,
+            category: "Desserts",
+            imageUrl: "https://via.placeholder.com/100",
+            isAvailable: true,
+        },
+    ];
+    return (
+        <div>
             {/* Table Header */}
-            <div className="p-4 font-bold">Menu</div>
+            <div className="p-4 mb-4 font-bold flex flex-row justify-between items-center">
+                <h3>Menu</h3>
+
+                <div className="flex flex-row">
+                    <SearchField  />
+                </div>
+            </div>
 
             <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
@@ -13,54 +64,42 @@ export default function Menu() {
                         <tr>
                             <th className="p-3">#</th>
                             <th className="p-3">Name</th>
-                            <th className="p-3">Email</th>
-                            <th className="p-3">Role</th>
+                            <th className="p-3">Description</th>
+                            <th className="p-3">Price</th>
+                            <th className="p-3 text-center">Category</th>
                             <th className="p-3 text-center">Status</th>
                         </tr>
                     </thead>
 
                     {/* Table Body */}
-                    <tbody className="text-gray-700">
-                        {[
-                            {
-                                id: 1,
-                                name: "John Doe",
-                                email: "john@example.com",
-                                role: "Admin",
-                                status: "Active",
-                            },
-                            {
-                                id: 2,
-                                name: "Jane Smith",
-                                email: "jane@example.com",
-                                role: "Editor",
-                                status: "Pending",
-                            },
-                            {
-                                id: 3,
-                                name: "Sam Wilson",
-                                email: "sam@example.com",
-                                role: "User",
-                                status: "Inactive",
-                            },
-                        ].map((user, index) => (
+                    <tbody className="text-gray-700 text-nowrap">
+                        {menuItems.map((menu, index) => (
                             <tr key={index} className="border-t">
-                                <td className="p-3">{user.id}</td>
-                                <td className="p-3">{user.name}</td>
-                                <td className="p-3">{user.email}</td>
-                                <td className="p-3">{user.role}</td>
+                                <td className="p-3">{menu.id}</td>
+                                <td className="p-3">
+                                    <p title={menu.name}>
+                                        {truncateText(menu.name)}
+                                    </p>
+                                </td>
+                                <td className="p-3">
+                                    <p title={menu.description}>
+                                        {truncateText(menu.description)}
+                                    </p>
+                                </td>
+                                <td className="p-3">{`Br ${menu.price}`}</td>
+                                <td className="p-3">{menu.category}</td>
                                 <td className="p-3 text-center">
                                     <span
                                         className={`px-3 py-1 rounded-full text-xs font-semibold
                       ${
-                          user.status === "Active"
+                          menu.isAvailable === true
                               ? "bg-green-100 text-green-700"
-                              : user.status === "Pending"
+                              : menu.status === false
                               ? "bg-yellow-100 text-yellow-700"
                               : "bg-red-100 text-red-700"
                       }`}
                                     >
-                                        {user.status}
+                                        {String(menu.isAvailable)}
                                     </span>
                                 </td>
                             </tr>
@@ -80,5 +119,5 @@ export default function Menu() {
                 </button>
             </div>
         </div>
-  )
+    );
 }

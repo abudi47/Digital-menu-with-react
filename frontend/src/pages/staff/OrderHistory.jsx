@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import SearchField from "../../components/SearchField";
 
 export default function OrderHistory() {
     const [expandedRow, setExpandedRow] = useState(null);
@@ -36,7 +37,13 @@ export default function OrderHistory() {
     return (
         <div>
             {/* Table Header */}
-            <div className="p-4 font-bold">Order History</div>
+            <div className="p-4 mb-4 font-bold flex flex-row justify-between items-center">
+                <h3>Order History</h3>
+
+                <div className="flex flex-row">
+                    <SearchField />
+                </div>
+            </div>
 
             <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
