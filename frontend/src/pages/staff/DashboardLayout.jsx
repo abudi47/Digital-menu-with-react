@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Outlet, Link } from "react-router-dom";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import ArrowForwardIosOutlinedIcon from "@mui/icons-material/ArrowForwardIosOutlined";
@@ -14,19 +14,30 @@ import Button from "../../components/Button";
 import { userAvatar } from "../../assets";
 
 export default function DashboardLayout() {
+    const [activeTab, setActiveTab] = useState("status");
+
     return (
         <div className="grid grid-cols-[0.25fr_1fr] gap-8 bg-blue-50">
             {/* side menu */}
             <div className="flex flex-col h-screen bg-white shadow-md shadow-slate-200">
                 <div className="flex flex-row items-center gap-2 w-full justify-center my-6">
                     <DashboardOutlinedIcon className="text-gray-700" />
-                    <Link to="/dashboard" className="text-2xl font-semibold text-gray-700">
+                    <Link
+                        to="/dashboard"
+                        className="text-2xl font-semibold text-gray-700"
+                    >
                         Dashboard
                     </Link>
                 </div>
 
                 <div className="flex flex-1 flex-col gap-1 mt-4 overflow-x-hidden">
-                    <Link to="report" className="flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer">
+                    <Link
+                        to="report"
+                        className={`flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer ${
+                            activeTab === "status" ? "bg-primary py-4 text-white" : ""
+                        }`}
+                        onClick={() => setActiveTab("status")}
+                    >
                         <div className="flex flex-row gap-4">
                             <QueryStatsOutlinedIcon className="" />
                             <p className="">Report Status</p>
@@ -35,7 +46,13 @@ export default function DashboardLayout() {
                         <ArrowForwardIosOutlinedIcon className="!w-3 !h-3" />
                     </Link>
 
-                    <Link to="new-order" className="flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer">
+                    <Link
+                        to="new-order"
+                        className={`flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer ${
+                            activeTab === "newOrder" ? "bg-primary py-4 text-white" : ""
+                        }`}
+                        onClick={() => setActiveTab("newOrder")}
+                    >
                         <div className="flex flex-row gap-4">
                             <SubscriptionsOutlinedIcon className="" />
                             <p className="">New Orders</p>
@@ -44,7 +61,13 @@ export default function DashboardLayout() {
                         <ArrowForwardIosOutlinedIcon className="!w-3 !h-3" />
                     </Link>
 
-                    <Link to="order-history" className="flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer">
+                    <Link
+                        to="order-history"
+                        className={`flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer ${
+                            activeTab === "orderHistory" ? "bg-primary py-4 text-white" : ""
+                        }`}
+                        onClick={() => setActiveTab("orderHistory")}
+                    >
                         <div className="flex flex-row gap-4">
                             <HistoryOutlinedIcon className="" />
                             <p className="">Order History</p>
@@ -53,7 +76,13 @@ export default function DashboardLayout() {
                         <ArrowForwardIosOutlinedIcon className="!w-3 !h-3" />
                     </Link>
 
-                    <Link to="menu" className="flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer">
+                    <Link
+                        to="menu"
+                        className={`flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer ${
+                            activeTab === "menu" ? "bg-primary py-4 text-white" : ""
+                        }`}
+                        onClick={() => setActiveTab("menu")}
+                    >
                         <div className="flex flex-row gap-4">
                             <RestaurantMenuOutlinedIcon className="" />
                             <p className="">Menu</p>
@@ -71,7 +100,13 @@ export default function DashboardLayout() {
                         <ArrowForwardIosOutlinedIcon className="!w-3 !h-3" />
                     </div>
 
-                    <Link to="staff-member" className="flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer">
+                    <Link
+                        to="staff-member"
+                        className={`flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer ${
+                            activeTab === "staff" ? "bg-primary py-4 text-white" : ""
+                        }`}
+                        onClick={() => setActiveTab("staff")}
+                    >
                         <div className="flex flex-row gap-4">
                             <PeopleAltOutlinedIcon className="" />
                             <p className="">Staff Members</p>

@@ -28,7 +28,7 @@ function App() {
         <>
             <div className="overflow-hidden">
                 <Routes>
-                    {/* <Route path="/login" element={< Login />} /> */}
+                    <Route path="/login" element={< Login />} />
 
                     <Route path="/dashboard" element={<DashboardLayout />}>
                         <Route path="new-order" Component={NewOrder} />
