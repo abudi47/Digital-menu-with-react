@@ -26,14 +26,14 @@ export default function DashboardLayout() {
                 </div>
 
                 <div className="flex flex-1 flex-col gap-1 mt-4 overflow-x-hidden">
-                    <div className="flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer">
+                    <Link to="report" className="flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer">
                         <div className="flex flex-row gap-4">
                             <QueryStatsOutlinedIcon className="" />
                             <p className="">Report Status</p>
                         </div>
 
                         <ArrowForwardIosOutlinedIcon className="!w-3 !h-3" />
-                    </div>
+                    </Link>
 
                     <Link to="new-order" className="flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer">
                         <div className="flex flex-row gap-4">
@@ -44,14 +44,14 @@ export default function DashboardLayout() {
                         <ArrowForwardIosOutlinedIcon className="!w-3 !h-3" />
                     </Link>
 
-                    <div className="flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer">
+                    <Link to="order-history" className="flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer">
                         <div className="flex flex-row gap-4">
                             <HistoryOutlinedIcon className="" />
                             <p className="">Order History</p>
                         </div>
 
                         <ArrowForwardIosOutlinedIcon className="!w-3 !h-3" />
-                    </div>
+                    </Link>
 
                     <div className="flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer">
                         <div className="flex flex-row gap-4">

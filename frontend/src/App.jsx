@@ -16,7 +16,9 @@ import Login from "./pages/staff/Login";
 import DashboardLayout from "./pages/staff/DashboardLayout";
 // staff pages
 import NewOrder from "./pages/staff/NewOrder";
+import OrderHistory from "./pages/staff/OrderHistory";
 import StaffMember from "./pages/staff/StaffMember";
+import Report from "./pages/staff/Report";
 
 function App() {
     const [count, setCount] = useState(0);
@@ -29,8 +31,9 @@ function App() {
 
                     <Route path="/dashboard" element={<DashboardLayout />}>
                         <Route path="new-order" Component={NewOrder} />
+                        <Route path="order-history" Component={OrderHistory} />
                         <Route path="staff-member" Component={StaffMember} />
-
+                        <Route path="report" Component={Report} />
                     </Route>
                 </Routes>
 

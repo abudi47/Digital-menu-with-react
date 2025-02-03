@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function NewOrder() {
+export default function OrderHistory() {
     const [expandedRow, setExpandedRow] = useState(null);
 
     const toggleMenu = (id) => {
@@ -36,7 +36,7 @@ export default function NewOrder() {
     return (
         <div>
             {/* Table Header */}
-            <div className="p-4 font-bold">New Orders</div>
+            <div className="p-4 font-bold">Order History</div>
 
             <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
@@ -76,13 +76,13 @@ export default function NewOrder() {
                                     <td className="p-3 text-center">
                                         <span
                                             className={`px-3 py-1 rounded-full text-xs font-semibold
-                        ${
-                            order.status === "Active"
-                                ? "bg-green-100 text-green-700"
-                                : order.status === "Pending"
-                                ? "bg-yellow-100 text-yellow-700"
-                                : "bg-red-100 text-red-700"
-                        }`}
+                                ${
+                                    order.status === "Active"
+                                        ? "bg-green-100 text-green-700"
+                                        : order.status === "Pending"
+                                        ? "bg-yellow-100 text-yellow-700"
+                                        : "bg-red-100 text-red-700"
+                                }`}
                                         >
                                             {order.status}
                                         </span>
