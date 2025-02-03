@@ -14,7 +14,7 @@ export default function OrderHistory() {
             table: "2",
             orderTime: new Date(),
             menus: ["Egg", "Toast", "Juice"],
-            status: "Active",
+            status: "Served",
         },
         {
             id: 2,
@@ -22,7 +22,7 @@ export default function OrderHistory() {
             table: "12",
             orderTime: new Date(),
             menus: ["Pasta", "Salad"],
-            status: "Pending",
+            status: "Rejected",
         },
         {
             id: 3,
@@ -30,7 +30,7 @@ export default function OrderHistory() {
             table: "4",
             orderTime: new Date(),
             menus: ["Burger", "Fries", "Soda"],
-            status: "Inactive",
+            status: "Served",
         },
     ];
     return (
@@ -46,7 +46,7 @@ export default function OrderHistory() {
                             <th className="p-3">#</th>
                             <th className="p-3">Name</th>
                             <th className="p-3">Table</th>
-                            <th className="p-3">Order Time</th>
+                            <th className="p-3">Order Date</th>
                             <th className="p-3 text-center">Menus</th>
                             <th className="p-3 text-center">Status</th>
                         </tr>
@@ -62,7 +62,7 @@ export default function OrderHistory() {
                                     <td className="p-3">{order.name}</td>
                                     <td className="p-3">{order.table}</td>
                                     <td className="p-3">
-                                        {order.orderTime.toLocaleTimeString()}
+                                        {order.orderTime.toLocaleDateString()}
                                     </td>
                                     <td className="p-3 text-center">
                                         <button
@@ -77,9 +77,9 @@ export default function OrderHistory() {
                                         <span
                                             className={`px-3 py-1 rounded-full text-xs font-semibold
                                 ${
-                                    order.status === "Active"
+                                    order.status === "Served"
                                         ? "bg-green-100 text-green-700"
-                                        : order.status === "Pending"
+                                        : order.status === "Rejected"
                                         ? "bg-yellow-100 text-yellow-700"
                                         : "bg-red-100 text-red-700"
                                 }`}

@@ -53,14 +53,14 @@ export default function DashboardLayout() {
                         <ArrowForwardIosOutlinedIcon className="!w-3 !h-3" />
                     </Link>
 
-                    <div className="flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer">
+                    <Link to="menu" className="flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer">
                         <div className="flex flex-row gap-4">
                             <RestaurantMenuOutlinedIcon className="" />
                             <p className="">Menu</p>
                         </div>
 
                         <ArrowForwardIosOutlinedIcon className="!w-3 !h-3" />
-                    </div>
+                    </Link>
 
                     <div className="flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer">
                         <div className="flex flex-row gap-4">

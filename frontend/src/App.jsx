@@ -19,6 +19,7 @@ import NewOrder from "./pages/staff/NewOrder";
 import OrderHistory from "./pages/staff/OrderHistory";
 import StaffMember from "./pages/staff/StaffMember";
 import Report from "./pages/staff/Report";
+import MenuPage from "./pages/staff/Menu";
 
 function App() {
     const [count, setCount] = useState(0);
@@ -34,6 +35,7 @@ function App() {
                         <Route path="order-history" Component={OrderHistory} />
                         <Route path="staff-member" Component={StaffMember} />
                         <Route path="report" Component={Report} />
+                        <Route path="menu" Component={MenuPage} />
                     </Route>
                 </Routes>
 

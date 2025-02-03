@@ -14,7 +14,7 @@ export default function NewOrder() {
             table: "2",
             orderTime: new Date(),
             menus: ["Egg", "Toast", "Juice"],
-            status: "Active",
+            status: "Pending",
         },
         {
             id: 2,
@@ -30,7 +30,7 @@ export default function NewOrder() {
             table: "4",
             orderTime: new Date(),
             menus: ["Burger", "Fries", "Soda"],
-            status: "Inactive",
+            status: "Served",
         },
     ];
     return (
@@ -77,7 +77,7 @@ export default function NewOrder() {
                                         <span
                                             className={`px-3 py-1 rounded-full text-xs font-semibold
                         ${
-                            order.status === "Active"
+                            order.status === "Served"
                                 ? "bg-green-100 text-green-700"
                                 : order.status === "Pending"
                                 ? "bg-yellow-100 text-yellow-700"
