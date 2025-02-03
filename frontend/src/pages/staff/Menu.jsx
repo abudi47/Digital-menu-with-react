@@ -1,7 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
+import ChevronRightOutlinedIcon from "@mui/icons-material/ChevronRightOutlined";
+import ChevronLeftOutlinedIcon from "@mui/icons-material/ChevronLeftOutlined";
 import SearchField from "../../components/SearchField";
 
 export default function Menu() {
+    const [expandedRow, setExpandedRow] = useState(null);
+
+    const toggleMenu = (id) => {
+        setExpandedRow(expandedRow === id ? null : id);
+    };
+
     const truncateText = (text, limit = 20) =>
         text.length > limit ? text.substring(0, limit) + "..." : text;
 
@@ -13,7 +23,10 @@ export default function Menu() {
                 "Classic pizza with fresh tomatoes, mozzarella, and basil.",
             price: 12.99,
             category: "Pizza",
-            imageUrl: "https://via.placeholder.com/100",
+            imageUrl: [
+                "https://www.recipetineats.com/tachyon/2014/06/Pasta1.jpg",
+                "https://kids.kiddle.co/images/thumb/6/6e/Naporitan_by_yamauchi.jpg/300px-Naporitan_by_yamauchi.jpg",
+            ],
             isAvailable: true,
         },
         {
@@ -23,7 +36,10 @@ export default function Menu() {
                 "Fresh greens with grilled chicken, cherry tomatoes, and dressing.",
             price: 9.99,
             category: "Salads",
-            imageUrl: "https://via.placeholder.com/100",
+            imageUrl: [
+                "https://www.recipetineats.com/tachyon/2014/06/Pasta1.jpg",
+                "https://kids.kiddle.co/images/thumb/6/6e/Naporitan_by_yamauchi.jpg/300px-Naporitan_by_yamauchi.jpg",
+            ],
             isAvailable: true,
         },
         {
@@ -33,7 +49,10 @@ export default function Menu() {
                 "Juicy beef patty with cheddar cheese, lettuce, and tomato.",
             price: 8.99,
             category: "Burgers",
-            imageUrl: "https://via.placeholder.com/100",
+            imageUrl: [
+                "https://www.recipetineats.com/tachyon/2014/06/Pasta1.jpg",
+                "https://kids.kiddle.co/images/thumb/6/6e/Naporitan_by_yamauchi.jpg/300px-Naporitan_by_yamauchi.jpg",
+            ],
             isAvailable: false,
         },
         {
@@ -42,10 +61,29 @@ export default function Menu() {
             description: "Rich and moist chocolate cake topped with ganache.",
             price: 6.99,
             category: "Desserts",
-            imageUrl: "https://via.placeholder.com/100",
+            imageUrl: [
+                "https://www.recipetineats.com/tachyon/2014/06/Pasta1.jpg",
+                "https://kids.kiddle.co/images/thumb/6/6e/Naporitan_by_yamauchi.jpg/300px-Naporitan_by_yamauchi.jpg",
+            ],
             isAvailable: true,
         },
     ];
+
+    // expanded
+    const [currentImage, setCurrentImage] = useState(0);
+
+    const handleNextImage = (menu) => {
+        setCurrentImage((prev) => (prev + 1) % menu.imageUrl.length);
+    };
+
+    const handlePrevImage = (menu) => {
+        setCurrentImage(
+            (prev) => (prev - 1 + menu.imageUrl.length) % menu.imageUrl.length
+        );
+    };
+
+    // ==============
+
     return (
         <div>
             {/* Table Header */}
@@ -53,7 +91,7 @@ export default function Menu() {
                 <h3>Menu</h3>
 
                 <div className="flex flex-row">
-                    <SearchField  />
+                    <SearchField />
                 </div>
             </div>
 
@@ -74,23 +112,27 @@ export default function Menu() {
                     {/* Table Body */}
                     <tbody className="text-gray-700 text-nowrap">
                         {menuItems.map((menu, index) => (
-                            <tr key={index} className="border-t">
-                                <td className="p-3">{menu.id}</td>
-                                <td className="p-3">
-                                    <p title={menu.name}>
-                                        {truncateText(menu.name)}
-                                    </p>
-                                </td>
-                                <td className="p-3">
-                                    <p title={menu.description}>
-                                        {truncateText(menu.description)}
-                                    </p>
-                                </td>
-                                <td className="p-3">{`Br ${menu.price}`}</td>
-                                <td className="p-3">{menu.category}</td>
-                                <td className="p-3 text-center">
-                                    <span
-                                        className={`px-3 py-1 rounded-full text-xs font-semibold
+                            <React.Fragment key={menu.id}>
+                                <tr key={index} className="border-t">
+                                    <td className="p-3">{menu.id}</td>
+                                    <td
+                                        className="p-3"
+                                        onClick={() => toggleMenu(menu.id)}
+                                    >
+                                        <p title={menu.name}>
+                                            {truncateText(menu.name)}
+                                        </p>
+                                    </td>
+                                    <td className="p-3">
+                                        <p title={menu.description}>
+                                            {truncateText(menu.description)}
+                                        </p>
+                                    </td>
+                                    <td className="p-3">{`Br ${menu.price}`}</td>
+                                    <td className="p-3">{menu.category}</td>
+                                    <td className="p-3 text-center">
+                                        <span
+                                            className={`px-3 py-1 rounded-full text-xs font-semibold
                       ${
                           menu.isAvailable === true
                               ? "bg-green-100 text-green-700"
@@ -98,11 +140,108 @@ export default function Menu() {
                               ? "bg-yellow-100 text-yellow-700"
                               : "bg-red-100 text-red-700"
                       }`}
-                                    >
-                                        {String(menu.isAvailable)}
-                                    </span>
-                                </td>
-                            </tr>
+                                        >
+                                            {String(menu.isAvailable)}
+                                        </span>
+                                    </td>
+                                </tr>
+
+                                {/* Dropdown Row (Pushes Other Rows) */}
+                                {expandedRow === menu.id && (
+                                    <tr className="bg-gray-50/80 hover:bg-gray-100 transition duration-300">
+                                    <td colSpan="6" className="py-6 px-8">
+                                      <div className="flex flex-col md:flex-row gap-6 items-centerx">
+                                        {/* Image section */}
+                                        <div className="flex flex-col gap-3 w-64 md:w-56">
+                                          <div className="relative w-full h-56 rounded-lg overflow-hidden shadow-lg border">
+                                            <img
+                                              src={menu.imageUrl[currentImage]}
+                                              alt="menu_image"
+                                              className="w-full h-full object-cover"
+                                            />
+                                            {/* Image Navigation Buttons */}
+                                            <div className="absolute inset-0 flex justify-between items-center px-2">
+                                              <button
+                                                onClick={() => handlePrevImage(menu)}
+                                                className="bg-gray-700/80 text-white p-2 rounded-full hover:bg-gray-900 transition duration-300"
+                                              >
+                                                <ChevronLeftOutlinedIcon className="!w-6 !h-6" />
+                                              </button>
+                                              <button
+                                                onClick={() => handleNextImage(menu)}
+                                                className="bg-gray-700/80 text-white p-2 rounded-full hover:bg-gray-900 transition duration-300"
+                                              >
+                                                <ChevronRightOutlinedIcon className="!w-6 !h-6" />
+                                              </button>
+                                            </div>
+                                          </div>
+                                          {/* Image Controls */}
+                                          <div className="flex justify-between px-3">
+                                            <AddPhotoAlternateOutlinedIcon className="cursor-pointer text-green-600 hover:text-green-800 transition duration-300" />
+                                            <DeleteOutlineOutlinedIcon className="cursor-pointer text-red-600 hover:text-red-800 transition duration-300" />
+                                          </div>
+                                        </div>
+                                  
+                                        {/* Menu Details */}
+                                        <div className="flex flex-col flex-1 gap-4">
+                                          <div className="w-full max-w-sm min-w-[200px]">
+                                            <label className="block mb-2 text-sm font-medium text-gray-700">
+                                              Name
+                                            </label>
+                                            <input
+                                              className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 shadow-sm text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none transition duration-300"
+                                              placeholder="Type menu name here..."
+                                              value={menu.name}
+                                            />
+                                          </div>
+                                  
+                                          <div className="w-full max-w-sm min-w-[200px]">
+                                            <label className="block mb-2 text-sm font-medium text-gray-700">
+                                              Price
+                                            </label>
+                                            <input
+                                              className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 shadow-sm text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none transition duration-300"
+                                              placeholder="Type menu price here..."
+                                              value={menu.price}
+                                            />
+                                          </div>
+                                  
+                                          <div className="w-full max-w-sm min-w-[200px]">
+                                            <label className="block mb-2 text-sm font-medium text-gray-700">
+                                              Category
+                                            </label>
+                                            <input
+                                              className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 shadow-sm text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none transition duration-300"
+                                              placeholder="Type menu category here..."
+                                              value={menu.category}
+                                            />
+                                          </div>
+                                        </div>
+                                  
+                                        {/* Description & Submit Button */}
+                                        <div className="flex flex-col flex-1 justify-between">
+                                          <div className="w-full max-w-sm min-w-[200px]">
+                                            <label className="block mb-2 text-sm font-medium text-gray-700">
+                                              Description
+                                            </label>
+                                            <textarea
+                                              className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 shadow-sm text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none transition duration-300"
+                                              placeholder="Type menu description here..."
+                                              value={menu.description}
+                                              rows="3"
+                                            />
+                                          </div>
+                                  
+                                          <button className="px-6 py-2 mt-4 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition duration-300">
+                                            Submit
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                  
+                                )}
+                            </React.Fragment>
                         ))}
                     </tbody>
                 </table>
