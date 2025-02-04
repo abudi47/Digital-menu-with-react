@@ -177,7 +177,7 @@ export default function DashboardLayout() {
                     {/* basic statistics */}
 
                     {/* main content */}
-                    <div className="flexx justify-between items-center rounded-xl bg-white text-gray-700 py-4 px-8 shadow-md shadow-slate-200">
+                    <div className="rounded-xl bg-white text-gray-700 py-4 px-8 shadow-md shadow-slate-200">
                         <Outlet />
                     </div>
                 </div>

@@ -18,14 +18,14 @@ export default function Table() {
     const truncateText = (text, limit = 20) =>
         text.length > limit ? text.substring(0, limit) + "..." : text;
 
-
     const tables = [
         {
             id: 1,
             number: "21",
             category: "normal",
             price: "5",
-            imageUrl: "https://www.recipetineats.com/tachyon/2014/06/Pasta1.jpg",
+            imageUrl:
+                "https://www.recipetineats.com/tachyon/2014/06/Pasta1.jpg",
             isAvailable: true,
         },
         {
@@ -33,7 +33,8 @@ export default function Table() {
             number: "12",
             category: "normal",
             price: "0",
-            imageUrl: "https://www.recipetineats.com/tachyon/2014/06/Pasta1.jpg",
+            imageUrl:
+                "https://www.recipetineats.com/tachyon/2014/06/Pasta1.jpg",
             isAvailable: true,
         },
         {
@@ -41,7 +42,8 @@ export default function Table() {
             number: "7",
             category: "normal",
             price: "15",
-            imageUrl: "https://www.recipetineats.com/tachyon/2014/06/Pasta1.jpg",
+            imageUrl:
+                "https://www.recipetineats.com/tachyon/2014/06/Pasta1.jpg",
             isAvailable: false,
         },
         {
@@ -49,7 +51,8 @@ export default function Table() {
             number: "11",
             category: "normal",
             price: "20",
-            imageUrl: "https://www.recipetineats.com/tachyon/2014/06/Pasta1.jpg",
+            imageUrl:
+                "https://www.recipetineats.com/tachyon/2014/06/Pasta1.jpg",
             isAvailable: true,
         },
     ];
@@ -99,9 +102,7 @@ export default function Table() {
                                         </p>
                                     </td>
                                     <td className="p-3">
-                                        <p>
-                                            {table.category}
-                                        </p>
+                                        <p>{table.category}</p>
                                     </td>
                                     <td className="p-3">{`Br ${table.price}`}</td>
                                     <td className="p-3 text-center">
@@ -129,13 +130,10 @@ export default function Table() {
                                                 <div className="flex flex-col gap-3 w-64 md:w-56">
                                                     <div className="w-full h-56 rounded-lg overflow-hidden shadow-lg border">
                                                         <img
-                                                            src={
-                                                                table.imageUrl
-                                                            }
+                                                            src={table.imageUrl}
                                                             alt="table_image"
                                                             className="w-full h-full object-cover"
                                                         />
-                                                        
                                                     </div>
                                                     {/* Image Controls */}
                                                     <div className="flex justify-between px-3">
@@ -153,7 +151,7 @@ export default function Table() {
                                                         <input
                                                             type="number"
                                                             className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 shadow-sm text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none transition duration-300"
-                                                            placeholder="Type menu name here..."
+                                                            placeholder="Type table number here..."
                                                             value={
                                                                 activeTable.number
                                                             }
@@ -177,8 +175,9 @@ export default function Table() {
                                                             Price
                                                         </label>
                                                         <input
+                                                            type="number"
                                                             className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 shadow-sm text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none transition duration-300"
-                                                            placeholder="Type menu price here..."
+                                                            placeholder="Type table price here..."
                                                             value={
                                                                 activeTable.price
                                                             }
@@ -201,9 +200,9 @@ export default function Table() {
                                                         <label className="block mb-2 text-sm font-medium text-gray-700">
                                                             Category
                                                         </label>
-                                                        <input
+                                                        {/* <input
                                                             className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 shadow-sm text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none transition duration-300"
-                                                            placeholder="Type menu category here..."
+                                                            placeholder="Select table category here..."
                                                             value={
                                                                 activeTable.category
                                                             }
@@ -220,7 +219,31 @@ export default function Table() {
                                                                     }
                                                                 )
                                                             }
-                                                        />
+                                                        /> */}
+
+                                                        <select
+                                                            className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 shadow-sm text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none transition duration-300"
+                                                            placeholder="Select table category here..."
+                                                            value={activeTable.category}
+                                                            onChange={(e) =>
+                                                                setActiveTable(
+                                                                    (prev) => {
+                                                                        return {
+                                                                            ...prev,
+                                                                            category:
+                                                                                e
+                                                                                    .target
+                                                                                    .value,
+                                                                        };
+                                                                    }
+                                                                )
+                                                            }
+                                                        >
+                                                            <option value="normal">normal</option>
+                                                            <option value="vip">vip</option>
+                                                            <option value="couple">couple</option>
+
+                                                        </select>
                                                     </div>
                                                 </div>
 
@@ -233,7 +256,7 @@ export default function Table() {
                                                             Save Changes
                                                         </button>
                                                         <button className="px-6 py-2 mt-4 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition duration-300">
-                                                            Remove Menu
+                                                            Remove Table
                                                         </button>
                                                     </div>
                                                 </div>
