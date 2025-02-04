@@ -15,9 +15,6 @@ export default function Table() {
         setActiveTable(activeTable == menu ? null : menu);
     };
 
-    const truncateText = (text, limit = 20) =>
-        text.length > limit ? text.substring(0, limit) + "..." : text;
-
     const tables = [
         {
             id: 1,
