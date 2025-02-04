@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import SearchField from "../../components/SearchField";
 
-export default function NewOrder() {
+export default function Table() {
     const [expandedRow, setExpandedRow] = useState(null);
 
     const toggleMenu = (id) => {

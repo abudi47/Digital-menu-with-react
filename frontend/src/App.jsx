@@ -20,6 +20,7 @@ import OrderHistory from "./pages/staff/OrderHistory";
 import StaffMember from "./pages/staff/StaffMember";
 import Report from "./pages/staff/Report";
 import MenuPage from "./pages/staff/Menu";
+import Table from "./pages/staff/Table";
 
 function App() {
     const [count, setCount] = useState(0);
@@ -28,7 +29,7 @@ function App() {
         <>
             <div className="overflow-hidden">
                 <Routes>
-                    <Route path="/login" element={< Login />} />
+                    <Route path="/login" element={<Login />} />
 
                     <Route path="/dashboard" element={<DashboardLayout />}>
                         <Route path="new-order" Component={NewOrder} />
@@ -36,6 +37,7 @@ function App() {
                         <Route path="staff-member" Component={StaffMember} />
                         <Route path="report" Component={Report} />
                         <Route path="menu" Component={MenuPage} />
+                        <Route path="table" Component={Table} />
                     </Route>
                 </Routes>
 

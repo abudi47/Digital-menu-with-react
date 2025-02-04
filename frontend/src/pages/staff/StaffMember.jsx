@@ -1,15 +1,22 @@
 import React from "react";
+import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 import SearchField from "../../components/SearchField";
 
 export default function StaffMember() {
     return (
         <div>
             {/* Table Header */}
-            <div className="p-4 mb-4 font-bold flex flex-row justify-between items-center">
-                <h3>Staff Members</h3>
+            <div className="p-4 mb-4 font-bold flex flex-col gap-4">
+                <div className="flex flex-row justify-between items-center">
+                    <h3>Staff Members</h3>
 
-                <div className="flex flex-row">
                     <SearchField />
+                </div>
+                <div className="flex flex-row justify-end">
+                    <button className="px-4 py-2 bg-primary text-white font-semibold rounded-md shadow-md hover:bg-primary-600 transition duration-300">
+                        <PersonAddAltOutlinedIcon />
+                        <span className="ml-2">Add New Staff</span>
+                    </button>
                 </div>
             </div>
 

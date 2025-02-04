@@ -34,7 +34,9 @@ export default function DashboardLayout() {
                     <Link
                         to="report"
                         className={`flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer ${
-                            activeTab === "status" ? "bg-primary py-4 text-white" : ""
+                            activeTab === "status"
+                                ? "bg-primary py-4 text-white"
+                                : ""
                         }`}
                         onClick={() => setActiveTab("status")}
                     >
@@ -49,7 +51,9 @@ export default function DashboardLayout() {
                     <Link
                         to="new-order"
                         className={`flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer ${
-                            activeTab === "newOrder" ? "bg-primary py-4 text-white" : ""
+                            activeTab === "newOrder"
+                                ? "bg-primary py-4 text-white"
+                                : ""
                         }`}
                         onClick={() => setActiveTab("newOrder")}
                     >
@@ -64,7 +68,9 @@ export default function DashboardLayout() {
                     <Link
                         to="order-history"
                         className={`flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer ${
-                            activeTab === "orderHistory" ? "bg-primary py-4 text-white" : ""
+                            activeTab === "orderHistory"
+                                ? "bg-primary py-4 text-white"
+                                : ""
                         }`}
                         onClick={() => setActiveTab("orderHistory")}
                     >
@@ -79,7 +85,9 @@ export default function DashboardLayout() {
                     <Link
                         to="menu"
                         className={`flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer ${
-                            activeTab === "menu" ? "bg-primary py-4 text-white" : ""
+                            activeTab === "menu"
+                                ? "bg-primary py-4 text-white"
+                                : ""
                         }`}
                         onClick={() => setActiveTab("menu")}
                     >
@@ -91,19 +99,27 @@ export default function DashboardLayout() {
                         <ArrowForwardIosOutlinedIcon className="!w-3 !h-3" />
                     </Link>
 
-                    <div className="flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer">
+                    <Link
+                        to="table"
+                        className={`flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer ${
+                            activeTab === "table" ? "bg-primary py-4 text-white" : ""
+                        }`}
+                        onClick={() => setActiveTab("table")}
+                    >
                         <div className="flex flex-row gap-4">
                             <TableBarOutlinedIcon className="" />
                             <p className="">Table</p>
                         </div>
 
                         <ArrowForwardIosOutlinedIcon className="!w-3 !h-3" />
-                    </div>
+                    </Link>
 
                     <Link
                         to="staff-member"
                         className={`flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer ${
-                            activeTab === "staff" ? "bg-primary py-4 text-white" : ""
+                            activeTab === "staff"
+                                ? "bg-primary py-4 text-white"
+                                : ""
                         }`}
                         onClick={() => setActiveTab("staff")}
                     >
