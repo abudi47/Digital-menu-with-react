@@ -12,6 +12,7 @@ import PaymentMethod from "./pages/PaymentMethod";
 
 import Login from "./pages/staff/Login";
 import DashboardLayout from "./pages/staff/DashboardLayout";
+import ProtectedRoute from "./pages/ProtectedRoute";
 // staff pages
 import NewOrder from "./pages/staff/NewOrder";
 import OrderHistory from "./pages/staff/OrderHistory";
@@ -27,7 +28,11 @@ function App() {
                 <Routes>
                     <Route path="/login" element={<Login />} />
 
-                    <Route path="/dashboard" element={<DashboardLayout />}>
+                    <Route path="/dashboard" element={
+                        <ProtectedRoute>
+                            <DashboardLayout />
+                        </ProtectedRoute>
+                    }>
                         <Route path="" Component={Report} />
                         <Route path="new-order" Component={NewOrder} />
                         <Route path="order-history" Component={OrderHistory} />
