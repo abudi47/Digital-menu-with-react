@@ -28,6 +28,7 @@ function App() {
                     <Route path="/login" element={<Login />} />
 
                     <Route path="/dashboard" element={<DashboardLayout />}>
+                        <Route path="" Component={Report} />
                         <Route path="new-order" Component={NewOrder} />
                         <Route path="order-history" Component={OrderHistory} />
                         <Route path="staff-member" Component={StaffMember} />
@@ -41,7 +42,7 @@ function App() {
                 {/* <SplashScreen /> */}
                 {/* <Menu /> */}
                 {/* <Cart /> */}
-                {/* <PaymentMethod /> */}
+                <PaymentMethod />
 
                 {/* <Order /> */}
                 {/* <Trending /> */}

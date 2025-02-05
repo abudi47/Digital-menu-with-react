@@ -299,14 +299,14 @@ export default function Table() {
                         </div>
 
                         <h2 className="text-2xl font-semibold mb-4">
-                            Add Menu
+                            Add Table
                         </h2>
                     </div>
 
                     <form className="flex flex-col gap-4">
                         <input
-                            type="text"
-                            placeholder="Menu Name"
+                            type="number"
+                            placeholder="Table number"
                             className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                         />
                         <input
@@ -319,21 +319,17 @@ export default function Table() {
                             className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                         >
                             <option value="">Select Category</option>
-                            <option value="starter">Starter</option>
-                            <option value="soft_drink">Soft Drink</option>
-                            <option value="unknown">Unknown</option>
+                            <option value="normal">Normal</option>
+                            <option value="vip">VIP</option>
+                            <option value="couple">Couple</option>
                         </select>
-                        <textarea
-                            placeholder="Description"
-                            className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                        ></textarea>
                         <input
                             type="file"
                             className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                         />
                         <div className="flex justify-end">
                             <button className="px-4 py-2 bg-primary text-white rounded-lg shadow-md hover:bg-primary-600 transition duration-300">
-                                Add Menu
+                                Add Table
                             </button>
                         </div>
                     </form>
