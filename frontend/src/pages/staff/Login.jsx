@@ -1,8 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import TextField from "../../components/TextField";
 import Button from "../../components/Button";
 
 export default function Login() {
+    const [form, setForm] = useState({
+        email: "",
+        phone: "",
+        password: "",
+    });
+
+    const changeHandler = (e) => {        
+        setForm((prev) => {
+            return { ...prev, [e.target.name]: e.target.value };
+        });
+    };
+
+    const submitHandler = async (e) => {
+        
+    };
+
     return (
         <div className="flex flex-row h-[100vh]">
             <div className="flex flex-1 items-center justify-center bg-primary">
@@ -28,6 +44,9 @@ export default function Login() {
                             fieldStyle="w-full"
                             containerStyle="mt-4"
                             required={true}
+                            name="email"
+                            changeHandler={changeHandler}
+                            value={form.email}
                         />
                         <TextField
                             placeholder="*********"
@@ -36,11 +55,17 @@ export default function Login() {
                             fieldStyle="w-full"
                             containerStyle="mt-6"
                             required={true}
+                            name="password"
+                            changeHandler={changeHandler}
+                            value={form.password}
                         />
 
                         <div className="flex flex-row mt-6">
                             <div className="flex-1">
-                                <input type="checkbox" /> Remember me
+                                <input
+                                    type="checkbox"
+                                />{" "}
+                                Remember me
                             </div>
 
                             <div>
@@ -50,7 +75,11 @@ export default function Login() {
                             </div>
                         </div>
 
-                        <Button text="LOGIN" containerStyle="w-full my-8" type="submit" />
+                        <Button
+                            text="LOGIN"
+                            containerStyle="w-full my-8"
+                            type="submit"
+                        />
                     </form>
                 </div>
             </div>
