@@ -10,7 +10,7 @@ export default function MenuCard() {
           className="h-full w-full object-cover"
         />
       </div>
-      <h1 className="text-gray-950 text-xl font-semibold px-2">Spaghetti</h1>
+      <h1 className="text-gray-700 text-xl font-semibold px-2 mt-1">Spaghetti</h1>
       <h1 className="text-gray-500 px-2">Georgian Delicious</h1>
       <div className="flex justify-between px-2 py-2">
         <h3>rating</h3>

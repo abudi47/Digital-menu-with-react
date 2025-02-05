@@ -40,9 +40,9 @@ function App() {
 
                 {/* client side pages  */}
                 {/* <SplashScreen /> */}
-                {/* <Menu /> */}
+                <Menu />
                 {/* <Cart /> */}
-                <PaymentMethod />
+                {/* <PaymentMethod /> */}
 
                 {/* <Order /> */}
                 {/* <Trending /> */}
