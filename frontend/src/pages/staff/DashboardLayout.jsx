@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Outlet, Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import ArrowForwardIosOutlinedIcon from "@mui/icons-material/ArrowForwardIosOutlined";
 import QueryStatsOutlinedIcon from "@mui/icons-material/QueryStatsOutlined";
@@ -15,6 +16,9 @@ import { userAvatar } from "../../assets";
 
 export default function DashboardLayout() {
     const [activeTab, setActiveTab] = useState("status");
+    const user = useSelector((state) => state.user.user);
+    console.log(user);
+    
 
     return (
         <div className="grid grid-cols-[0.25fr_1fr] gap-8 bg-blue-50">

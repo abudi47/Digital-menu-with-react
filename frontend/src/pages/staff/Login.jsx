@@ -1,22 +1,45 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import TextField from "../../components/TextField";
 import Button from "../../components/Button";
+import { axiosPrivate } from "../../api/axios";
 
 export default function Login() {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [form, setForm] = useState({
         email: "",
         phone: "",
         password: "",
     });
 
-    const changeHandler = (e) => {        
+    const changeHandler = (e) => {
         setForm((prev) => {
             return { ...prev, [e.target.name]: e.target.value };
         });
     };
 
     const submitHandler = async (e) => {
-        
+        e.preventDefault();
+        axiosPrivate
+            .post("/auth/login", form)
+            .then((res) => {
+                console.log(res.data?.data);
+                dispatch({
+                    type: "SET_USER",
+                    payload: {
+                        isAuthenticated: true,
+                        token: res.data?.data?.token,
+                        user: res.data?.data?.user,
+                    },
+                });
+
+                navigate("/dashboard");
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
 
     return (
@@ -33,7 +56,7 @@ export default function Login() {
             </div>
             <div className="flex flex-1 justify-center items-center">
                 <div className="border rounded-lg w-[60%] px-4 shadow-lg">
-                    <form action="">
+                    <form action="" onSubmit={submitHandler}>
                         <h2 className="text-3xl text-center font-semibold text-gray-800 my-8">
                             USER LOGIN
                         </h2>
@@ -62,10 +85,7 @@ export default function Login() {
 
                         <div className="flex flex-row mt-6">
                             <div className="flex-1">
-                                <input
-                                    type="checkbox"
-                                />{" "}
-                                Remember me
+                                <input type="checkbox" /> Remember me
                             </div>
 
                             <div>
