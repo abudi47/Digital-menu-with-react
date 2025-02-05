@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 
 import SplashScreen from "./pages/SplashScreen";
@@ -23,8 +21,6 @@ import MenuPage from "./pages/staff/Menu";
 import Table from "./pages/staff/Table";
 
 function App() {
-    const [count, setCount] = useState(0);
-
     return (
         <>
             <div className="overflow-hidden">
