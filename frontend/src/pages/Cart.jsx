@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import chik from "../assets/food/chicken.jpg";
 import CartItem from "../components/CartItem";
 
@@ -38,11 +39,11 @@ export default function Cart() {
 
       <div className="">
         {/* Order Button */}
-        <div className="absolute bottom-4 w-full px-4 z-10">
+        <Link to="../order" className="absolute bottom-4 w-full px-4 z-10">
           <button className="w-full bg-primary text-white py-3 rounded-lg text-xl font-semibold">
             Check Out
           </button>
-        </div>
+        </Link>
       </div>
     </div>
   );

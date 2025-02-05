@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 
 export default function Order() {
   const products = [
@@ -42,11 +43,11 @@ export default function Order() {
         </div>
       </div>
       {/* Order Button */}
-      <div className="absolute bottom-4 w-full px-4">
+      <Link to="../payment-method" className="absolute bottom-4 w-full px-4">
         <button className="w-full bg-primary text-white py-3 rounded-lg text-xl font-semibold">
           Order Now
         </button>
-      </div>
+      </Link>
     </div>
   );
 }

@@ -10,7 +10,7 @@ export default function SplashScreen() {
           className="w-[10rem] object-contain mt-32 mb-6"
         />
       </div>
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center text-center">
         <h1 className="text-white font-semibold text-3xl">
           Welcome to Melody Cafe
         </h1>

@@ -36,15 +36,25 @@ function App() {
                         <Route path="menu" Component={MenuPage} />
                         <Route path="table" Component={Table} />
                     </Route>
+
+                    <Route path="" Component={SplashScreen}/>
+                    <Route path="/:table">
+                        <Route path="" Component={Menu} />
+                        <Route path="cart" Component={Cart} />
+                        <Route path="order" Component={Order} />
+                        <Route path="payment-method" Component={PaymentMethod} />
+                        <Route path="order" Component={Order} />
+
+                    </Route>
                 </Routes>
 
                 {/* client side pages  */}
                 {/* <SplashScreen /> */}
-                <Menu />
+                {/* <Menu /> */}
                 {/* <Cart /> */}
+                {/* <Order /> */}
                 {/* <PaymentMethod /> */}
 
-                {/* <Order /> */}
                 {/* <Trending /> */}
                 {/* <MenuDetail /> */}
             </div>

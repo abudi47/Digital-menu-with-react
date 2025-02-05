@@ -13,7 +13,7 @@ export default function MenuDetail() {
 
       <div className="px-2 mt-6 shadow-md">
         <div className="rounded-lg overflow-hidden">
-          <img src={spaghetti} alt="menu image" srcset="" />
+          <img src={spaghetti} alt="menu image" />
         </div>
 
         <div className="mt-4">

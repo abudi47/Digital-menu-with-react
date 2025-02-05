@@ -1,3 +1,6 @@
+import { Link } from "react-router-dom";
+import RoomServiceOutlinedIcon from "@mui/icons-material/RoomServiceOutlined";
+import SearchField from "../components/SearchField";
 import RatedMenuCard from "../components/RatedMenuCard";
 import Categories from "../components/Categories";
 import MenuCard from "../components/MenuCard";
@@ -8,7 +11,7 @@ export default function Menu() {
   const menuCards = Array(4).fill(<MenuCard />);
 
   return (
-    <div className="h-screen w-screen grid grid-rows-[9rem_4rem_1fr] gap-2">
+    <div className="h-screen w-screen grid grid-rows-[9rem_4rem_1fr] gap-2 relative">
       {/* Header */}
       <div className="bg-primary pt-6 px-2 rounded-b-lg">
         <div className="flex justify-between pb-4 text-white">
@@ -17,11 +20,8 @@ export default function Menu() {
         </div>
 
         <div className="w-full bg-white rounded-md">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="p-2 rounded-md"
-          />
+          <SearchField />
+
         </div>
       </div>
       {/* Categories */}
@@ -45,6 +45,10 @@ export default function Menu() {
           ))}
         </div>
       </div>
+
+      <Link to="cart" className="absolute !w-16 !h-16 bottom-4 right-4 rounded-full p-4 pt-2 bg-primary border-4 border-white flex items-center justify-center shadow-lg">
+          <RoomServiceOutlinedIcon className="text-white !w-12 !h-12" />
+      </Link>
     </div>
   );
 }
