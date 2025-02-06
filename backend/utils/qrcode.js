@@ -33,6 +33,6 @@ export async function TableMenuImage(baseImage, qrImage, x, y, outputImage) {
     await base.write(outputImage)
 }
 
-TableMenuImage("Pic_for_Product_QR_Menu.png", "foo.png", 300, 260, "output.jpg");
+// TableMenuImage("Pic_for_Product_QR_Menu.png", "foo.png", 300, 260, "output.jpg");
 
 export default QRcodeGenerator;
