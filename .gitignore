@@ -6,7 +6,7 @@ backend/.env
 
 ## Backend
 backend/node_modules
-backend/uploads/*
+backend/node_modules/*
 
 
 
