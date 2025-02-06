@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import TextField from "../../components/TextField";
 import Button from "../../components/Button";
@@ -25,7 +25,6 @@ export default function Login() {
         axiosPrivate
             .post("/auth/login", form)
             .then((res) => {
-                console.log(res.data?.data);
                 dispatch({
                     type: "SET_USER",
                     payload: {
@@ -34,11 +33,26 @@ export default function Login() {
                         user: res.data?.data?.user,
                     },
                 });
+                dispatch({
+                    type: "SHOW_ALERT",
+                    payload: {
+                        message: res?.data?.message || null,
+                        type: "success",
+                        dismiss: 9000,
+                    },
+                });
 
                 navigate("/dashboard");
             })
             .catch((err) => {
-                console.log(err);
+                dispatch({
+                    type: "SHOW_ALERT",
+                    payload: {
+                        message: err?.response?.data?.error || null,
+                        type: "warning",
+                        dismiss: 9000,
+                    },
+                });
             });
     };
 

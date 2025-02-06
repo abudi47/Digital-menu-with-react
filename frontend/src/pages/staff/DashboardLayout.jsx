@@ -17,8 +17,6 @@ import { userAvatar } from "../../assets";
 export default function DashboardLayout() {
     const [activeTab, setActiveTab] = useState("status");
     const user = useSelector((state) => state.user.user);
-    console.log(user);
-    
 
     return (
         <div className="grid grid-cols-[0.25fr_1fr] gap-8 bg-blue-50">
@@ -106,7 +104,9 @@ export default function DashboardLayout() {
                     <Link
                         to="table"
                         className={`flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer ${
-                            activeTab === "table" ? "bg-primary py-4 text-white" : ""
+                            activeTab === "table"
+                                ? "bg-primary py-4 text-white"
+                                : ""
                         }`}
                         onClick={() => setActiveTab("table")}
                     >
@@ -170,9 +170,11 @@ export default function DashboardLayout() {
                                 />
                             </div>
                             <div className="flex flex-col">
-                                <p className="text-nowrap">Hiwot Yossef</p>
+                                <p className="text-nowrap">
+                                    {user.firstName} {user.lastName}
+                                </p>
                                 <p className="text-nowrap text-sm text-left text-gray-400">
-                                    Admin
+                                    {user.role}
                                 </p>
                             </div>
                         </div>

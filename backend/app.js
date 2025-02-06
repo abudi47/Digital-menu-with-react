@@ -1,5 +1,6 @@
 import "express-async-errors";
 import "dotenv/config";
+import process from "process";
 import cors from "cors";
 import express from "express";
 import cookieParser from "cookie-parser";

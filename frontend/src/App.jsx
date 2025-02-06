@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import "./App.css";
 
 import SplashScreen from "./pages/SplashScreen";
+import Alert from "./components/Alert";
 import Menu from "./pages/Menu";
 import Order from "./pages/Order";
 import { Trending } from "./pages/Trending";
@@ -24,7 +25,8 @@ import Table from "./pages/staff/Table";
 function App() {
     return (
         <>
-            <div className="overflow-hidden">
+            <div className="overflow-hidden relative">
+                <Alert />
                 <Routes>
                     <Route path="/login" element={<Login />} />
 

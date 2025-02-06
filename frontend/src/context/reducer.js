@@ -2,24 +2,24 @@ import { jwtDecode } from "jwt-decode";
 
 const decodeJwtToken = (token) => {
     try {
-        return jwtDecode(token)
+        return jwtDecode(token);
     } catch {
         return null;
     }
-} 
+};
 
 const initialState = {
     user: {
         isAuthenticated: false,
         token: null,
-        user: decodeJwtToken(localStorage.getItem('user')),
+        user: decodeJwtToken(localStorage.getItem("user")),
     },
     appState: {
         isLoading: false,
         error: null,
         alert: {
             show: false,
-            message: "",
+            message: "Something went wrong try again later",
             type: "info",
             dismiss: 8000,
         },
@@ -35,6 +35,24 @@ function reducer(state = initialState, action) {
             user: jwtDecode(action.payload?.user),
         };
         localStorage.setItem("user", action.payload?.user);
+        return newState;
+    } else if (action.type === "DISMISS_ALERT") {
+        const newState = Object.assign({}, state);
+        newState.appState.alert = {
+            show: false,
+            message: "Something went wrong try again later",
+            type: "info",
+            dismiss: 8000,
+        };
+        return newState;
+    } else if (action.type === "SHOW_ALERT") {
+        const newState = Object.assign({}, state);
+        newState.appState.alert = {
+            show: true,
+            message: action.payload.message,
+            type: action.payload.type,
+            dismiss: action.payload?.dismiss || 5000,
+        };
         return newState;
     }
 

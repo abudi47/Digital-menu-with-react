@@ -1,16 +1,41 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 import ChevronRightOutlinedIcon from "@mui/icons-material/ChevronRightOutlined";
 import ChevronLeftOutlinedIcon from "@mui/icons-material/ChevronLeftOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import { axiosPrivate } from "../../api/axios";
 import SearchField from "../../components/SearchField";
 
 export default function Menu() {
+    const dispatch = useDispatch();
     const [expandedRow, setExpandedRow] = useState(null);
     const [overlayForm, setOverlayForm] = useState(false);
     const [activeMenu, setActiveMenu] = useState(null);
+
+    const [menuItems, setMenuItems] = useState(null);
+    const [newMenu, setNewMenu] = useState({
+        name: "",
+        description: "",
+        price: "",
+        category: "",
+        menu_image: "",
+        isAvailable: true,
+    });
+
+    const changeHandler = (e) => {
+        if (e.target.name === "menu_image") {
+            setNewMenu((prev) => {
+                return { ...prev, [e.target.name]: e.target.files[0] };
+            });
+        } else {
+            setNewMenu((prev) => {
+                return { ...prev, [e.target.name]: e.target.value };
+            });
+        }
+    };
 
     const toggleMenu = (menu) => {
         setExpandedRow(expandedRow === menu.id ? null : menu.id);
@@ -19,60 +44,6 @@ export default function Menu() {
 
     const truncateText = (text, limit = 20) =>
         text.length > limit ? text.substring(0, limit) + "..." : text;
-
-    const menuItems = [
-        {
-            id: 1,
-            name: "Margherita Pizza",
-            description:
-                "Classic pizza with fresh tomatoes, mozzarella, and basil.",
-            price: 12.99,
-            category: "Pizza",
-            imageUrl: [
-                "https://www.recipetineats.com/tachyon/2014/06/Pasta1.jpg",
-                "https://kids.kiddle.co/images/thumb/6/6e/Naporitan_by_yamauchi.jpg/300px-Naporitan_by_yamauchi.jpg",
-            ],
-            isAvailable: true,
-        },
-        {
-            id: 2,
-            name: "Grilled Chicken Salad",
-            description:
-                "Fresh greens with grilled chicken, cherry tomatoes, and dressing.",
-            price: 9.99,
-            category: "Salads",
-            imageUrl: [
-                "https://www.recipetineats.com/tachyon/2014/06/Pasta1.jpg",
-                "https://kids.kiddle.co/images/thumb/6/6e/Naporitan_by_yamauchi.jpg/300px-Naporitan_by_yamauchi.jpg",
-            ],
-            isAvailable: true,
-        },
-        {
-            id: 3,
-            name: "Cheeseburger",
-            description:
-                "Juicy beef patty with cheddar cheese, lettuce, and tomato.",
-            price: 8.99,
-            category: "Burgers",
-            imageUrl: [
-                "https://www.recipetineats.com/tachyon/2014/06/Pasta1.jpg",
-                "https://kids.kiddle.co/images/thumb/6/6e/Naporitan_by_yamauchi.jpg/300px-Naporitan_by_yamauchi.jpg",
-            ],
-            isAvailable: false,
-        },
-        {
-            id: 4,
-            name: "Chocolate Cake",
-            description: "Rich and moist chocolate cake topped with ganache.",
-            price: 6.99,
-            category: "Desserts",
-            imageUrl: [
-                "https://www.recipetineats.com/tachyon/2014/06/Pasta1.jpg",
-                "https://kids.kiddle.co/images/thumb/6/6e/Naporitan_by_yamauchi.jpg/300px-Naporitan_by_yamauchi.jpg",
-            ],
-            isAvailable: true,
-        },
-    ];
 
     // expanded
     const [currentImage, setCurrentImage] = useState(0);
@@ -88,6 +59,40 @@ export default function Menu() {
     };
     // ==============
 
+    const handleNewMenu = async (e) => {
+        e.preventDefault();
+        axiosPrivate
+            .post("/menu", newMenu, {
+                headers: { "Content-Type": "multipart/form-data" },
+            })
+            .then((res) => {
+                dispatch({
+                    type: "SHOW_ALERT",
+                    payload: {
+                        message: res?.data?.message || null,
+                        type: "success",
+                        dismiss: 9000,
+                    },
+                });
+                setOverlayForm(false);
+            })
+            .catch((err) => {
+                dispatch({
+                    type: "SHOW_ALERT",
+                    payload: {
+                        message: err?.response?.data?.error || null,
+                        type: "warning",
+                        dismiss: 9000,
+                    },
+                });
+            });
+    };
+
+    useEffect(() => {
+        axiosPrivate.get("/menu").then((res) => {
+            setMenuItems(res.data?.data);
+        });
+    }, []);
     return (
         <>
             <div>
@@ -99,7 +104,10 @@ export default function Menu() {
                         <SearchField />
                     </div>
                     <div className="flex flex-row justify-end">
-                        <button className="px-4 py-2 bg-primary text-white font-semibold rounded-md shadow-md hover:bg-primary-600 transition duration-300"  onClick={() => setOverlayForm(true)}>
+                        <button
+                            className="px-4 py-2 bg-primary text-white font-semibold rounded-md shadow-md hover:bg-primary-600 transition duration-300"
+                            onClick={() => setOverlayForm(true)}
+                        >
                             <AddOutlinedIcon />
                             <span className="ml-2">Add Menu</span>
                         </button>
@@ -122,10 +130,10 @@ export default function Menu() {
 
                         {/* Table Body */}
                         <tbody className="text-gray-700 text-nowrap">
-                            {menuItems.map((menu, index) => (
+                            {menuItems?.map((menu, index) => (
                                 <React.Fragment key={menu.id}>
-                                    <tr key={index} className="border-t">
-                                        <td className="p-3">{menu.id}</td>
+                                    <tr key={menu.id} className="border-t">
+                                        <td className="p-3">{index + 1}</td>
                                         <td
                                             className="p-3"
                                             onClick={() => toggleMenu(menu)}
@@ -140,7 +148,9 @@ export default function Menu() {
                                             </p>
                                         </td>
                                         <td className="p-3">{`Br ${menu.price}`}</td>
-                                        <td className="p-3">{menu.category}</td>
+                                        <td className="p-3 text-center">
+                                            {menu.category}
+                                        </td>
                                         <td className="p-3 text-center">
                                             <span
                                                 className={`px-3 py-1 rounded-full text-xs font-semibold
@@ -357,11 +367,18 @@ export default function Menu() {
             </div>
 
             {/* screen overlay box */}
-            <div className={`${overlayForm ? "fixed" : "hidden"} fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center`}>
+            <div
+                className={`${
+                    overlayForm ? "fixed" : "hidden"
+                } fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center`}
+            >
                 <div className="bg-white p-8 rounded-lg shadow-lg">
                     <div className="flex flex-col">
                         <div className="flex justify-end">
-                            <button className="p-2" onClick={() => setOverlayForm(false)}>
+                            <button
+                                className="p-2"
+                                onClick={() => setOverlayForm(false)}
+                            >
                                 <CloseOutlinedIcon className="hover:text-primary" />
                             </button>
                         </div>
@@ -371,18 +388,30 @@ export default function Menu() {
                         </h2>
                     </div>
 
-                    <form className="flex flex-col gap-4">
+                    <form
+                        className="flex flex-col gap-4"
+                        onSubmit={handleNewMenu}
+                    >
                         <input
+                            name="name"
+                            value={newMenu.name}
+                            onChange={changeHandler}
                             type="text"
                             placeholder="Menu Name"
                             className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                         />
                         <input
+                            name="price"
+                            value={newMenu.price}
+                            onChange={changeHandler}
                             type="number"
                             placeholder="Price"
                             className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                         />
                         <select
+                            name="category"
+                            value={newMenu.category}
+                            onChange={changeHandler}
                             type="text"
                             className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                         >
@@ -392,13 +421,28 @@ export default function Menu() {
                             <option value="unknown">Unknown</option>
                         </select>
                         <textarea
+                            name="description"
+                            value={newMenu.description}
+                            onChange={changeHandler}
                             placeholder="Description"
                             className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                         ></textarea>
                         <input
+                            name="menu_image"
+                            onChange={changeHandler}
                             type="file"
                             className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                         />
+                        <div>
+                            <input
+                                name="isAvailable"
+                                value={newMenu.isAvailable}
+                                onChange={changeHandler}
+                                type="checkbox"
+                                className=""
+                            />{" "}
+                            isAvailable
+                        </div>
                         <div className="flex justify-end">
                             <button className="px-4 py-2 bg-primary text-white rounded-lg shadow-md hover:bg-primary-600 transition duration-300">
                                 Add Menu
