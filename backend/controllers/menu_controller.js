@@ -11,7 +11,7 @@ import { menuCategories } from "../config/config.js";
 
 const MenuController = {
     getMenus: async (req, res) => {
-        let { page = 1, limit = 10 } = req.query;
+        let { page = 1, limit = 10, query = null } = req.query;
         page = parseInt(page, 10);
         limit = parseInt(limit, 10);
 
@@ -24,7 +24,16 @@ const MenuController = {
             limit: limit,
             offset: offset,
         });
-        return res.status(StatusCodes.OK).json({ success: true, data: menus });
+
+        let totalCount;
+        if (query) {
+            // count searched value
+        } else {
+            totalCount = await Menu.count();
+        }
+        
+
+        return res.status(StatusCodes.OK).json({ success: true, data: { menus, length: totalCount }});
     },
 
     getMenu: async (req, res) => {

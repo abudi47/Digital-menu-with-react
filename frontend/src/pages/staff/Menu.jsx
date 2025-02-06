@@ -13,15 +13,13 @@ import { useSearchParams } from "react-router-dom";
 export default function Menu() {
     const dispatch = useDispatch();
     const [SearchParams] = useSearchParams();
-    const [page,setPage] = useState(SearchParams.get("page" ) || 1)
+    const [page, setPage] = useState(SearchParams.get("page") || 1);
     // const page = SearchParams.get("page" ) || 1;
-    const limit = SearchParams.get("limit" ) || 3;
+    const limit = SearchParams.get("limit") || 3;
 
     const [expandedRow, setExpandedRow] = useState(null);
     const [overlayForm, setOverlayForm] = useState(false);
     const [activeMenu, setActiveMenu] = useState(null);
-
-    
 
     const [menuItems, setMenuItems] = useState(null);
     const [newMenu, setNewMenu] = useState({
@@ -66,11 +64,11 @@ export default function Menu() {
         );
     };
     // ==============
-    
+
     // const handleNext = () => {
     //     setPage((p) => p + 1 );
     //     console.log(p);
-        
+
     // }
 
     const handleNewMenu = async (e) => {
@@ -144,7 +142,7 @@ export default function Menu() {
 
                         {/* Table Body */}
                         <tbody className="text-gray-700 text-nowrap">
-                            {menuItems?.map((menu, index) => (
+                            {menuItems?.menus?.map((menu, index) => (
                                 <React.Fragment key={menu.id}>
                                     <tr key={menu.id} className="border-t">
                                         <td className="p-3">{index + 1}</td>
@@ -370,18 +368,34 @@ export default function Menu() {
 
                 {/* Pagination */}
                 <div className="flex justify-between items-center p-4">
-                    <button onClick={() => { setPage( (p) => {
-                        if (p>1) {
-                            return p-1
-                        }
-                        else {
-                            return 1
-                        }
-                    })}} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-400">
+                    <button
+                        onClick={() => {
+                            setPage((p) => {
+                                if (p > 1) {
+                                    return p - 1;
+                                } else {
+                                    return 1;
+                                }
+                            });
+                        }}
+                        className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-400"
+                    >
                         Previous
                     </button>
-                    <span className="text-gray-600 text-sm">Page {page} of 5</span>
-                    <button onClick={() => { setPage( (p) => p + 1)}} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-400">
+                    <span className="text-gray-600 text-sm">
+                        Page {page} of {Math.ceil(menuItems?.length / limit)}
+                    </span>
+                    <button
+                        onClick={() => {
+                            setPage((p) => {
+                                if (p < Math.ceil(menuItems?.length / limit)) {
+                                    return p + 1;
+                                }
+                                return p;
+                            });
+                        }}
+                        className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-400"
+                    >
                         Next
                     </button>
                 </div>
