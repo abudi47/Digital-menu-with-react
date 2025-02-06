@@ -31,15 +31,6 @@ export default function DashboardLayout() {
                 type: "LOGOUT",
             });
 
-            dispatch({
-                type: "SHOW_ALERT",
-                payload: {
-                    message: res?.data?.message || null,
-                    type: "success",
-                    dismiss: 9000,
-                },
-            });
-
             navigate("/login");
         } catch (err) {
             console.log("Logout error:", err);
