@@ -54,6 +54,15 @@ function reducer(state = initialState, action) {
             dismiss: action.payload?.dismiss || 5000,
         };
         return newState;
+    } else if(action.type === "LOGOUT") {
+        const newState = Object.assign({}, state);
+        newState.user = {
+            isAuthenticated: false,
+            token: null,
+            user: null,
+        };
+        localStorage.removeItem("user");
+        return newState;
     }
 
     return state;
