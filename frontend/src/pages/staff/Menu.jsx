@@ -382,7 +382,7 @@ export default function Menu() {
                     </button>
                     <span className="text-gray-600 text-sm">Page {page} of 5</span>
                     <button onClick={() => { setPage( (p) => p + 1)}} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-400">
-                        Nextt
+                        Next
                     </button>
                 </div>
             </div>
