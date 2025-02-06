@@ -34,7 +34,7 @@ export default function Alert() {
 
     return (
         <div
-            className={`absolute top-4 right-8 min-w-[200px] flex items-center p-4 border-l-4 rounded-md ${alertStyles[alert.type]} max-w-sm mx-auto shadow-md`}
+            className={`absolute top-4 right-8 z-40 min-w-[200px] flex items-center p-4 border-l-4 rounded-md ${alertStyles[alert.type]} max-w-sm mx-auto shadow-md`}
         >
             {icons[alert.type]}
             <span className="ml-3 flex-1 text-sm">{alert.message}</span>
