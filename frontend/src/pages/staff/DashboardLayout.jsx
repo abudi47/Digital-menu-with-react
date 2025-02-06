@@ -24,15 +24,23 @@ export default function DashboardLayout() {
 
     const logoutHandler = async (e) => {
         console.log("working....");
-        
+
         try {
             await axiosPrivate.post("/auth/logout");
-                dispatch({
+            dispatch({
                 type: "LOGOUT",
             });
-    
-            navigate("/login");
 
+            dispatch({
+                type: "SHOW_ALERT",
+                payload: {
+                    message: res?.data?.message || null,
+                    type: "success",
+                    dismiss: 9000,
+                },
+            });
+
+            navigate("/login");
         } catch (err) {
             console.log("Logout error:", err);
         }
@@ -165,8 +173,11 @@ export default function DashboardLayout() {
                     </div>
                 </div>
 
-                <div onClick={logoutHandler} className="flex justify-center px-6 mb-6">
-                    <Button 
+                <div
+                    onClick={logoutHandler}
+                    className="flex justify-center px-6 mb-6"
+                >
+                    <Button
                         text="LOGOUT"
                         type="button"
                         containerStyle="w-full"
