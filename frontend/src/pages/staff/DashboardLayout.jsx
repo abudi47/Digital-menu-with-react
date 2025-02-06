@@ -13,10 +13,30 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import ListOutlinedIcon from "@mui/icons-material/ListOutlined";
 import Button from "../../components/Button";
 import { userAvatar } from "../../assets";
-
+import { axiosPrivate } from "../../api/axios";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 export default function DashboardLayout() {
     const [activeTab, setActiveTab] = useState("status");
     const user = useSelector((state) => state.user.user);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const logoutHandler = async (e) => {
+        console.log("working....");
+        
+        try {
+            await axiosPrivate.post("/auth/logout");
+                dispatch({
+                type: "LOGOUT",
+            });
+    
+            navigate("/login");
+
+        } catch (err) {
+            console.log("Logout error:", err);
+        }
+    };
 
     return (
         <div className="grid grid-cols-[0.25fr_1fr] gap-8 bg-blue-50">
@@ -145,8 +165,8 @@ export default function DashboardLayout() {
                     </div>
                 </div>
 
-                <div className="flex justify-center px-6 mb-6">
-                    <Button
+                <div onClick={logoutHandler} className="flex justify-center px-6 mb-6">
+                    <Button 
                         text="LOGOUT"
                         type="button"
                         containerStyle="w-full"

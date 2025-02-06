@@ -11,7 +11,7 @@ import { menuCategories } from "../config/config.js";
 
 const MenuController = {
     getMenus: async (req, res) => {
-        let { page = 1, limit = 5 } = req.query;
+        let { page = 1, limit = 10 } = req.query;
         page = parseInt(page, 10);
         limit = parseInt(limit, 10);
 
