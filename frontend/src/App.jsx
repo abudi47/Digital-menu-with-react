@@ -63,7 +63,7 @@ function App() {
                 {/* <PaymentMethod /> */}
 
                 {/* <Trending /> */}
-                {/* <MenuDetail /> */}
+                <MenuDetail />
             </div>
         </>
     );
