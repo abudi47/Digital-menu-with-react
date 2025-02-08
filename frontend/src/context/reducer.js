@@ -24,6 +24,10 @@ const initialState = {
             dismiss: 8000,
         },
     },
+
+    newOrder: localStorage.getItem("newOrder") || [],
+
+    orderHistory: localStorage.getItem("orderHistory") || [],
 };
 
 function reducer(state = initialState, action) {
@@ -54,7 +58,7 @@ function reducer(state = initialState, action) {
             dismiss: action.payload?.dismiss || 5000,
         };
         return newState;
-    } else if(action.type === "LOGOUT") {
+    } else if (action.type === "LOGOUT") {
         const newState = Object.assign({}, state);
         newState.user = {
             isAuthenticated: false,

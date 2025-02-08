@@ -9,7 +9,7 @@ import db from "./db/db.js";
 import redisClient from "./db/redis.js";
 import errorHandler from "./middlewares/error_handler.js";
 
-import { MenuRoute, AuthRoute, UserRoute, TableRoute } from "./routes/index.js";
+import { MenuRoute, AuthRoute, UserRoute, TableRoute, ImageRoute } from "./routes/index.js";
 
 const app = express();
 app.use(
@@ -26,6 +26,7 @@ app.use(cookieParser());
 // for all v1 api routes
 const APIVersion1 = express.Router();
 app.use("/api/v1", APIVersion1);
+APIVersion1.use("/images", ImageRoute);
 APIVersion1.use("/auth", AuthRoute);
 APIVersion1.use("/user", UserRoute);
 APIVersion1.use("/menu", MenuRoute);
