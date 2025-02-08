@@ -47,6 +47,7 @@ function App() {
                     <Route path="" Component={SplashScreen}/>
                     <Route path="/:table">
                         <Route path="" Component={Menu} />
+                        <Route path="menu" Component={MenuDetail} />
                         <Route path="cart" Component={Cart} />
                         <Route path="order" Component={Order} />
                         <Route path="payment-method" Component={PaymentMethod} />
@@ -63,7 +64,7 @@ function App() {
                 {/* <PaymentMethod /> */}
 
                 {/* <Trending /> */}
-                <MenuDetail />
+                {/* <MenuDetail /> */}
             </div>
         </>
     );
