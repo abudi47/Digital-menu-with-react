@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { useSearchParams } from "react-router-dom";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 import ChevronRightOutlinedIcon from "@mui/icons-material/ChevronRightOutlined";
 import ChevronLeftOutlinedIcon from "@mui/icons-material/ChevronLeftOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import { truncateText, capitalize } from "../../utils/index";
 import { axiosPrivate } from "../../api/axios";
 import SearchField from "../../components/SearchField";
-import { useSearchParams } from "react-router-dom";
 
 export default function Menu() {
     const dispatch = useDispatch();
     const [SearchParams] = useSearchParams();
     const [page, setPage] = useState(SearchParams.get("page") || 1);
-    // const page = SearchParams.get("page" ) || 1;
     const limit = SearchParams.get("limit") || 3;
 
     const [expandedRow, setExpandedRow] = useState(null);
@@ -48,9 +48,6 @@ export default function Menu() {
         setActiveMenu(activeMenu == menu ? null : menu);
     };
 
-    const truncateText = (text, limit = 20) =>
-        text.length > limit ? text.substring(0, limit) + "..." : text;
-
     // expanded
     const [currentImage, setCurrentImage] = useState(0);
 
@@ -63,13 +60,7 @@ export default function Menu() {
             (prev) => (prev - 1 + menu.imageUrl.length) % menu.imageUrl.length
         );
     };
-    // ==============
-
-    // const handleNext = () => {
-    //     setPage((p) => p + 1 );
-    //     console.log(p);
-
-    // }
+    // ===================
 
     const handleNewMenu = async (e) => {
         e.preventDefault();

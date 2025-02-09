@@ -11,9 +11,11 @@ import { menuCategories } from "../config/config.js";
 
 const MenuController = {
     getMenus: async (req, res) => {
-        let { page = 1, limit = 10, query = null } = req.query;
+        let { page = 1, limit = 10, query = "", category = "" } = req.query;
         page = parseInt(page, 10);
         limit = parseInt(limit, 10);
+
+        console.log("================", `limit ${limit}, page ${page}, query ${query} menus`);
 
         if (isNaN(page) || page < 1 || isNaN(limit) || limit < 1) {
             throw new CustomError.BadRequest("Invalid pagination values");
@@ -21,19 +23,31 @@ const MenuController = {
         const offset = page * limit - limit;
 
         const menus = await Menu.findAll({
+            where: category ? { category: category } : {},
             limit: limit,
             offset: offset,
         });
 
+        const formattedMenus = menus.map(menu => ({
+            ...menu.dataValues,
+            imageUrl: menu.imageUrl.map(img => `http://localhost:5000/api/v1/images/menu/${img}`) // Transform each image URL
+        }));
+
         let totalCount;
-        if (query) {
-            // count searched value
-        } else {
+        if (query === "") {
             totalCount = await Menu.count();
+        } else {
+            // totalCount = await Menu.count({
+            //     where: {
+            //         name: {
+            //             [Op.iLike]: `%${query}%`,
+            //         },
+            //     },
+            // });
         }
         
 
-        return res.status(StatusCodes.OK).json({ success: true, data: { menus, length: totalCount }});
+        return res.status(StatusCodes.OK).json({ success: true, data: { menus: formattedMenus, length: totalCount }});
     },
 
     getMenu: async (req, res) => {
