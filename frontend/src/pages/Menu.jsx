@@ -23,28 +23,27 @@ export default function Menu() {
     const ratedMenuCards = Array(4).fill(<RatedMenuCard />);
 
     const handleScroll = (e) => {
-        const bottom =
-            e.target.scrollHeight - e.target.scrollTop ===
-            e.target.clientHeight;
-        if (bottom) {
+        const isBottom =
+            e.target.scrollHeight - e.target.scrollTop <=
+            e.target.clientHeight + 5; // Allow small margin
+
+        if (isBottom && page < Math.ceil(menu?.length / limit)) {
             console.log("bottom");
-            if (page < Math.ceil(menu?.length / limit)) {
-                setPage((prev) => prev + 1);
-            }
+            setPage((prev) => prev + 1);
         }
     };
 
     useEffect(() => {
         document.title = "Melody | Menu";
-        console.log(`/menu?category=${category}&page=${page}&limit=${limit}`);
+        // console.log(`/menu?category=${category}&page=${page}&limit=${limit}`);
         axios
             .get(`/menu?page=${page}&limit=${limit}&query=${""}`)
             .then((response) => {
-                setMenu(prev => {
+                setMenu((prev) => {
                     return {
                         menus: [...prev.menus, ...response.data?.data?.menus],
-                        length: response.data.data.length
-                    }
+                        length: response.data.data.length,
+                    };
                 });
                 console.log("updated", response.data);
             })
@@ -82,7 +81,7 @@ export default function Menu() {
 
             {/* Menus */}
             <div
-                className="overflow-hidden overflow-y-scroll px-1 border border-red-500"
+                className="overflow-hidden overflow-y-scroll px-1 borderx border-red-500x"
                 onScroll={handleScroll}
             >
                 {/* Highly rated dishes */}
