@@ -4,6 +4,7 @@
  * @description Contains the controller functions for menu routes
  */
 import { StatusCodes } from "http-status-codes";
+import { Op } from "sequelize";
 import CustomError from "../error/index.js";
 import Menu from "../models/menu.js";
 import { isUuidv4 } from "../utils/index.js";
@@ -35,28 +36,29 @@ const MenuController = {
             ...menu.dataValues,
             imageUrl: menu.imageUrl.map(
                 (img) => `http://localhost:5000/api/v1/images/menu/${img}`
-            ), // Transform each image URL
+            ),
         }));
 
         let totalCount;
-        if (query === "") {
+        if (query !== "" && category !== "") {
             totalCount = await Menu.count();
         } else {
-            // totalCount = await Menu.count({
-            //     where: {
-            //         name: {
-            //             [Op.iLike]: `%${query}%`,
-            //         },
-            //     },
-            // });
+            totalCount = await Menu.count({
+                where: {
+                    name: {
+                        // Case-insensitive search on name (SQLite handles this automatically)
+                        [Op.like]: `%${query}%`,
+                    },
+                    // If category is provided, search for it, otherwise search for all categories
+                    category: category ? category : { [Op.like]: "%" },
+                },
+            });
         }
 
-        return res
-            .status(StatusCodes.OK)
-            .json({
-                success: true,
-                data: { menus: formattedMenus, length: totalCount },
-            });
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            data: { menus: formattedMenus, length: totalCount },
+        });
     },
 
     getMenu: async (req, res) => {

@@ -59,7 +59,7 @@ export default function Menu() {
     }, []);
 
     useEffect(() => {
-        // console.log(`/menu?category=${activeCategory}&page=${page}&limit=${limit}`);
+        console.log(`/menu?category=${activeCategory}&page=${page}&limit=${limit}`);
 
         if (activeCategory !== prevCategory) {
             setPrevCategory(activeCategory); // Update previous category
@@ -70,6 +70,8 @@ export default function Menu() {
                 `/menu?category=${activeCategory}&page=${page}&limit=${limit}&query=${""}`
             )
             .then((response) => {
+                console.log(response.data.data);
+                
                 setMenu((prev) => {
                     if (activeCategory !== prevCategory) {
                         return {
