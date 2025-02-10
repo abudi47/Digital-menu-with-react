@@ -25,8 +25,7 @@ const initialState = {
         },
     },
 
-    newOrder: localStorage.getItem("newOrder") || [],
-
+    newOrder: JSON.parse(localStorage.getItem("newOrder")) || [],
     orderHistory: localStorage.getItem("orderHistory") || [],
 };
 
@@ -66,6 +65,32 @@ function reducer(state = initialState, action) {
             user: null,
         };
         localStorage.removeItem("user");
+        return newState;
+    } else if (action.type === "ADD_TO_CART") {
+        const newState = Object.assign({}, state);
+        
+        const isExist = newState.newOrder.filter((item) => {
+            return item.menu?.id === action.payload.menu.menu.id;
+        });
+
+        if (isExist.length === 0) {
+            newState.newOrder.push(action.payload.menu);
+        } else {
+            newState.newOrder.map((item) => {
+                if (item.menu?.id === action.payload.menu.menu.id) {
+                    item.quantity = action.payload.menu.quantity;
+                }
+            });
+        }
+
+        localStorage.setItem("newOrder", JSON.stringify(newState.newOrder));
+        return newState;
+    } else if (action.type === "REMOVE_FROM_CART") {
+        const newState = Object.assign({}, state);
+        newState.newOrder = newState.newOrder.filter((item) => {
+            return item.menu?.id !== action.payload.menu.id;
+        });
+        localStorage.setItem("newOrder", JSON.stringify(newState.newOrder));
         return newState;
     }
 

@@ -1,12 +1,17 @@
 import { capitalize, truncateText } from "../utils/index";
+import { useNavigate } from "react-router-dom";
 
 export default function MenuCard({ menu }) {
+    const navigate = useNavigate();
     return (
-        <div className="min-h-48 min-w-48 max-h-48 shadow-md rounded-lg overflow-hidden">
+        <div
+            className="min-h-48 min-w-48 max-h-48 shadow-md rounded-lg overflow-hidden"
+            onClick={() => navigate("menu", { state: { menu } })}
+        >
             <div className="h-[6rem] overflow-hidden">
                 <img
                     src={menu?.imageUrl[0]}
-                    alt="injera"
+                    alt="menu_image"
                     className="h-full w-full object-cover"
                 />
             </div>

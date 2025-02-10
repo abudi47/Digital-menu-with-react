@@ -11,6 +11,7 @@ import { authHandler, roleHandler, roles, upload } from "../middlewares/index.js
 const router = express.Router();
 
 router.get("/", MenuController.getMenus);
+router.get("/categories/", MenuController.getCategories);
 router.get("/:id", MenuController.getMenu);
 router.put(
     "/:id",
@@ -37,5 +38,6 @@ router.put(
     roleHandler([roles.admin, roles.barista, roles.foodRunner]),
     MenuController.changeAvailability
 );
+
 
 export default router;

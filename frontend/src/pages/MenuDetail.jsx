@@ -1,13 +1,17 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
 import StarOutlinedIcon from "@mui/icons-material/StarOutlined";
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import RemoveOutlinedIcon from '@mui/icons-material/RemoveOutlined';
-import { spaghetti } from "../assets";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import RemoveOutlinedIcon from "@mui/icons-material/RemoveOutlined";
 
 export default function MenuDetail() {
-    const [quantity, setQuantity] = useState(1)
-    const [cartItems, setCartItems] = useState([]);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const cart = useSelector((state) => state.newOrder);
+    const location = useLocation();
+    const menu = location.state?.menu;
+    const [quantity, setQuantity] = useState(1);
 
     function incrementQuantity() {
         setQuantity(quantity + 1);
@@ -20,30 +24,74 @@ export default function MenuDetail() {
     }
 
     function addToCart() {
-        const newItem = {
-            id: 1,
-            name: "greg del",
-            quantity: cart,
+        const newMenu = {
+            menu: menu,
+            quantity: quantity,
         };
 
-        setCartItems([...cartItems, newItem]);
-        console.log(cartItems);
+        const isExist = cart.filter((item) => {
+            return item.menu?.id === menu.id;
+        });
+
+        if (isExist.length == 0) {
+            dispatch({
+                type: "ADD_TO_CART",
+                payload: {
+                    menu: newMenu,
+                },
+            });
+            dispatch({
+                type: "SHOW_ALERT",
+                payload: {
+                    message: "New item added to cart",
+                    type: "success",
+                    dismiss: 5000,
+                },
+            });
+            navigate("../");
+
+            console.log("New item added");
+        } else {
+            dispatch({
+                type: "ADD_TO_CART",
+                payload: {
+                    menu: newMenu,
+                },
+            });
+
+            dispatch({
+                type: "SHOW_ALERT",
+                payload: {
+                    message: "Item quantity updated",
+                    type: "success",
+                    dismiss: 5000,
+                },
+            });
+            navigate("../");
+        }
+        
+
     }
+
     return (
         <div className="flex h-screen w-screen relative">
             <div className="flex flex-col w-full mx-2 borderx border-red-500x mt-4">
                 <div className="w-full max-h-34 min-h-32 rounded-lg overflow-hidden">
-                    <img src={spaghetti} alt="menu_image" className="w-full object-cover" />
+                    <img
+                        src={menu.imageUrl}
+                        alt="menu_image"
+                        className="w-full object-cover"
+                    />
                 </div>
 
                 <div className="flex justify-between">
                     <h1 className="text-gray-700 text-3xl font-semibold px-2 mt-4">
-                        Spaghetti
+                        {menu.name}
                     </h1>
                     <div className="flex gap-2 px-2 mt-4 items-center">
                         <span className="text-gray-500">price</span>
                         <span className="text-gray-600 text-2xl font-semibold">
-                            $120
+                            ${menu.price}
                         </span>
                     </div>
                 </div>
@@ -58,31 +106,44 @@ export default function MenuDetail() {
 
                 <hr className="mt-2 py-1" />
 
-                <p className="text-gray-600 text-base px-2 pt-2">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quia totam quod suscipit deserunt molestias delectus magni aut eos dolor nostrum corporis eum doloremque explicabo, commodi accusamus vero, labore dicta ipsam.</p>
+                <p className="text-gray-600 text-base px-2 pt-2">
+                    {menu.description}
+                </p>
 
                 <hr className="mt-2 py-1 opacity-35" />
 
                 <div className="flex justify-between text-gray-600 px-2 overflow-hidden">
-                  <h4 className="font-semibold text-xl">Quantity:</h4>
-                  
-                  <div className="">
-                      <div className="flex border items-center">
-                        <span className="max-w-8 min-w-8 text-center" onClick={decrementQuantity}><RemoveOutlinedIcon className="" /></span>
-                        <input type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} className="max-w-10 text-lg border text-center font-semibold" />
-                        <span className="max-w-8 min-w-8 text-center" onClick={incrementQuantity} ><AddOutlinedIcon className="" /></span>
-                      </div>
-                  </div>
-                </div>
+                    <h4 className="font-semibold text-xl">Quantity:</h4>
 
+                    <div className="">
+                        <div className="flex border items-center">
+                            <span
+                                className="max-w-8 min-w-8 text-center"
+                                onClick={decrementQuantity}
+                            >
+                                <RemoveOutlinedIcon className="" />
+                            </span>
+                            <input
+                                type="number"
+                                value={quantity}
+                                onChange={(e) => setQuantity(e.target.value)}
+                                className="max-w-10 text-lg border text-center font-semibold"
+                            />
+                            <span
+                                className="max-w-8 min-w-8 text-center"
+                                onClick={incrementQuantity}
+                            >
+                                <AddOutlinedIcon className="" />
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <Link
-                to="../payment-method"
-                className="absolute bottom-4 w-full px-4"
-            >
+            <div className="absolute bottom-4 w-full px-4" onClick={addToCart}>
                 <button className="w-full bg-primary text-white py-3 rounded-lg text-xl font-semibold">
                     Add Food
                 </button>
-            </Link>
+            </div>
         </div>
     );
 }

@@ -7,7 +7,7 @@ import { StatusCodes } from "http-status-codes";
 import CustomError from "../error/index.js";
 import Menu from "../models/menu.js";
 import { isUuidv4 } from "../utils/index.js";
-import { menuCategories } from "../config/config.js";
+import { menuCategories, menuCategoriesType } from "../config/config.js";
 
 const MenuController = {
     getMenus: async (req, res) => {
@@ -15,7 +15,10 @@ const MenuController = {
         page = parseInt(page, 10);
         limit = parseInt(limit, 10);
 
-        console.log("================", `limit ${limit}, page ${page}, query ${query} menus`);
+        console.log(
+            "================",
+            `limit ${limit}, page ${page}, query ${query} category ${category}`
+        );
 
         if (isNaN(page) || page < 1 || isNaN(limit) || limit < 1) {
             throw new CustomError.BadRequest("Invalid pagination values");
@@ -28,9 +31,11 @@ const MenuController = {
             offset: offset,
         });
 
-        const formattedMenus = menus.map(menu => ({
+        const formattedMenus = menus.map((menu) => ({
             ...menu.dataValues,
-            imageUrl: menu.imageUrl.map(img => `http://localhost:5000/api/v1/images/menu/${img}`) // Transform each image URL
+            imageUrl: menu.imageUrl.map(
+                (img) => `http://localhost:5000/api/v1/images/menu/${img}`
+            ), // Transform each image URL
         }));
 
         let totalCount;
@@ -45,9 +50,13 @@ const MenuController = {
             //     },
             // });
         }
-        
 
-        return res.status(StatusCodes.OK).json({ success: true, data: { menus: formattedMenus, length: totalCount }});
+        return res
+            .status(StatusCodes.OK)
+            .json({
+                success: true,
+                data: { menus: formattedMenus, length: totalCount },
+            });
     },
 
     getMenu: async (req, res) => {
@@ -176,6 +185,12 @@ const MenuController = {
         return res
             .status(StatusCodes.OK)
             .json({ success: true, message: "Menu updated", data: menu });
+    },
+
+    getCategories: async (req, res) => {
+        return res
+            .status(StatusCodes.OK)
+            .json({ success: true, data: { categories: menuCategoriesType } });
     },
 };
 
