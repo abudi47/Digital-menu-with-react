@@ -59,22 +59,26 @@ const OrderController = {
             );
         }
 
-        const isAllValid = menus?.map(async (item) => {
+        const isAllValid = menus?.map((item) => {
             console.log(item);
             if (!item?.menu || !isUuidv4(item?.menu)) {
-                return "The provided menu is not supported"
+                throw new CustomError.BadRequest(
+                    
+                );
             }
-            const menu = await Menu.findOne({ where: { id: item.menu } });
+            const menu = Menu.findOne({ where: { id: item.menu } });
             if (!menu) {
-                return "Selected menu doesn't exist"
+                throw new CustomError.BadRequest("Selected menu doesn't exist");
             }
 
             if (!menu.isAvailable) {
-                return "Selected menu doesn't available for now"
+                throw new CustomError.BadRequest(
+                    "Selected menu doesn't available for now"
+                );
             }
         });
 
-        console.log(isAllValid);
+        console.log(tableId, menus, paymentOption);
 
         const table = await Table.findByPk(tableId);
 
