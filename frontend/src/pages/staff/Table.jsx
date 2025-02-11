@@ -1,58 +1,139 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import SearchField from "../../components/SearchField";
+import { axiosPrivate } from "../../api/axios";
+import { useDispatch } from "react-redux";
+import axios from "../../api/axios";
 
 export default function Table() {
+    const dispatch = useDispatch();
+    const [btables, setBtables] = useState([]); // Store fetched tables
+    const [newTable, setNewTable] = useState({
+        number: "",
+        category: "",
+        price: "",
+        imageUrl:"",
+        isAvailable:true,
+
+
+        
+    });
+
     const [expandedRow, setExpandedRow] = useState(null);
     const [overlayForm, setOverlayForm] = useState(false);
     const [activeTable, setActiveTable] = useState(null);
 
-    const toggleMenu = (menu) => {
-        setExpandedRow(expandedRow === menu.id ? null : menu.id);
-        setActiveTable(activeTable == menu ? null : menu);
+    const toggleAvailability = async (table) => {
+        if (!table || !table.id) {
+            console.error("❌ Error: Table ID is undefined", table);
+            return;
+        }
+    
+        try {
+            const response = await axios.put(
+                `http://localhost:5000/api/v1/table/${table.id}/availability`,
+                { isAvailable: !table.isAvailable }
+            );
+    
+            if (response.data.success) {
+                setTables((prevTables) =>
+                    prevTables.map((t) =>
+                        t.id === table.id ? { ...t, isAvailable: !t.isAvailable } : t
+                    )
+                );
+            }
+        } catch (error) {
+            console.error("❌ Error updating table:", error.response?.data || error.message);
+        }
+    };
+    
+    
+    
+    
+    
+
+    // Fetch tables from the backend
+    const fetchTables = () => {
+        axiosPrivate.get("/table")
+            .then((res) => {
+                console.log("Fetched Data:", res.data);
+                if (Array.isArray(res.data.data)) {
+                    setBtables(res.data.data); // Extract the "data" array
+                } else {
+                    console.error("API response does not contain an array:", res.data);
+                    setBtables([]); // Ensure it's always an array
+                }
+            })
+            .catch((err) => {
+                console.error("Error fetching tables:", err);
+                setBtables([]); // Fallback in case of error
+            });
     };
 
-    const tables = [
-        {
-            id: 1,
-            number: "21",
-            category: "normal",
-            price: "5",
-            imageUrl:
-                "https://www.recipetineats.com/tachyon/2014/06/Pasta1.jpg",
-            isAvailable: true,
-        },
-        {
-            id: 2,
-            number: "12",
-            category: "normal",
-            price: "0",
-            imageUrl:
-                "https://www.recipetineats.com/tachyon/2014/06/Pasta1.jpg",
-            isAvailable: true,
-        },
-        {
-            id: 3,
-            number: "7",
-            category: "normal",
-            price: "15",
-            imageUrl:
-                "https://www.recipetineats.com/tachyon/2014/06/Pasta1.jpg",
-            isAvailable: false,
-        },
-        {
-            id: 4,
-            number: "11",
-            category: "normal",
-            price: "20",
-            imageUrl:
-                "https://www.recipetineats.com/tachyon/2014/06/Pasta1.jpg",
-            isAvailable: true,
-        },
-    ];
+    useEffect(() => {
+        fetchTables();
+    }, []);
+
+    const handleInputChange = (e) => {
+        setNewTable({ ...newTable, [e.target.name]: e.target.value });
+    };
+
+    const handleNewTable = async (e) => {
+        e.preventDefault();
+        try {
+            await axiosPrivate.post("/table", newTable, {
+                headers: { "Content-Type": "application/json" },
+            });
+            dispatch({
+                type: "SHOW_ALERT",
+                payload: {
+                    message: "Table added successfully",
+                    type: "success",
+                    dismiss: 9000,
+                },
+            });
+            setOverlayForm(false);
+            fetchTables(); // Refresh table list
+            setNewTable({ number: "", category: "", price: "", imageUrl: "asdas", isAvailable: true });
+        } catch (err) {
+            dispatch({
+                type: "SHOW_ALERT",
+                payload: {
+                    message: err?.response?.data?.error || "Failed to add table",
+                    type: "warning",
+                    dismiss: 9000,
+                },
+            });
+        }
+    };
+
+    const deleteTable = async (id) => {
+        try {
+            await axiosPrivate.delete(`/table/${id}`);
+            dispatch({
+                type: "SHOW_ALERT",
+                payload: { message: "Table deleted", type: "success", dismiss: 9000 },
+            });
+            fetchTables();
+        } catch (err) {
+            dispatch({
+                type: "SHOW_ALERT",
+                payload: {
+                    message: "Failed to delete table",
+                    type: "warning",
+                    dismiss: 9000,
+                },
+            });
+        }
+    };
+
+    const toggleMenu = (table) => {
+        setExpandedRow(expandedRow === table.id ? null : table.id);
+        setActiveTable(expandedRow === table.id ? null : table);
+    };
 
     return (
         <>
@@ -61,7 +142,6 @@ export default function Table() {
                 <div className="p-4 mb-4 font-bold flex flex-col gap-4">
                     <div className="flex flex-row justify-between items-center">
                         <h3>Tables</h3>
-
                         <SearchField />
                     </div>
                     <div className="flex flex-row justify-end">
@@ -84,257 +164,81 @@ export default function Table() {
                                 <th className="p-3">Number</th>
                                 <th className="p-3">Category</th>
                                 <th className="p-3">Price</th>
+                                <th className="p-3">Image</th>
                                 <th className="p-3 text-center">Status</th>
+                                <th className="p-3 text-center">Actions</th>
                             </tr>
                         </thead>
 
                         {/* Table Body */}
                         <tbody className="text-gray-700 text-nowrap">
-                            {tables.map((table, index) => (
+                            {btables.map((table, index) => (
                                 <React.Fragment key={table.id}>
-                                    <tr key={index} className="border-t">
-                                        <td className="p-3">{table.id}</td>
-                                        <td
-                                            className="p-3"
-                                            onClick={() => toggleMenu(table)}
-                                        >
-                                            <p title={table.number}>
-                                                {table.number}
-                                            </p>
+                                    <tr className="border-t">
+                                        <td className="p-3">{index + 1}</td>
+                                        <td className="p-3" onClick={() => toggleMenu(table)}>
+                                            <p title={table.number}>{table.number}</p>
                                         </td>
-                                        <td className="p-3">
-                                            <p>{table.category}</p>
-                                        </td>
+                                        <td className="p-3">{table.category}</td>
                                         <td className="p-3">{`Br ${table.price}`}</td>
+                                        <td className="p-3">
+                                            {table.imageUrl ? (
+                                                <img src={table.imageUrl} alt="Table" className="h-12 w-12 rounded-md" />
+                                            ) : (
+                                                <AddPhotoAlternateOutlinedIcon className="text-gray-400" />
+                                            )}
+                                        </td>
                                         <td className="p-3 text-center">
-                                            <span
-                                                className={`px-3 py-1 rounded-full text-xs font-semibold
-                      ${
-                          table.isAvailable === true
-                              ? "bg-green-100 text-green-700"
-                              : table.status === false
-                              ? "bg-yellow-100 text-yellow-700"
-                              : "bg-red-100 text-red-700"
-                      }`}
-                                            >
-                                                {String(table.isAvailable)}
-                                            </span>
+                                                <button onClick={() => toggleAvailability(table)}
+                                                    className={`px-3 py-1 rounded-full text-xs font-semibold transition duration-300
+                                                        ${table.isAvailable ? "bg-green-100 text-green-700 hover:bg-green-200" : "bg-red-100 text-red-700 hover:bg-red-200"}`}
+                                                >
+                                                    {console.log(table.id)}
+                                                    {table.isAvailable ? "Available" : "Not Available"}
+                                                </button>
+                                            </td>
+
+                                        <td className="p-3 text-center">
+                                            <DeleteOutlineOutlinedIcon
+                                                className="cursor-pointer text-red-600 hover:text-red-800 transition duration-300"
+                                                onClick={() => deleteTable(table.id)}
+                                            />
                                         </td>
                                     </tr>
-
-                                    {/* Dropdown Row (Pushes Other Rows) */}
-                                    {expandedRow === table.id && (
-                                        <tr className="bg-gray-50/80 hover:bg-gray-100 transition duration-300">
-                                            <td
-                                                colSpan="6"
-                                                className="py-6 px-8"
-                                            >
-                                                <div className="flex flex-col md:flex-row gap-6">
-                                                    {/* Image section */}
-                                                    <div className="flex flex-col gap-3 w-64 md:w-56">
-                                                        <div className="w-full h-56 rounded-lg overflow-hidden shadow-lg border">
-                                                            <img
-                                                                src={
-                                                                    table.imageUrl
-                                                                }
-                                                                alt="table_image"
-                                                                className="w-full h-full object-cover"
-                                                            />
-                                                        </div>
-                                                        {/* Image Controls */}
-                                                        <div className="flex justify-between px-3">
-                                                            <AddPhotoAlternateOutlinedIcon className="cursor-pointer text-green-600 hover:text-green-800 transition duration-300" />
-                                                            <DeleteOutlineOutlinedIcon className="cursor-pointer text-red-600 hover:text-red-800 transition duration-300" />
-                                                        </div>
-                                                    </div>
-
-                                                    {/* Menu Details */}
-                                                    <div className="flex flex-col flex-1 gap-4">
-                                                        <div className="w-full max-w-sm min-w-[200px]">
-                                                            <label className="block mb-2 text-sm font-medium text-gray-700">
-                                                                Number
-                                                            </label>
-                                                            <input
-                                                                type="number"
-                                                                className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 shadow-sm text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none transition duration-300"
-                                                                placeholder="Type table number here..."
-                                                                value={
-                                                                    activeTable.number
-                                                                }
-                                                                onChange={(e) =>
-                                                                    setActiveTable(
-                                                                        (
-                                                                            prev
-                                                                        ) => {
-                                                                            return {
-                                                                                ...prev,
-                                                                                number: e
-                                                                                    .target
-                                                                                    .value,
-                                                                            };
-                                                                        }
-                                                                    )
-                                                                }
-                                                            />
-                                                        </div>
-
-                                                        <div className="w-full max-w-sm min-w-[200px]">
-                                                            <label className="block mb-2 text-sm font-medium text-gray-700">
-                                                                Price
-                                                            </label>
-                                                            <input
-                                                                type="number"
-                                                                className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 shadow-sm text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none transition duration-300"
-                                                                placeholder="Type table price here..."
-                                                                value={
-                                                                    activeTable.price
-                                                                }
-                                                                onChange={(e) =>
-                                                                    setActiveTable(
-                                                                        (
-                                                                            prev
-                                                                        ) => {
-                                                                            return {
-                                                                                ...prev,
-                                                                                price: e
-                                                                                    .target
-                                                                                    .value,
-                                                                            };
-                                                                        }
-                                                                    )
-                                                                }
-                                                            />
-                                                        </div>
-
-                                                        <div className="w-full max-w-sm min-w-[200px]">
-                                                            <label className="block mb-2 text-sm font-medium text-gray-700">
-                                                                Category
-                                                            </label>
-
-                                                            <select
-                                                                className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 shadow-sm text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none transition duration-300"
-                                                                placeholder="Select table category here..."
-                                                                value={
-                                                                    activeTable.category
-                                                                }
-                                                                onChange={(e) =>
-                                                                    setActiveTable(
-                                                                        (
-                                                                            prev
-                                                                        ) => {
-                                                                            return {
-                                                                                ...prev,
-                                                                                category:
-                                                                                    e
-                                                                                        .target
-                                                                                        .value,
-                                                                            };
-                                                                        }
-                                                                    )
-                                                                }
-                                                            >
-                                                                <option value="normal">
-                                                                    normal
-                                                                </option>
-                                                                <option value="vip">
-                                                                    vip
-                                                                </option>
-                                                                <option value="couple">
-                                                                    couple
-                                                                </option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-
-                                                    {/* Description & Submit Button */}
-                                                    <div className="flex flex-col flex-1 justify-between">
-                                                        <div></div>
-
-                                                        <div className="flex flex-row justify-between">
-                                                            <button className="px-6 py-2 mt-4 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition duration-300">
-                                                                Save Changes
-                                                            </button>
-                                                            <button className="px-6 py-2 mt-4 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition duration-300">
-                                                                Remove Table
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    )}
                                 </React.Fragment>
                             ))}
                         </tbody>
                     </table>
                 </div>
-
-                {/* Pagination */}
-                <div className="flex justify-between items-center p-4">
-                    <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-400">
-                        Previous
-                    </button>
-                    <span className="text-gray-600 text-sm">Page 1 of 5</span>
-                    <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-400">
-                        Next
-                    </button>
-                </div>
             </div>
 
-            {/* screen overlay box */}
-            <div
-                className={`${
-                    overlayForm ? "fixed" : "hidden"
-                } fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center`}
-            >
-                <div className="bg-white p-8 rounded-lg shadow-lg">
-                    <div className="flex flex-col">
+            {/* Overlay Form */}
+            {overlayForm && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                    <div className="bg-white p-8 rounded-lg shadow-lg">
                         <div className="flex justify-end">
-                            <button
-                                className="p-2"
-                                onClick={() => setOverlayForm(false)}
-                            >
+                            <button className="p-2" onClick={() => setOverlayForm(false)}>
                                 <CloseOutlinedIcon className="hover:text-primary" />
                             </button>
                         </div>
 
-                        <h2 className="text-2xl font-semibold mb-4">
-                            Add Table
-                        </h2>
-                    </div>
+                        <h2 className="text-2xl font-semibold mb-4">Add Table</h2>
 
-                    <form className="flex flex-col gap-4">
-                        <input
-                            type="number"
-                            placeholder="Table number"
-                            className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                        />
-                        <input
-                            type="number"
-                            placeholder="Price"
-                            className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                        />
-                        <select
-                            type="text"
-                            className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                        >
-                            <option value="">Select Category</option>
-                            <option value="normal">Normal</option>
-                            <option value="vip">VIP</option>
-                            <option value="couple">Couple</option>
-                        </select>
-                        <input
-                            type="file"
-                            className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                        />
-                        <div className="flex justify-end">
-                            <button className="px-4 py-2 bg-primary text-white rounded-lg shadow-md hover:bg-primary-600 transition duration-300">
-                                Add Table
-                            </button>
-                        </div>
-                    </form>
+                        <form className="flex flex-col gap-4" onSubmit={handleNewTable}>
+                            <input type="number" name="number" placeholder="Table number" className="p-2 border rounded-lg" value={newTable.number} onChange={handleInputChange} required />
+                            <input type="number" name="price" placeholder="Price" className="p-2 border rounded-lg" value={newTable.price} onChange={handleInputChange} required />
+                            <input type="text" name="imageUrl" placeholder="Image URL" className="p-2 border rounded-lg" value={newTable.imageUrl} onChange={handleInputChange} />
+                            <select name="category" className="p-2 border rounded-lg" value={newTable.category} onChange={handleInputChange} required>
+                                <option value="">Select Category</option>
+                                <option value="normal">Normal</option>
+                                <option value="vip">VIP</option>
+                                <option value="couple">Couple</option>
+                            </select>
+                            <button type="submit" className="px-4 py-2 bg-primary text-white rounded-lg">Add Table</button>
+                        </form>
+                    </div>
                 </div>
-            </div>
+            )}
         </>
     );
 }
