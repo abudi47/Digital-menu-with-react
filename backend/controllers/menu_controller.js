@@ -20,14 +20,18 @@ const MenuController = {
             "================",
             `limit ${limit}, page ${page}, query ${query} category ${category}`
         );
-
+        
         if (isNaN(page) || page < 1 || isNaN(limit) || limit < 1) {
             throw new CustomError.BadRequest("Invalid pagination values");
         }
         const offset = page * limit - limit;
 
         const menus = await Menu.findAll({
-            where: category ? { category: category } : {},
+            // where: category ? { category: category } : {},
+            where: {
+                isAvailable: true,
+                category: category ? category : { [Op.like]: "%" },
+            },
             limit: limit,
             offset: offset,
         });

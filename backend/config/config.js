@@ -24,6 +24,13 @@ export const tableCategoriesType = [
 ];
 export const tableCategories = tableCategoriesType.map((table) => table.value);
 
+export const paymentOptions = [
+    { name: "Chapa", id: "chapa", isActive: true },
+    { name: "TeleBirr", id: "telebirr", isActive: false },
+    { name: "CBE", id: "cbe", isActive: false },
+    { name: "Abyssinia", id: "abyssinia", isActive: false },
+];
+
 export const filePath = {
     qrPath: "uploads/images/qr/",
     imagePath: "uploads/images/",

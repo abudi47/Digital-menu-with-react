@@ -11,7 +11,7 @@ const OrderController = {
 
         if (!tableId) {
             throw CustomError.BadRequest(
-                "Please enter your table no to procced"
+                "Please enter your table no to provided"
             );
         }
 
@@ -28,14 +28,14 @@ const OrderController = {
         const table = await Table.findByPk(tableId);
 
         if (!table) {
-            throw CustomError.BadRequest("Selected table doesn't exist")
+            throw CustomError.BadRequest("Selected table doesn't exist");
         }
 
         res.status(StatusCodes.OK).json({
-            sucess: true,
+            success: true,
             message: "Order created successfully",
             data: {
-                Order: "Order information"
+                Order: "Order information",
             },
         });
     },

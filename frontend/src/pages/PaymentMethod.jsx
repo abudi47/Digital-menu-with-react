@@ -1,15 +1,42 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { telebirr, chapa, cbe, abyssinia } from "../assets";
+import axios from "../api/axios";
 
 export default function PaymentMethod() {
-    const [selected, setSelected] = useState(null);
-
+    const dispatch = useDispatch();
     const paymentMethods = [
-        { name: "TeleBirr", id: "telebirr", image: telebirr },
-        { name: "CBE", id: "cbe", image: cbe },
-        { name: "Chapa", id: "chapa", image: chapa },
-        { name: "Abyssinia", id: "abyssinia", image: abyssinia },
+        { name: "Chapa", id: "chapa", image: chapa, isActive: true },
+        { name: "TeleBirr", id: "telebirr", image: telebirr, isActive: false },
+        { name: "CBE", id: "cbe", image: cbe, isActive: false },
+        {
+            name: "Abyssinia",
+            id: "abyssinia",
+            image: abyssinia,
+            isActive: false,
+        },
     ];
+    const [selected, setSelected] = useState("chapa");
+    const cart = useSelector((state) => state.newOrder)?.map(item => {
+        return { menu: item.menu.id, quantity: item.quantity }
+    });
+
+    const handleCheckOut = async () => {
+        console.log(cart);
+        
+    };
+
+    useEffect(() => {
+        // fetch all payment methods
+        axios
+            .get("/payment/options")
+            .then((res) => {
+                console.log(res.data.data);
+            })
+            .catch((err) => {
+                console.log("display network error here");
+            });
+    }, []);
 
     return (
         <div className="h-screen w-screen grid grid-rows-[1fr_6rem] overflow-hidden">
@@ -27,12 +54,26 @@ export default function PaymentMethod() {
                         <div className="flex flex-wrap gap-4 flex-row justify-between shadow-md bg-white w-[94%] p-4 rounded-lg mx-auto max-h-[70vh] overflow-y-scroll">
                             {paymentMethods.map((method, index) => (
                                 <div
-                                  key={method.id}
+                                    key={method.id}
                                     className={`max-w-28 border rounded-lg overflow-hidden shadow-lg ${
                                         selected === method.id &&
                                         "border-8 border-green-500/40"
                                     }`}
-                                    onClick={() => setSelected(method.id)}
+                                    onClick={() => {
+                                        if (method.isActive) {
+                                            setSelected(method.id);
+                                        } else {
+                                            dispatch({
+                                                type: "SHOW_ALERT",
+                                                payload: {
+                                                    message:
+                                                        "This payment method is not currently active",
+                                                    type: "warning",
+                                                    dismiss: 3000,
+                                                },
+                                            });
+                                        }
+                                    }}
                                 >
                                     <img
                                         src={method.image}
@@ -48,7 +89,10 @@ export default function PaymentMethod() {
 
             <div className="">
                 {/* Order Button */}
-                <div className="absolute bottom-4 w-full px-4 z-10">
+                <div
+                    className="absolute bottom-4 w-full px-4 z-10"
+                    onClick={handleCheckOut}
+                >
                     <button className="w-full bg-primary text-white py-3 rounded-lg text-xl font-semibold">
                         Check Out
                     </button>

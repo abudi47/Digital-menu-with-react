@@ -9,7 +9,14 @@ import db from "./db/db.js";
 import redisClient from "./db/redis.js";
 import errorHandler from "./middlewares/error_handler.js";
 
-import { MenuRoute, AuthRoute, UserRoute, TableRoute, ImageRoute } from "./routes/index.js";
+import {
+    MenuRoute,
+    AuthRoute,
+    UserRoute,
+    TableRoute,
+    ImageRoute,
+    PaymentRoute,
+} from "./routes/index.js";
 
 const app = express();
 app.use(
@@ -31,6 +38,7 @@ APIVersion1.use("/auth", AuthRoute);
 APIVersion1.use("/user", UserRoute);
 APIVersion1.use("/menu", MenuRoute);
 APIVersion1.use("/table", TableRoute);
+APIVersion1.use("/payment", PaymentRoute);
 
 // ======================== test code
 import upload from "./middlewares/file_upload_handler.js";

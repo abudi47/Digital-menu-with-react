@@ -6,13 +6,6 @@ export default function Order() {
 
     const totalPrice = cart.reduce((sum, item) => sum + item.menu.price, 0);
 
-    const products = [
-        { name: "Product1", price: 100 },
-        { name: "Product2", price: 100 },
-        { name: "Product3", price: 100 },
-        { name: "Product4", price: 100 },
-    ];
-
     return (
         <div className="h-screen w-screen relative">
             <div className="bg-white relative pt-6">

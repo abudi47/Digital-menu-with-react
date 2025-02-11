@@ -59,7 +59,7 @@ export default function Menu() {
     }, []);
 
     useEffect(() => {
-        console.log(`/menu?category=${activeCategory}&page=${page}&limit=${limit}`);
+        // console.log(`/menu?category=${activeCategory}&page=${page}&limit=${limit}`);
 
         if (activeCategory !== prevCategory) {
             setPrevCategory(activeCategory); // Update previous category
@@ -69,22 +69,20 @@ export default function Menu() {
             .get(
                 `/menu?category=${activeCategory}&page=${page}&limit=${limit}&query=${""}`
             )
-            .then((response) => {
-                console.log(response.data.data);
-                
+            .then((res) => {
                 setMenu((prev) => {
                     if (activeCategory !== prevCategory) {
                         return {
-                            menus: response.data?.data?.menus, // Set new data
-                            length: response.data.data.length,
+                            menus: res.data?.data?.menus, // Set new data
+                            length: res.data.data.length,
                         };
                     } else {
                         return {
                             menus: [
                                 ...prev.menus,
-                                ...response.data?.data?.menus,
+                                ...res.data?.data?.menus,
                             ],
-                            length: response.data.data.length,
+                            length: res.data.data.length,
                         };
                     }
                 });
