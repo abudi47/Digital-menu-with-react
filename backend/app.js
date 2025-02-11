@@ -14,6 +14,7 @@ import {
     AuthRoute,
     UserRoute,
     TableRoute,
+    OrderRoute,
     ImageRoute,
     PaymentRoute,
 } from "./routes/index.js";
@@ -37,6 +38,7 @@ APIVersion1.use("/images", ImageRoute);
 APIVersion1.use("/auth", AuthRoute);
 APIVersion1.use("/user", UserRoute);
 APIVersion1.use("/menu", MenuRoute);
+APIVersion1.use("/order", OrderRoute);
 APIVersion1.use("/table", TableRoute);
 APIVersion1.use("/payment", PaymentRoute);
 

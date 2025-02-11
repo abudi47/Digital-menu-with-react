@@ -17,13 +17,40 @@ export default function PaymentMethod() {
         },
     ];
     const [selected, setSelected] = useState("chapa");
-    const cart = useSelector((state) => state.newOrder)?.map(item => {
-        return { menu: item.menu.id, quantity: item.quantity }
+    const cart = useSelector((state) => state.newOrder)?.map((item) => {
+        return { menu: item.menu.id, quantity: item.quantity };
     });
 
     const handleCheckOut = async () => {
         console.log(cart);
-        
+        axios
+            .post("/order/create", {
+                paymentOption: selected,
+                menus: cart,
+                tableId: "c6e9fba6-b73c-4235-808a-a42b51b8599c",
+            })
+            .then((res) => {
+                console.log(res.data.message);
+                
+                dispatch({
+                    type: "SHOW_ALERT",
+                    payload: {
+                        message: res.data?.message || null,
+                        type: "success",
+                        dismiss: 5000,
+                    },
+                });
+            })
+            .catch((err) => {
+                dispatch({
+                    type: "SHOW_ALERT",
+                    payload: {
+                        message: err?.response?.data?.error || null,
+                        type: "error",
+                        dismiss: 5000,
+                    },
+                });
+            });
     };
 
     useEffect(() => {

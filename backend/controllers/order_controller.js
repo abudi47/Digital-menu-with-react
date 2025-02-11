@@ -1,13 +1,15 @@
 import { StatusCodes } from "http-status-codes";
 import CustomError from "../error/index.js";
+import { paymentOptions } from "../config/config.js";
 import { isUuidv4 } from "../utils/index.js";
 import Order from "../models/order.js";
+import Menu from "../models/menu.js";
 import OrderItem from "../models/order_item.js";
 import Table from "../models/table.js";
 
 const OrderController = {
     createOrder: async (req, res) => {
-        const { tableId, menus } = req.body;
+        const { tableId, menus, paymentOption } = req.body;
 
         if (!tableId) {
             throw CustomError.BadRequest(
@@ -16,7 +18,9 @@ const OrderController = {
         }
 
         if (!isUuidv4(tableId)) {
-            throw new CustomError.BadRequest("Unsupported id");
+            throw new CustomError.BadRequest(
+                "Unsupported table id scan table QR code"
+            );
         }
 
         if (!menus) {
@@ -24,6 +28,53 @@ const OrderController = {
                 "No menu item selected, add menu to your cart"
             );
         }
+
+        if (!typeof menus === "object") {
+            throw new CustomError.BadRequest(
+                "Unsupported menu items try again"
+            );
+        }
+
+        const isPaymentSupported = paymentOptions.filter((option) => {
+            paymentOption === option.id && option.isActive;
+        });
+
+        if (!isPaymentSupported) {
+            throw new CustomError.BadRequest(
+                "Unsupported Payment method try the other one"
+            );
+        }
+
+        const isTableExist = await Table.findOne({ where: { id: tableId } });
+
+        if (!isTableExist) {
+            throw new CustomError.BadRequest(
+                "Table not found try to scan table QR code again"
+            );
+        }
+
+        if (!isTableExist.isAvailable) {
+            throw new CustomError.BadRequest(
+                "This table is not available for now try the other one"
+            );
+        }
+
+        const isAllValid = menus?.map(async (item) => {
+            console.log(item);
+            if (!item?.menu || !isUuidv4(item?.menu)) {
+                return "The provided menu is not supported"
+            }
+            const menu = await Menu.findOne({ where: { id: item.menu } });
+            if (!menu) {
+                return "Selected menu doesn't exist"
+            }
+
+            if (!menu.isAvailable) {
+                return "Selected menu doesn't available for now"
+            }
+        });
+
+        console.log(isAllValid);
 
         const table = await Table.findByPk(tableId);
 
