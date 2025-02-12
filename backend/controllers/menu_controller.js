@@ -113,8 +113,6 @@ const MenuController = {
         if (existingMenu) {
             throw new CustomError.BadRequest("Menu already exists");
         }
-
-        console.log("================: ", menu_image);
         
         multiResolution(menu_image);
 
