@@ -1,5 +1,4 @@
 // add JSDoc standard documentation on this file
-
 import multer from "multer";
 import fs from "fs";
 import path from "path";
@@ -40,7 +39,7 @@ const storage = multer.diskStorage({
 
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-        cb(null, file.fieldname + "-" + uniqueSuffix);
+        cb(null, "temp-" + file.fieldname + "-" + uniqueSuffix);
     },
 });
 
@@ -64,7 +63,11 @@ const fileFilter = (req, file, cb) => {
             );
         }
     } catch (err) {
-        return cb(new Error("Critical: Unknown file filter error", err));
+        if (err.name === "customError") {
+            cb (err, null);
+        } else {
+            return cb(new Error("Critical: Unknown file filter error", err));
+        }
     }
 };
 

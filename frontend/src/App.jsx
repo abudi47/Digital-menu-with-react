@@ -45,7 +45,7 @@ function App() {
                     </Route>
 
                     <Route path="" Component={SplashScreen}/>
-                    <Route path="/:table">
+                    <Route path="/:tableId">
                         <Route path="" Component={Menu} />
                         <Route path="menu" Component={MenuDetail} />
                         <Route path="cart" Component={Cart} />

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useParams } from "react-router-dom";
 import RoomServiceOutlinedIcon from "@mui/icons-material/RoomServiceOutlined";
 import SearchField from "../components/SearchField";
 import RatedMenuCard from "../components/RatedMenuCard";
@@ -15,7 +15,9 @@ export default function Menu() {
     const [SearchParams] = useSearchParams();
     const [page, setPage] = useState(SearchParams.get("page") || 1);
     const limit = SearchParams.get("limit") || 3;
+    const { tableId } = useParams();
 
+    const table = useSelector((state) => state.table);
     const cart = useSelector((state) => state.newOrder);
 
     const [activeCategory, setActiveCategory] = useState("");
@@ -40,6 +42,43 @@ export default function Menu() {
 
     useEffect(() => {
         document.title = "Melody | Menu";
+
+        // table logic start here
+        if (!table?.isChecked) {
+            axios
+                .post("/table/verify", { tableId: tableId })
+                .then((res) => {
+                    dispatch({
+                        type: "SET_TABLE",
+                        payload: {
+                            table: tableId,
+                            isAvailable: true,
+                            isChecked: true,
+                        },
+                    });
+                })
+                .catch((err) => {
+                    dispatch({
+                        type: "SET_TABLE",
+                        payload: {
+                            table: tableId,
+                            isAvailable: false,
+                            isChecked: true,
+                        },
+                    });
+
+                    dispatch({
+                        type: "SHOW_ALERT",
+                        payload: {
+                            message: "Table is not available scan another table",
+                            type: "warning",
+                            dismiss: 9000,
+                        },
+                    });
+                });
+        }
+
+        // table logic end here
 
         axios
             .get("/menu/categories")
@@ -78,10 +117,7 @@ export default function Menu() {
                         };
                     } else {
                         return {
-                            menus: [
-                                ...prev.menus,
-                                ...res.data?.data?.menus,
-                            ],
+                            menus: [...prev.menus, ...res.data?.data?.menus],
                             length: res.data.data.length,
                         };
                     }

@@ -31,6 +31,8 @@ export const paymentOptions = [
     { name: "Abyssinia", id: "abyssinia", isActive: false },
 ];
 
+export const imageResolutions = [100, 200, 400];
+
 export const filePath = {
     qrPath: "uploads/images/qr/",
     imagePath: "uploads/images/",

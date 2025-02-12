@@ -38,7 +38,16 @@ const Payment = db.define("payment", {
     type: {
         type: DataTypes.ENUM("telebirr", "cbe", "chapa"),
         allowNull: false,
-        defaultValue: "telebirr",
+        defaultValue: "chapa",
+    },
+    checkOutUrl: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    // if the payment method uses order number instead of checkout url
+    orderNumber: {
+        type: DataTypes.STRING,
+        allowNull: true,
     },
     expiration: {
         type: DataTypes.DATE,
@@ -53,7 +62,7 @@ const Payment = db.define("payment", {
 
 Order.hasOne(Payment, {
     foreignKey: "orderId",
-    as: "order",
+    as: "payment",
 });
 
 export default Payment;

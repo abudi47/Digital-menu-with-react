@@ -9,6 +9,7 @@ import CustomError from "../error/index.js";
 import Menu from "../models/menu.js";
 import { isUuidv4 } from "../utils/index.js";
 import { menuCategories, menuCategoriesType } from "../config/config.js";
+import { multiResolution } from "../utils/file_utils.js";
 
 const MenuController = {
     getMenus: async (req, res) => {
@@ -112,17 +113,22 @@ const MenuController = {
         if (existingMenu) {
             throw new CustomError.BadRequest("Menu already exists");
         }
+
+        console.log("================: ", menu_image);
+        
+        multiResolution(menu_image);
+
         const menu = await Menu.create({
             name,
             description,
             price,
             category,
-            imageUrl: menu_image ? [menu_image?.filename] : [],
+            imageUrl: menu_image ? [menu_image.filename?.split("temp-")[1]] : [],
             isAvailable: isAvailable == "true" ? true : false,
         });
         return res
             .status(StatusCodes.CREATED)
-            .json({ success: true, message: "Menu created", data: { menu } });
+            .json({ success: true, message: "Menu created", data: { menu: 'temp' } });
     },
 
     deleteMenu: async (req, res) => {

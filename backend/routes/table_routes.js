@@ -32,4 +32,6 @@ router.delete(
   TableController.deleteTable
 );
 
+router.post("/verify", TableController.verifyTable);
+
 export default router;

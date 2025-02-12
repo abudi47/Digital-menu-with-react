@@ -25,6 +25,13 @@ const initialState = {
         },
     },
 
+    table: {
+        tableId: "",
+        isAvailable: false,
+        isChecked: false,
+    },
+
+
     newOrder: JSON.parse(localStorage.getItem("newOrder")) || [],
     orderHistory: localStorage.getItem("orderHistory") || [],
 };
@@ -91,6 +98,31 @@ function reducer(state = initialState, action) {
             return item.menu?.id !== action.payload.menu.id;
         });
         localStorage.setItem("newOrder", JSON.stringify(newState.newOrder));
+        return newState;
+    } else if (action.type === "SET_TABLE") {
+        const newState = Object.assign({}, state);
+        newState.table = {
+            tableId: action.payload.table,
+            isAvailable: action.payload.isAvailable,
+        };
+        return newState;
+    } else if (action.type === "CLEAR_CART") {      // not implemented yet
+        const newState = Object.assign({}, state);
+        newState.newOrder = [];
+        localStorage.removeItem("newOrder");
+        return newState;
+    } else if (action.type === "SET_ORDER_HISTORY") {
+        const newState = Object.assign({}, state);
+        newState.orderHistory = action.payload.orderHistory;
+        localStorage.setItem("orderHistory", action.payload.orderHistory);
+        return newState;
+    } else if (action.type === "SET_LOADING") {
+        const newState = Object.assign({}, state);
+        newState.appState.isLoading = action.payload.isLoading;
+        return newState;
+    } else if (action.type === "SET_ERROR") {
+        const newState = Object.assign({}, state);
+        newState.appState.error = action.payload.error;
         return newState;
     }
 

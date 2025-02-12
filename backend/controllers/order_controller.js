@@ -5,6 +5,7 @@ import { isUuidv4 } from "../utils/index.js";
 import Order from "../models/order.js";
 import Menu from "../models/menu.js";
 import OrderItem from "../models/order_item.js";
+import Payment from "../models/payment.js";
 import Table from "../models/table.js";
 
 const OrderController = {
@@ -59,24 +60,59 @@ const OrderController = {
             );
         }
 
-        const isAllValid = menus?.map((item) => {
-            console.log(item);
-            if (!item?.menu || !isUuidv4(item?.menu)) {
-                throw new CustomError.BadRequest(
-                    
-                );
-            }
-            const menu = Menu.findOne({ where: { id: item.menu } });
-            if (!menu) {
-                throw new CustomError.BadRequest("Selected menu doesn't exist");
-            }
+        let totalPrice = 0;
+        const checkMenus = async () => {
+            for (const item of menus || []) {
+                console.log(item);
+                if (!item?.menu || !isUuidv4(item?.menu)) {
+                    throw new CustomError.BadRequest(
+                        "The provided menu is not supported"
+                    );
+                }
 
-            if (!menu.isAvailable) {
-                throw new CustomError.BadRequest(
-                    "Selected menu doesn't available for now"
-                );
+                const menu = await Menu.findOne({ where: { id: item.menu } }); // Await here
+                if (!menu) {
+                    throw new CustomError.BadRequest(
+                        "Selected menu doesn't exist"
+                    );
+                }
+
+                if (!menu.isAvailable) {
+                    throw new CustomError.BadRequest(
+                        "Selected menu isn't available for now"
+                    );
+                }
+                totalPrice += menu.price;
             }
+        };
+
+        // Call the function
+        await checkMenus();
+
+        const newOrder = new Order({
+            tableId: tableId,
+            verificationNumber: Math.floor(1000 + Math.random() * 9000),
         });
+
+        // await newOrder.save();
+
+        // await Promise.all(
+        //     menus?.map(async (item) => {
+        //         const orderItem = await OrderItem.create({
+        //             orderId: newOrder.id,
+        //             menuId: item.menu,
+        //             quantity: item.quantity,
+        //         });
+        //     })
+        // );
+
+        // const newPayment = await Payment.create({
+        //     orderId: newOrder.id,
+        //     price: totalPrice,
+        //     type: paymentOption,
+        //     expiration: Date.now(),
+        // });
+
 
         console.log(tableId, menus, paymentOption);
 
