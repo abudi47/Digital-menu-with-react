@@ -7,6 +7,7 @@ import Menu from "../models/menu.js";
 import OrderItem from "../models/order_item.js";
 import Payment from "../models/payment.js";
 import Table from "../models/table.js";
+import { initializeChapaPayment } from "../utils/payment.js";
 
 const OrderController = {
     createOrder: async (req, res) => {
@@ -89,44 +90,62 @@ const OrderController = {
         // Call the function
         await checkMenus();
 
+        totalPrice += isTableExist.price;
+
         const newOrder = new Order({
             tableId: tableId,
             verificationNumber: Math.floor(1000 + Math.random() * 9000),
         });
 
-        // await newOrder.save();
+        const newPayment = new Payment({
+            orderId: newOrder.id,
+            price: totalPrice,
+            type: paymentOption,
+            expiration: Date.now(),
+        });
 
-        // await Promise.all(
-        //     menus?.map(async (item) => {
-        //         const orderItem = await OrderItem.create({
-        //             orderId: newOrder.id,
-        //             menuId: item.menu,
-        //             quantity: item.quantity,
-        //         });
-        //     })
-        // );
+        let payment;
+        if (paymentOption === "chapa") {
+            payment = await initializeChapaPayment({
+                price: totalPrice,
+                // user: req.user,
+                paymentId: newPayment.id,
+                tableId: tableId,
+            });
 
-        // const newPayment = await Payment.create({
-        //     orderId: newOrder.id,
-        //     price: totalPrice,
-        //     type: paymentOption,
-        //     expiration: Date.now(),
-        // });
+            if (!payment || !payment.success === 'success') {
+                throw new CustomError.BadRequest(
+                    "Payment initialization failed try again"
+                );
+            }
 
-
-        console.log(tableId, menus, paymentOption);
-
-        const table = await Table.findByPk(tableId);
-
-        if (!table) {
-            throw CustomError.BadRequest("Selected table doesn't exist");
+            newPayment.checkOutUrl = payment.data.checkout_url;
+        } else {
+            throw new CustomError.BadRequest("Unsupported payment method");
         }
+
+        // to make sure all validation passed we save the order ofter payment request is successful
+        await newOrder.save();
+
+        // create and save all order items
+        await Promise.all(
+            menus?.map(async (item) => {
+                const orderItem = await OrderItem.create({
+                    orderId: newOrder.id,
+                    menuId: item.menu,
+                    quantity: item.quantity,
+                });
+            })
+        );
+
+        await newPayment.save();
 
         res.status(StatusCodes.OK).json({
             success: true,
             message: "Order created successfully",
             data: {
-                Order: "Order information",
+                order: newOrder,
+                checkout_url: newPayment.checkOutUrl,
             },
         });
     },

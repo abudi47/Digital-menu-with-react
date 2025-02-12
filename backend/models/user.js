@@ -58,6 +58,10 @@ const User = db.define("user", {
         type: DataTypes.STRING(300),
         allowNull: true,
     },
+    status: {
+        type: DataTypes.ENUM("active", "inactive", "baned"),
+        defaultValue: "active",
+    },
 });
 
 User.prototype.isPasswordCorrect = async function (password) {

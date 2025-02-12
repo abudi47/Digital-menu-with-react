@@ -21,17 +21,17 @@ export default function PaymentMethod() {
         return { menu: item.menu.id, quantity: item.quantity };
     });
 
+    const currentTable = useSelector((state) => state.table);
+
     const handleCheckOut = async () => {
-        console.log(cart);
+        // console.log(cart);
         axios
             .post("/order/create", {
                 paymentOption: selected,
                 menus: cart,
-                tableId: "c6e9fba6-b73c-4235-808a-a42b51b8599c",
+                tableId: currentTable?.tableId,
             })
             .then((res) => {
-                console.log(res.data.message);
-                
                 dispatch({
                     type: "SHOW_ALERT",
                     payload: {
@@ -40,6 +40,12 @@ export default function PaymentMethod() {
                         dismiss: 5000,
                     },
                 });
+
+                setTimeout(() => {
+                    window.location.href = res.data?.data?.checkout_url;
+                    // dispatch({ type: "SET_ORDER_HISTORY" });
+                    // dispatch({ type: "CLEAR_CART" });
+                }, 5000);
             })
             .catch((err) => {
                 dispatch({
@@ -58,7 +64,7 @@ export default function PaymentMethod() {
         axios
             .get("/payment/options")
             .then((res) => {
-                console.log(res.data.data);
+                // console.log(res.data.data);
             })
             .catch((err) => {
                 console.log("display network error here");

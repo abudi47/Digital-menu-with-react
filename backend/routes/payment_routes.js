@@ -10,5 +10,6 @@ import { authHandler, roleHandler, roles } from "../middlewares/index.js";
 const router = express.Router();
 
 router.get("/options", PaymentController.paymentMethods);
+router.get("/chapa/callback/:id", PaymentController.chapaCallback);
 
 export default router;
