@@ -67,7 +67,7 @@ export default function PaymentMethod() {
                 // console.log(res.data.data);
             })
             .catch((err) => {
-                console.log("display network error here");
+                console.log("display network error here.");
             });
     }, []);
 
