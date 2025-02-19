@@ -4,218 +4,186 @@
  * @description Contains the controller functions for table routes
  */
 import { StatusCodes } from "http-status-codes";
-import fs from "fs";
 import CustomError from "../error/index.js";
 import Table from "../models/table.js";
 import { tableCategories } from "../config/config.js";
 import { isUuidv4 } from "../utils/index.js";
-import { QRcodeGenerator } from "../utils/index.js";
 
 const TableController = {
-    async getTables(req, res) {
-        let { page = 1, limit = 5 } = req.query;
-        page = parseInt(page, 10);
-        limit = parseInt(limit, 10);
+  async getTables(req, res) {
+    try {
+      // Extract query parameters
+      let { page = 1, limit = 10, query = "", category = "" } = req.query;
+      page = parseInt(page, 10);
+      limit = parseInt(limit, 10);
 
-        if (isNaN(page) || page < 1 || isNaN(limit) || limit < 1) {
-            throw new CustomError.BadRequest("Invalid pagination values");
-        }
-        const offset = page * limit - limit;
+      // Validate pagination values
+      if (isNaN(page) || page < 1 || isNaN(limit) || limit < 1) {
+          throw new CustomError.BadRequest("Invalid pagination values");
+      }
 
-        const tables = await Table.findAll({
-            limit: limit,
-            offset: offset,
-        });
-        return res.status(StatusCodes.OK).json({ success: true, data: tables });
-    },
-    async getTable(req, res) {
-        const { id } = req.params;
-        if (!isUuidv4(id)) {
-            throw new CustomError.BadRequest("Unsupported id");
-        }
-        const table = await Table.findOne({
-            where: { id: id },
-        });
-        if (!table) {
-            throw new CustomError.NotFound("Table not found");
-        }
-        return res
-            .status(StatusCodes.OK)
-            .json({ success: true, data: { table } });
-    },
+      // Calculate offset
+      const offset = (page - 1) * limit;
 
-    createTable: async (req, res) => {
-        const { number, price, category, isAvailable } = req.body;
-        if (!number || !price || !category || isAvailable === undefined) {
-            throw new CustomError.BadRequest("All fields are required");
-        }
+      // Build the query options
+      const queryOptions = {
+          limit: limit,
+          offset: offset,
+      };
 
-        if (!tableCategories.includes(category)) {
-            throw new CustomError.BadRequest("Unsupported category");
-        }
+      // Add filtering logic if query or category is provided
+      if (query || category) {
+          queryOptions.where = {};
+          if (query) {
+              queryOptions.where.firstName = { [Op.like]: `%${query}%` }; // Example: Filter by firstName
+          }
+          if (category) {
+              queryOptions.where.role = category; // Example: Filter by role
+          }
+      }
 
-        const existingTable = await Table.findOne({
-            where: { number: number },
-        });
-        if (existingTable) {
-            throw new CustomError.BadRequest("Table already exists");
-        }
+      // Fetch paginated users
+      const users = await Table.findAll(queryOptions);
 
-        const table = new Table({
-            number,
-            price,
-            category,
-            isAvailable: isAvailable == "true" ? true : false,
-        });
+      // Count total number of users (with filters applied, if any)
+      const totalUsers = await Table.count({ where: queryOptions.where });
 
-        const fileName = await QRcodeGenerator(table.id);
+      // Return response
+      return res.status(StatusCodes.OK).json({
+          success: true,
+          message: "Users retrieved successfully",
+          data: users,
+          total: totalUsers, // Send total count to the frontend
+          page: page,
+          limit: limit,
+      });
+  } catch (error) {
+      console.error("Error fetching users:", error);
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+          success: false,
+          message: "Something went wrong while fetching users",
+      });
+  }
+    
+  },
+  async getTable(req, res) {
+    const { id } = req.params;
+    if (!isUuidv4(id)) {
+      throw new CustomError.BadRequest("Unsupported id");
+    }
+    const table = await Table.findOne({
+      where: { id: id },
+    });
+    if (!table) {
+      throw new CustomError.NotFound("Table not found");
+    }
+    return res.status(StatusCodes.OK).json({ success: true, data: { table } });
+  },
 
-        if (!fileName) {
-            throw new CustomError.BadRequest(
-                "Can't able to create QR identifier"
-            );
-        }
+  createTable: async (req, res) => {
+    const { number, price, category, imageUrl, isAvailable } = req.body;
+    if (!number || !price || !category || isAvailable === undefined) {
+      throw new CustomError.BadRequest("All fields are required");
+    }
 
-        table.imageUrl = fileName;
+    if (!tableCategories.includes(category)) {
+      throw new CustomError.BadRequest("Unsupported category");
+    }
 
-        await table.save();
+    const existingTable = await Table.findOne({
+      where: { number: number },
+    });
+    if (existingTable) {
+      throw new CustomError.BadRequest("Table already exists");
+    }
+    const table = await Table.create({
+      number,
+      price,
+      category,
+      isAvailable: isAvailable == "true" ? true : false,
+    });
+    return res
+      .status(StatusCodes.CREATED)
+      .json({ success: true, message: "Table created", data: { table } });
+  },
 
-        return res
-            .status(StatusCodes.CREATED)
-            .json({ success: true, message: "Table created", data: { table } });
-    },
+  updateTable: async (req, res) => {
+    const { id } = req.params;
+    if (!isUuidv4(id)) {
+      throw new CustomError.BadRequest("Unsupported id");
+    }
+    const { number, price, category, imageUrl, isAvailable } = req.body;
+    if (!number || !price || !category || isAvailable === undefined) {
+      throw new CustomError.BadRequest("All fields are required");
+    }
 
-    updateTable: async (req, res) => {
-        const { id } = req.params;
-        if (!isUuidv4(id)) {
-            throw new CustomError.BadRequest("Unsupported id");
-        }
-        const { number, price, category, imageUrl, isAvailable } = req.body;
-        if (!number || !price || !category || isAvailable === undefined) {
-            throw new CustomError.BadRequest("All fields are required");
-        }
+    if (!tableCategories.includes(category)) {
+      throw new CustomError.BadRequest("Unsupported category");
+    }
 
-        if (!tableCategories.includes(category)) {
-            throw new CustomError.BadRequest("Unsupported category");
-        }
+    const table = await Table.findOne({
+      where: { id: id },
+    });
+    if (!table) {
+      throw new CustomError.NotFound("Table not found");
+    }
+    const updatedTable = await table.update({
+      number,
+      price,
+      category,
+      imageUrl: [imageUrl],
+      isAvailable,
+    });
+    return res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Table updated",
+      data: {
+        table: updatedTable,
+      },
+    });
+  },
 
-        const table = await Table.findOne({
-            where: { id: id },
-        });
-        if (!table) {
-            throw new CustomError.NotFound("Table not found");
-        }
-        const updatedTable = await table.update({
-            number,
-            price,
-            category,
-            imageUrl: [imageUrl],
-            isAvailable,
-        });
-        return res.status(StatusCodes.OK).json({
-            success: true,
-            message: "Table updated",
-            data: {
-                table: updatedTable,
-            },
-        });
-    },
+  deleteTable: async (req, res) => {
+    const { id } = req.params;
+    if (!isUuidv4(id)) {
+      throw new CustomError.BadRequest("Unsupported id");
+    }
+    const table = await Table.findOne({
+      where: { id: id },
+    });
+    if (!table) {
+      throw new CustomError.NotFound("Table not found");
+    }
+    await table.destroy();
+    return res
+      .status(StatusCodes.OK)
+      .json({ success: true, message: "Table deleted" });
+  },
 
-    deleteTable: async (req, res) => {
-        const { id } = req.params;
-        if (!isUuidv4(id)) {
-            throw new CustomError.BadRequest("Unsupported id");
-        }
-        const table = await Table.findOne({
-            where: { id: id },
-        });
+  changeAvailability: async (req, res) => {
+    const { id } = req.params;
+    if (!isUuidv4(id)) {
+      throw new CustomError.BadRequest("Unsupported id");
+    }
+    const { isAvailable } = req.body;
+    if (isAvailable === undefined) {
+      throw new CustomError.BadRequest("isAvailable field is required");
+    }
+    const table = await Table.findOne({
+      where: { id: id },
+    });
+    if (!table) {
+      throw new CustomError.NotFound("Table not found");
+    }
 
-        if (!table) {
-            throw new CustomError.NotFound("Table not found");
-        }
-
-        try {
-            fs.unlink(`uploads/images/table_image/${table.imageUrl}`, (err) => {
-                if (err) {
-                    throw err;
-                }
-            });
-            fs.unlink(
-                `uploads/images/table_image/printable/${table.imageUrl}.jpg`,
-                (err) => {
-                    if (err) {
-                        throw err;
-                    }
-                }
-            );
-        } catch (err) {
-            console.log("=======: ", err);
-            throw new CustomError.NotFound("Can't able to delete");
-        }
-
-        await table.destroy();
-
-        return res
-            .status(StatusCodes.OK)
-            .json({ success: true, message: "Table deleted" });
-    },
-
-    changeAvailability: async (req, res) => {
-        const { id } = req.params;
-        if (!isUuidv4(id)) {
-            throw new CustomError.BadRequest("Unsupported id");
-        }
-        const { isAvailable } = req.body;
-        if (isAvailable === undefined) {
-            throw new CustomError.BadRequest("isAvailable field is required");
-        }
-        const table = await Table.findOne({
-            where: { id: id },
-        });
-        if (!table) {
-            throw new CustomError.NotFound("Table not found");
-        }
-
-        table.isAvailable = isAvailable == "true" ? true : false;
-        await menu.save();
-        return res.status(StatusCodes.OK).json({
-            success: true,
-            message: "Table availability updated",
-            data: { table },
-        });
-    },
-
-    verifyTable: async (req, res) => {
-        const { tableId } = req.body;
-        if (!tableId) {
-            throw new CustomError.BadRequest("Table ID is required");
-        }
-
-        if (!isUuidv4(tableId)) {
-            throw new CustomError.BadRequest("Unsupported table ID");
-        }
-
-        const table = await Table.findOne({
-            where: { id: tableId },
-        });
-        if (!table) {
-            throw new CustomError.NotFound("Table not found");
-        }
-
-        if (!table.isAvailable) {
-            return res.status(StatusCodes.FORBIDDEN).json({
-                success: true,
-                message: "Table is not available right now",
-                data: { isVerified: false },
-            });
-        }
-
-        return res.status(StatusCodes.OK).json({
-            success: true,
-            message: "Table verified",
-            data: { isVerified: true },
-        });
-    },
+    table.isAvailable = isAvailable == "true" ? true : false;
+    await menu.save();
+    return res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Table availability updated",
+      data: { table },
+    });
+  },
 };
 
 export default TableController;

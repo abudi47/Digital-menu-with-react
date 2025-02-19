@@ -4,13 +4,120 @@ import User from "../models/user.js";
 import { sanitizedUser, isUuidv4 } from "../utils/index.js";
 
 const UserController = {
-  getProfile: async (req, res) => {
-    const user = req.user;
-    res.status(StatusCodes.OK).json({
-      success: true,
-      message: "Get profile successful",
-      data: { user },
+  getMenus: async (req, res) => {
+    let { page = 1, limit = 5, query = "", category = "" } = req.query;
+    page = parseInt(page, 10);
+    limit = parseInt(limit, 10);
+
+    console.log(
+        "================",
+        `limit ${limit}, page ${page}, query ${query} category ${category}`
+    );
+    
+    if (isNaN(page) || page < 1 || isNaN(limit) || limit < 1) {
+        throw new CustomError.BadRequest("Invalid pagination values");
+    }
+    const offset = page * limit - limit;
+
+    const menus = await User.findAll({
+        // where: category ? { category: category } : {},
+        where: {
+            isAvailable: true,
+            category: category ? category : { [Op.like]: "%" },
+        },
+        limit: limit,
+        offset: offset,
     });
+
+    const formattedMenus = menus.map((menu) => ({
+        ...menu.dataValues,
+        imageUrl: menu.imageUrl.map(
+            (img) => `http://localhost:5000/api/v1/images/menu/${img}`
+        ),
+    }));
+
+    let totalCount;
+    if (query !== "" && category !== "") {
+        totalCount = await Menu.count();
+    } else {
+        totalCount = await Menu.count({
+            where: {
+                name: {
+                    // Case-insensitive search on name (SQLite handles this automatically)
+                    [Op.like]: `%${query}%`,
+                },
+                // If category is provided, search for it, otherwise search for all categories
+                category: category ? category : { [Op.like]: "%" },
+            },
+        });
+    }
+
+    return res.status(StatusCodes.OK).json({
+        success: true,
+        data: { menus: formattedMenus, length: totalCount },
+    });
+},
+  getProfile: async (req, res) => {
+    // const user = req.user;
+    // res.status(StatusCodes.OK).json({
+    //   success: true,
+    //   message: "Get profile successful",
+    //   data: { user },
+    // });
+    try {
+      // Extract query parameters
+      let { page = 1, limit = 10, query = "", category = "" } = req.query;
+      page = parseInt(page, 10);
+      limit = parseInt(limit, 10);
+
+      // Validate pagination values
+      if (isNaN(page) || page < 1 || isNaN(limit) || limit < 1) {
+          throw new CustomError.BadRequest("Invalid pagination values");
+      }
+
+      // Calculate offset
+      const offset = (page - 1) * limit;
+
+      // Build the query options
+      const queryOptions = {
+          limit: limit,
+          offset: offset,
+      };
+
+      // Add filtering logic if query or category is provided
+      if (query || category) {
+          queryOptions.where = {};
+          if (query) {
+              queryOptions.where.firstName = { [Op.like]: `%${query}%` }; // Example: Filter by firstName
+          }
+          if (category) {
+              queryOptions.where.role = category; // Example: Filter by role
+          }
+      }
+
+      // Fetch paginated users
+      const users = await User.findAll(queryOptions);
+
+      // Count total number of users (with filters applied, if any)
+      const totalUsers = await User.count({ where: queryOptions.where });
+
+      // Return response
+      return res.status(StatusCodes.OK).json({
+          success: true,
+          message: "Users retrieved successfully",
+          data: users,
+          total: totalUsers, // Send total count to the frontend
+          page: page,
+          limit: limit,
+      });
+  } catch (error) {
+      console.error("Error fetching users:", error);
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+          success: false,
+          message: "Something went wrong while fetching users",
+      });
+  }
+    
   },
 
   updateProfile: async (req, res) => {
