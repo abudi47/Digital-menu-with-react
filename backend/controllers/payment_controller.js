@@ -5,6 +5,7 @@ import CustomError from "../error/index.js";
 import { paymentOptions } from "../config/config.js";
 import { verifyChapaPayment } from "../utils/payment.js";
 import { isUuidv4 } from "../utils/utils.js";
+import { io } from "../app.js";
 
 const PaymentController = {
     paymentMethods: async (req, res) => {
@@ -83,6 +84,8 @@ const PaymentController = {
         console.log(
             "Implementation Note Use socket.io to notify the staffs that the payment is confirmed"
         );
+
+        io.emit("newOrder", { order: orderRecord })
 
         return res.status(StatusCodes.OK).send();
     },
