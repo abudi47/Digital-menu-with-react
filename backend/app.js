@@ -69,7 +69,6 @@ APIVersion1.use("/payment", PaymentRoute);
 
 // ======================== test code
 app.get("/test", async (req, res) => {
-    io.emit("newRecord", "walla it's working fine");
     res.send("done");
 });
 // ======================== test code end here
