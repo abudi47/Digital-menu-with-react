@@ -27,7 +27,7 @@ const app = express();
  * configure the server to use the socket.io
 **/
 const server = http.createServer(app);
-const io = new Server(server, {
+export const io = new Server(server, {
     cors: {
         origin: "http://localhost:5173", // Allow your React frontend
         methods: ["GET", "POST"],
