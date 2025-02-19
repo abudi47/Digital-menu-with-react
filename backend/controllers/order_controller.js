@@ -14,7 +14,7 @@ const OrderController = {
         const { tableId, menus, paymentOption } = req.body;
 
         if (!tableId) {
-            throw CustomError.BadRequest(
+            throw new CustomError.BadRequest(
                 "Please enter your table no to provided"
             );
         }
@@ -26,7 +26,7 @@ const OrderController = {
         }
 
         if (!menus) {
-            throw CustomError.BadRequest(
+            throw new CustomError.BadRequest(
                 "No menu item selected, add menu to your cart"
             );
         }

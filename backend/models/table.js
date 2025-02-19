@@ -43,7 +43,7 @@ const Table = db.define("table", {
     },
     imageUrl: {
         type: DataTypes.STRING(300),
-        allowNull: true,
+        allowNull: false,
     },
     isAvailable: {
         type: DataTypes.BOOLEAN,

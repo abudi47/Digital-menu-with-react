@@ -8,7 +8,7 @@ import { Op } from "sequelize";
 import CustomError from "../error/index.js";
 import Menu from "../models/menu.js";
 import { isUuidv4 } from "../utils/index.js";
-import { menuCategories, menuCategoriesType } from "../config/config.js";
+import { menuCategories, menuCategoriesType, BaseURL } from "../config/config.js";
 import { multiResolution } from "../utils/file_utils.js";
 
 const MenuController = {
@@ -40,7 +40,7 @@ const MenuController = {
         const formattedMenus = menus.map((menu) => ({
             ...menu.dataValues,
             imageUrl: menu.imageUrl.map(
-                (img) => `http://localhost:5000/api/v1/images/menu/${img}`
+                (img) => `${BaseURL}/api/v1/images/menu/${img}`
             ),
         }));
 

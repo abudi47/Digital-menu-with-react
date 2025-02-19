@@ -8,15 +8,12 @@ export default function Cart() {
     const navigate = useNavigate();
     const cart = useSelector((state) => state.newOrder);
     const table = useSelector((state) => state.table);
-
-    console.log("table state", table);
     
     useEffect(() => {
         if (table?.isAvailable === false) {
             navigate("../../menu")
         }
     }, [])
-
 
     return (
         <div className="h-screen w-screen grid grid-rows-[1fr_6rem] overflow-hidden">

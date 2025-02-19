@@ -12,6 +12,21 @@ router.use(
     "/menu",
     express.static(path.join(__dirname, "../uploads/images/menu_image"))
 );
+
+router.use(
+    "/table",
+    authHandler,
+    express.static(path.join(__dirname, "../uploads/images/table_image"))
+);
+
+router.use(
+    "/table/printable",
+    authHandler,
+    express.static(
+        path.join(__dirname, "../uploads/images/table_image/printable")
+    )
+);
+
 router.use(
     "/profile",
     authHandler,

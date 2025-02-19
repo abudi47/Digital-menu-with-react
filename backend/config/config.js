@@ -1,3 +1,5 @@
+export const BaseURL = "http://localhost:5000";
+
 export const roles = {
     admin: "admin",
     casher: "casher",

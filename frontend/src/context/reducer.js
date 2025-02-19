@@ -31,9 +31,8 @@ const initialState = {
         isChecked: false,
     },
 
-
     newOrder: JSON.parse(localStorage.getItem("newOrder")) || [],
-    orderHistory: localStorage.getItem("orderHistory") || [],
+    orderHistory: JSON.parse(localStorage.getItem("orderHistory")) || [],
 };
 
 function reducer(state = initialState, action) {
@@ -75,7 +74,7 @@ function reducer(state = initialState, action) {
         return newState;
     } else if (action.type === "ADD_TO_CART") {
         const newState = Object.assign({}, state);
-        
+
         const isExist = newState.newOrder.filter((item) => {
             return item.menu?.id === action.payload.menu.menu.id;
         });
@@ -106,15 +105,18 @@ function reducer(state = initialState, action) {
             isAvailable: action.payload.isAvailable,
         };
         return newState;
-    } else if (action.type === "CLEAR_CART") {      // not implemented yet
+    } else if (action.type === "CLEAR_CART") {// not implemented yet
         const newState = Object.assign({}, state);
         newState.newOrder = [];
-        localStorage.removeItem("newOrder");
+        localStorage.setItem("newOrder", JSON.stringify(newState.newOrder));
         return newState;
     } else if (action.type === "SET_ORDER_HISTORY") {
         const newState = Object.assign({}, state);
-        newState.orderHistory = action.payload.orderHistory;
-        localStorage.setItem("orderHistory", action.payload.orderHistory);
+        newState.orderHistory.push({
+            orderDate: new Date().toLocaleString(),
+            orders: newState.newOrder,
+        });
+        localStorage.setItem("orderHistory", JSON.stringify(newState.orderHistory));
         return newState;
     } else if (action.type === "SET_LOADING") {
         const newState = Object.assign({}, state);

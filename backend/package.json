@@ -3,6 +3,7 @@
   "dependencies": {
     "bcrypt": "^5.1.1",
     "bull": "^4.16.5",
+    "cookie": "^1.0.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -16,6 +17,7 @@
     "redis": "^4.7.0",
     "sequelize": "^6.37.5",
     "sharp": "^0.33.5",
+    "socket.io": "^4.8.1",
     "sqlite3": "^5.1.7"
   },
   "name": "backend",

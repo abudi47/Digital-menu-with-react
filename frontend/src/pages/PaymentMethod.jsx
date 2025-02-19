@@ -42,10 +42,10 @@ export default function PaymentMethod() {
                 });
 
                 setTimeout(() => {
+                    dispatch({ type: "SET_ORDER_HISTORY" });
+                    dispatch({ type: "CLEAR_CART" });
                     window.location.href = res.data?.data?.checkout_url;
-                    // dispatch({ type: "SET_ORDER_HISTORY" });
-                    // dispatch({ type: "CLEAR_CART" });
-                }, 5000);
+                }, 2000);
             })
             .catch((err) => {
                 dispatch({

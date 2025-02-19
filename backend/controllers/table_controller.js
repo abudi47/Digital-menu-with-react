@@ -4,10 +4,12 @@
  * @description Contains the controller functions for table routes
  */
 import { StatusCodes } from "http-status-codes";
+import fs from "fs";
 import CustomError from "../error/index.js";
 import Table from "../models/table.js";
 import { tableCategories } from "../config/config.js";
 import { isUuidv4 } from "../utils/index.js";
+import { QRcodeGenerator } from "../utils/index.js";
 
 const TableController = {
     async getTables(req, res) {
@@ -58,12 +60,26 @@ const TableController = {
         if (existingTable) {
             throw new CustomError.BadRequest("Table already exists");
         }
-        const table = await Table.create({
+
+        const table = new Table({
             number,
             price,
             category,
             isAvailable: isAvailable == "true" ? true : false,
         });
+
+        const fileName = await QRcodeGenerator(table.id);
+
+        if (!fileName) {
+            throw new CustomError.BadRequest(
+                "Can't able to create QR identifier"
+            );
+        }
+
+        table.imageUrl = fileName;
+
+        await table.save();
+
         return res
             .status(StatusCodes.CREATED)
             .json({ success: true, message: "Table created", data: { table } });
@@ -113,10 +129,32 @@ const TableController = {
         const table = await Table.findOne({
             where: { id: id },
         });
+
         if (!table) {
             throw new CustomError.NotFound("Table not found");
         }
+
+        try {
+            fs.unlink(`uploads/images/table_image/${table.imageUrl}`, (err) => {
+                if (err) {
+                    throw err;
+                }
+            });
+            fs.unlink(
+                `uploads/images/table_image/printable/${table.imageUrl}.jpg`,
+                (err) => {
+                    if (err) {
+                        throw err;
+                    }
+                }
+            );
+        } catch (err) {
+            console.log("=======: ", err);
+            throw new CustomError.NotFound("Can't able to delete");
+        }
+
         await table.destroy();
+
         return res
             .status(StatusCodes.OK)
             .json({ success: true, message: "Table deleted" });

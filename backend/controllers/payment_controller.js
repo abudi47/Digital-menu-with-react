@@ -5,7 +5,6 @@ import CustomError from "../error/index.js";
 import { paymentOptions } from "../config/config.js";
 import { verifyChapaPayment } from "../utils/payment.js";
 import { isUuidv4 } from "../utils/utils.js";
-import { or } from "sequelize";
 
 const PaymentController = {
     paymentMethods: async (req, res) => {
@@ -32,12 +31,10 @@ const PaymentController = {
         }
 
         if (paymentRecord.status === "confirmed") {
-            return res
-                .status(StatusCodes.OK)
-                .json({
-                    success: true,
-                    data: { message: "Payment already paid" },
-                });
+            return res.status(StatusCodes.OK).json({
+                success: true,
+                data: { message: "Payment already paid" },
+            });
         }
 
         // verify payment
@@ -56,7 +53,6 @@ const PaymentController = {
                 .status(StatusCodes.BAD_REQUEST)
                 .json({ success: false, error: "Payment not successful" });
         }
-
 
         if (payment.data?.amount !== paymentRecord.price) {
             return res

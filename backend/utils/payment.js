@@ -1,4 +1,5 @@
 import process from "process";
+import { BaseURL } from "../config/config.js";
 
 var myHeaders = new Headers();
 myHeaders.append("Authorization", `Bearer ${process.env.CHAPA_SECRET_KEY}`);
@@ -18,8 +19,8 @@ export async function initializeChapaPayment({
         // last_name: "Gizachew",
         // phone_number: "0912345678",
         tx_ref: paymentId,
-        callback_url: `http://localhost:5000/api/v1/payment/chapa/callback/${paymentId}`,
-        return_url: `http://localhost:5173/${tableId}`,
+        callback_url: `${BaseURL}/api/v1/payment/chapa/callback/${paymentId}`,
+        return_url: `${BaseURL.replace("5000", "5173")}/${tableId}`,
         "customization[title]": `Melody Cafe order payment`,
         "customization[description]": `Pay with Chapa and enjoy your meal`,
         "meta[hide_receipt]": "true",
