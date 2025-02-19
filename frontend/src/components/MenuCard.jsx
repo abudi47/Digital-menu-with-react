@@ -13,6 +13,7 @@ export default function MenuCard({ menu }) {
                     src={menu?.imageUrl[0] + "_400"}
                     alt="menu_image"
                     className="h-full w-full object-cover"
+                    loading="lazy"
                 />
             </div>
             <h1 className="text-gray-700 text-xl font-semibold px-2 mt-1 text-nowrap">

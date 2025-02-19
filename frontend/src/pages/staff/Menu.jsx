@@ -190,6 +190,7 @@ export default function Menu() {
                                                                 }
                                                                 alt="menu_image"
                                                                 className="w-full h-full object-cover"
+                                                                loading="lazy"
                                                             />
                                                             {/* Image Navigation Buttons */}
                                                             <div className="absolute inset-0 flex justify-between items-center px-2">
