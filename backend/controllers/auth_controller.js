@@ -1,147 +1,205 @@
-/**
- * @file table_controller.js
- * @module TableController
- * @description Contains the controller functions for table routes
- */
 import { StatusCodes } from "http-status-codes";
+import process from "process";
 import CustomError from "../error/index.js";
-import Table from "../models/table.js";
-import { tableCategories } from "../config/config.js";
-import { isUuidv4 } from "../utils/index.js";
+import redisClient from "../db/redis.js";
+import User from "../models/user.js";
+import {
+    generateToken,
+    signUser,
+    sanitizedUser,
+} from "../utils/index.js";
+import { allowedRoles } from "../config/config.js";
 
-const TableController = {
-  async getTables(req, res) {
-    let { page = 1, limit = 5 } = req.query;
-    page = parseInt(page, 10);
-    limit = parseInt(limit, 10);
+const AuthController = {
+    login: async (req, res) => {
+        const { phone, email, password } = req.body;
 
-    if (isNaN(page) || page < 1 || isNaN(limit) || limit < 1) {
-      throw new CustomError.BadRequest("Invalid pagination values");
-    }
-    const offset = page * limit - limit;
+        if ((!phone && !email) || !password) {
+            throw new CustomError.BadRequest(
+                "Please provide phone or email and password"
+            );
+        }
 
-    const tables = await Table.findAll({
-      limit: limit,
-      offset: offset,
-    });
-    return res.status(StatusCodes.OK).json({ success: true, data: tables });
-  },
-  async getTable(req, res) {
-    const { id } = req.params;
-    if (!isUuidv4(id)) {
-      throw new CustomError.BadRequest("Unsupported id");
-    }
-    const table = await Table.findOne({
-      where: { id: id },
-    });
-    if (!table) {
-      throw new CustomError.NotFound("Table not found");
-    }
-    return res.status(StatusCodes.OK).json({ success: true, data: { table } });
-  },
+        // check if user provided phone or email
+        let user;
+        if (phone) {
+            user = await User.findOne({
+                where: { phone },
+                attributes: { exclude: ["createdAt", "updatedAt"] },
+            });
+        } else {
+            user = await User.findOne({
+                where: { email },
+                attributes: { exclude: ["createdAt", "updatedAt"] },
+            });
+        }
 
-  createTable: async (req, res) => {
-    const { number, price, category, imageUrl, isAvailable } = req.body;
-    if (!number || !price || !category || isAvailable === undefined) {
-      throw new CustomError.BadRequest("All fields are required");
-    }
+        if (!user) {
+            throw new CustomError.UnauthorizedRequest("Invalid credentials");
+        }
 
-    if (!tableCategories.includes(category)) {
-      throw new CustomError.BadRequest("Unsupported category");
-    }
+        // check if password is correct
+        const isPasswordCorrect = await user.isPasswordCorrect(password);
+        if (!isPasswordCorrect) {
+            throw new CustomError.UnauthorizedRequest("Invalid credentials");
+        }
 
-    const existingTable = await Table.findOne({
-      where: { number: number },
-    });
-    if (existingTable) {
-      throw new CustomError.BadRequest("Table already exists");
-    }
-    const table = await Table.create({
-      number,
-      price,
-      category,
-      isAvailable: isAvailable == "true" ? true : false,
-    });
-    return res
-      .status(StatusCodes.CREATED)
-      .json({ success: true, message: "Table created", data: { table } });
-  },
+        // sanitize user
+        const sanitizeUser = sanitizedUser(user.toJSON());
 
-  updateTable: async (req, res) => {
-    const { id } = req.params;
-    if (!isUuidv4(id)) {
-      throw new CustomError.BadRequest("Unsupported id");
-    }
-    const { number, price, category, imageUrl, isAvailable } = req.body;
-    if (!number || !price || !category || isAvailable === undefined) {
-      throw new CustomError.BadRequest("All fields are required");
-    }
+        // generate token
+        const token = await generateToken();
 
-    if (!tableCategories.includes(category)) {
-      throw new CustomError.BadRequest("Unsupported category");
-    }
+        // login for month
+        await redisClient.set(
+            token,
+            JSON.stringify(sanitizeUser),
+            process.env.REDIS_EX
+        );
 
-    const table = await Table.findOne({
-      where: { id: id },
-    });
-    if (!table) {
-      throw new CustomError.NotFound("Table not found");
-    }
-    const updatedTable = await table.update({
-      number,
-      price,
-      category,
-      imageUrl: [imageUrl],
-      isAvailable,
-    });
-    return res.status(StatusCodes.OK).json({
-      success: true,
-      message: "Table updated",
-      data: {
-        table: updatedTable,
-      },
-    });
-  },
+        // signed user info
+        const userInfo = signUser(sanitizeUser);
 
-  deleteTable: async (req, res) => {
-    const { id } = req.params;
-    if (!isUuidv4(id)) {
-      throw new CustomError.BadRequest("Unsupported id");
-    }
-    const table = await Table.findOne({
-      where: { id: id },
-    });
-    if (!table) {
-      throw new CustomError.NotFound("Table not found");
-    }
-    await table.destroy();
-    return res
-      .status(StatusCodes.OK)
-      .json({ success: true, message: "Table deleted" });
-  },
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env === "production" ? true : false,
+            sameSite: "Strict",
+            maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+        });
 
-  changeAvailability: async (req, res) => {
-    const { id } = req.params;
-    if (!isUuidv4(id)) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ success: false, error: "Unsupported id" });
-    }
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Login successful",
+            data: {
+                token: token,
+                user: userInfo,
+            },
+        });
+    },
 
-    const { isAvailable } = req.body;
-    if (isAvailable === undefined) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ success: false, error: "isAvailable field is required" });
-    }
+    register: async (req, res) => {
+        // Your register logic here
+        const {
+            firstName,
+            lastName,
+            role,
+            phone,
+            email,
+            password,
+            profile_image,
+        } = req.body;
 
-    const table = await Table.findOne({ where: { id } });
-    if (!table) {
-      return res.status(StatusCodes.NOT_FOUND).json({ success: false, error: "Table not found" });
-    }
+        if (
+            !firstName ||
+            !lastName ||
+            !role ||
+            (!phone && !email) ||
+            !password
+        ) {
+            throw new CustomError.BadRequest(
+                "Please provide all required information"
+            );
+        }
 
-    table.isAvailable = isAvailable;
-    await table.save();
+        if (!allowedRoles.includes(role)) {
+            throw new CustomError.BadRequest("Unsupported role type");
+        }
 
-    return res.status(StatusCodes.OK).json({ success: true, message: "Table availability updated", data: { table } });
-},
+        let user;
+        if (phone) {
+            user = await User.findOne({
+                where: { phone },
+                attributes: { exclude: ["createdAt", "updatedAt"] },
+            });
+            
+        } 
+        if (user) {
+            throw new CustomError.BadRequest("User already exists");
+        }
+        if(email) {
+            user = await User.findOne({
+                where: { email },
+                attributes: { exclude: ["createdAt", "updatedAt"] },
+            });
+        }
+        if (user) {
+            throw new CustomError.BadRequest("User already exists");
+        }
+        
 
+        const newUser = new User({
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            phone: phone,
+            password: password,
+            role: role,
+            imageUrl: req.file ? req.file?.filename : null,
+        });
+
+        await newUser.save();
+
+        const sanitizeUser = sanitizedUser(newUser.toJSON());
+
+        res.status(StatusCodes.CREATED).json({
+            success: true,
+            message: "Register successful",
+            data: {
+                user: sanitizeUser,
+            },
+        });
+    },
+
+    forgotPassword: async (req, res) => {
+        // Your forgot password logic here
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Forgot password successful",
+        });
+    },
+
+    resetPassword: async (req, res) => {
+        // Your reset password logic here
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Reset password successful",
+        });
+    },
+
+    updatePassword: async (req, res) => {
+        // Your update password logic here
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Update password successful",
+        });
+    },
+
+    logout: async (req, res) => {
+        const authorization = req.headers?.authorization || req.cookies?.token;
+        await redisClient.del(authorization);
+        res.clearCookie("token");
+
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Logout successful",
+        });
+    },
+
+    verifyEmail: async (req, res) => {
+        // Your verify email logic here
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Verify email successful",
+        });
+    },
+
+    resendVerificationEmail: async (req, res) => {
+        // Your resend verification email logic here
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Resend verification email successful",
+        });
+    },
 };
 
-export default TableController;
+export default AuthController;
