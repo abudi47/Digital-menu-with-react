@@ -67,12 +67,6 @@ APIVersion1.use("/order", OrderRoute);
 APIVersion1.use("/table", TableRoute);
 APIVersion1.use("/payment", PaymentRoute);
 
-// ======================== test code
-app.get("/test", async (req, res) => {
-    res.send("done");
-});
-// ======================== test code end here
-
 app.use(errorHandler);
 app.use("*", async (req, res) => {
     return res
