@@ -7,10 +7,19 @@ import SearchField from "../../components/SearchField";
 import { axiosPrivate } from "../../api/axios";
 import { useDispatch } from "react-redux";
 import axios from "../../api/axios";
+import { useSearchParams } from "react-router-dom";
+
 
 export default function Table() {
     const dispatch = useDispatch();
     const [btables, setBtables] = useState([]); // Store fetched tables
+    const [SearchParams] = useSearchParams();
+    
+    const [page, setPage] = useState(parseInt(SearchParams.get("page")) || 1);    
+    const limit = SearchParams.get("limit") || 5;
+    console.log(page)
+        const [totalRecords, setTotalRecords] = useState(0); // Store total number of records
+    
     const [newTable, setNewTable] = useState({
         number: "",
         category: "",
@@ -56,26 +65,21 @@ export default function Table() {
     
 
     // Fetch tables from the backend
-    const fetchTables = () => {
-        axiosPrivate.get("/table")
-            .then((res) => {
-                console.log("Fetched Data:", res.data);
-                if (Array.isArray(res.data.data)) {
-                    setBtables(res.data.data); // Extract the "data" array
-                } else {
-                    console.error("API response does not contain an array:", res.data);
-                    setBtables([]); // Ensure it's always an array
-                }
-            })
-            .catch((err) => {
-                console.error("Error fetching tables:", err);
-                setBtables([]); // Fallback in case of error
-            });
-    };
-
-    useEffect(() => {
-        fetchTables();
-    }, []);
+    const fetchTables = async () => {
+        try {
+                        const res = await axiosPrivate.get(`/table?page=${page}&limit=${limit}`);
+                        setBtables(res.data.data || []); // Update table data
+                        setTotalRecords(res.data.total || 0); // Update total records
+                    } catch (err) {
+                        console.error("Error fetching tables:", err.response ? err.response.data : err.message);
+                        setBtables([]);
+                        setTotalRecords(0);
+                    }
+                };
+                
+                useEffect(() => {
+                    fetchTables();
+                }, [page, limit]);
 
     const handleInputChange = (e) => {
         setNewTable({ ...newTable, [e.target.name]: e.target.value });
@@ -130,11 +134,10 @@ export default function Table() {
         }
     };
 
-    const toggleMenu = (table) => {
-        setExpandedRow(expandedRow === table.id ? null : table.id);
-        setActiveTable(expandedRow === table.id ? null : table);
+    const toggleMenu = (menu) => {
+        setExpandedRow(expandedRow === menu.id ? null : menu.id);
+        setActiveMenu(activeMenu == menu ? null : menu);
     };
-
     return (
         <>
             <div>
@@ -239,6 +242,24 @@ export default function Table() {
                     </div>
                 </div>
             )}
+
+    <div className="flex justify-between items-center p-4">
+        <button
+            onClick={() => setPage((p) => Math.max(p - 1, 1))}
+            className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-400"
+        >
+            Previous
+        </button>
+        <span className="text-gray-600 text-sm">
+            Page {page} of {Math.ceil(totalRecords / limit)}
+        </span>
+        <button
+            onClick={() => setPage((p) => (p < Math.ceil(totalRecords / limit) ? p + 1 : p))}
+            className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-400"
+        >
+            Next
+        </button>
+    </div>
         </>
     );
 }
