@@ -186,7 +186,7 @@ export default function Menu() {
                                                                     menu
                                                                         .imageUrl[
                                                                         currentImage
-                                                                    ]
+                                                                    ]+"_400"
                                                                 }
                                                                 alt="menu_image"
                                                                 className="w-full h-full object-cover"

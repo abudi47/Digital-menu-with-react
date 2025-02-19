@@ -10,7 +10,7 @@ export default function MenuCard({ menu }) {
         >
             <div className="h-[6rem] overflow-hidden">
                 <img
-                    src={menu?.imageUrl[0]}
+                    src={menu?.imageUrl[0] + "_400"}
                     alt="menu_image"
                     className="h-full w-full object-cover"
                 />
