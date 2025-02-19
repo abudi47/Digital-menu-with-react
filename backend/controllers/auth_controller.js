@@ -3,6 +3,7 @@ import process from "process";
 import CustomError from "../error/index.js";
 import redisClient from "../db/redis.js";
 import User from "../models/user.js";
+import Token from "../models/token.js";
 import {
     generateToken,
     signUser,
@@ -38,6 +39,11 @@ const AuthController = {
             throw new CustomError.UnauthorizedRequest("Invalid credentials");
         }
 
+        if (user.status !== "active") {
+            throw new CustomError.UnauthorizedRequest("Contact your adminstrator...");
+
+        }
+
         // check if password is correct
         const isPasswordCorrect = await user.isPasswordCorrect(password);
         if (!isPasswordCorrect) {
@@ -49,6 +55,14 @@ const AuthController = {
 
         // generate token
         const token = await generateToken();
+
+        const tokenRecord = new Token({
+            token : token,
+            userId: user.id,
+
+        })
+
+        await tokenRecord.save();
 
         // login for month
         await redisClient.set(

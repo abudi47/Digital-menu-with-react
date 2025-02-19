@@ -1,15 +1,15 @@
-/**
- * @module backend/routes/user_routes
- * @file user_routes.js
- * @description Express router for user in MERN stack
- */
 import express from "express";
 import UserController from "../controllers/user_controller.js";
 import { authHandler, roleHandler, roles } from "../middlewares/index.js";
+import User from "../models/user.js"; // Import the User model
+
+
 
 const router = express.Router();
 
-router.get("/", authHandler, UserController.getProfile);
-router.put("/", authHandler, UserController.updateProfile);
+router.get("/", authHandler, roleHandler([roles.admin]),UserController.getUsers);
+router.put("/", authHandler, roleHandler([roles.admin]), UserController.updateProfile);
+
+router.patch("/:id", roleHandler([roles.admin]), UserController.updateStatus);
 
 export default router;

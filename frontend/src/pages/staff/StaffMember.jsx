@@ -28,6 +28,7 @@ export default function StaffMember() {
     const [expandedRow, setExpandedRow] = useState(null);
     const [activeMenu, setActiveMenu] = useState(null);
     const [totalRecords, setTotalRecords] = useState(0); // Store total number of records
+    const [statuss, setStatuss] = useState(btables.status || "Active");
 
         
 
@@ -123,6 +124,41 @@ export default function StaffMember() {
                 (prev) => (prev - 1 + menu.imageUrl.length) % menu.imageUrl.length
             );
         };
+        const handleStatusChange = async (staffId, newStatus) => {
+            try {
+                // Send a request to update the status in the database
+                await axiosPrivate.patch(`/user/${staffId}`, { status: newStatus });
+        
+                // Update the local state to reflect the new status
+                setBtables((prevTables) =>
+                    prevTables.map((table) =>
+                        table.id === staffId ? { ...table, status: newStatus } : table
+                    )
+                );
+        
+                // Show a success message
+                dispatch({
+                    type: "SHOW_ALERT",
+                    payload: {
+                        message: "Status updated successfully",
+                        type: "success",
+                        dismiss: 9000,
+                    },
+                });
+            } catch (err) {
+                console.error("Error updating status:", err.response ? err.response.data : err.message);
+        
+                // Show an error message
+                dispatch({
+                    type: "SHOW_ALERT",
+                    payload: {
+                        message: err?.response?.data?.error || "Failed to update status",
+                        type: "warning",
+                        dismiss: 9000,
+                    },
+                });
+            }
+        };
     return (
         <div>
             {/* Table Header */}
@@ -153,6 +189,8 @@ export default function StaffMember() {
                             <th className="p-3">Name</th>
                             <th className="p-3">Email</th>
                             <th className="p-3">Role</th>
+                            <th className="p-3">Status</th>
+
                         </tr>
                     </thead>
 
@@ -167,6 +205,17 @@ export default function StaffMember() {
                                         </td>
                                         <td className="p-3">{`${table.email}`}</td>
                                         <td className="p-3">{table.role}</td>
+                                        <td className="p-3">
+                                        <select
+                                                value={table.status || "active"} // Use the status from the table data
+                                                className="p-2 rounded-lg border border-gray-300"
+                                                onChange={(e) => handleStatusChange(table.id, e.target.value)} // Pass the staff ID and new status
+                                            >
+                                                <option className="bg-green-500" value="active">Active</option>
+                                                <option value="inactive">Inactive</option>
+                                                <option value="baned">Banned</option>
+                                            </select>
+                                        </td>
                                         
                                         {/* Dropdown Row (Pushes Other Rows) */}
                                     {expandedRow === table.id && (

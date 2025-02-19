@@ -7,6 +7,8 @@ export const roles = {
     foodRunner: "food_runner",
 };
 
+export const userStatus = ["active" , "inactive" , "baned"];
+
 export const allowedRoles = ["admin", "casher", "barista", "food_runner"];
 
 export const menuCategoriesType = [

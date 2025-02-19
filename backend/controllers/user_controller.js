@@ -2,6 +2,9 @@ import { StatusCodes } from "http-status-codes";
 import CustomError from "../error/index.js";
 import User from "../models/user.js";
 import { sanitizedUser, isUuidv4 } from "../utils/index.js";
+import Token from "../models/token.js";
+import { userStatus } from "../config/config.js";
+import redisClient from "../db/redis.js";
 
 const UserController = {
   getMenus: async (req, res) => {
@@ -57,7 +60,7 @@ const UserController = {
         data: { menus: formattedMenus, length: totalCount },
     });
 },
-  getProfile: async (req, res) => {
+  getUsers: async (req, res) => {
     // const user = req.user;
     // res.status(StatusCodes.OK).json({
     //   success: true,
@@ -147,6 +150,52 @@ const UserController = {
       },
     });
   },
-};
 
+updateStatus : async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+
+
+    if (!isUuidv4(id)) {
+        throw new CustomError.BadRequest("Unsupported ID");
+    }
+
+    if (!userStatus.includes(status)){
+        throw new CustomError.BadRequest("Unsupported Status type...");
+
+    }
+    try {
+        // Find the user by ID
+        const user = await User.findByPk(id);
+
+        if (!user) {
+            throw new CustomError.BadRequest("User not found");
+
+        }
+        if (status === "inactive" || status === "baned"){
+            const logRecord = await Token.findAll({where: {
+                userId: user.id,
+
+            }})
+            // console.log(logRecord)
+            for (const token of logRecord) {
+                console.log(token.token);
+                await redisClient.del(token.token);
+            }
+            
+             
+       }
+
+        
+
+        // Update user status
+        await user.update({ status });
+
+        res.json(user);
+    } catch (err) {
+        console.error("Error updating user status:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+},
+};
 export default UserController;

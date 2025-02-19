@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
+import { useSelector } from "react-redux";
 import "./App.css";
 
 import SplashScreen from "./pages/SplashScreen";
+import NotFound from "./pages/NotFound";
 import Alert from "./components/Alert";
 import Menu from "./pages/Menu";
 import Order from "./pages/Order";
@@ -23,6 +25,8 @@ import MenuPage from "./pages/staff/Menu";
 import Table from "./pages/staff/Table";
 
 function App() {
+    const user = useSelector((state) => state.user.user);
+
     return (
         <>
             <div className="overflow-hidden relative">
@@ -38,7 +42,9 @@ function App() {
                         <Route path="" Component={Report} />
                         <Route path="new-order" Component={NewOrder} />
                         <Route path="order-history" Component={OrderHistory} />
-                        <Route path="staff-member" Component={StaffMember} />
+                        {user.role === "admin" && (
+                             <Route path="staff-member" Component={StaffMember} />
+                        )}
                         <Route path="report" Component={Report} />
                         <Route path="menu" Component={MenuPage} />
                         <Route path="table" Component={Table} />
@@ -52,8 +58,10 @@ function App() {
                         <Route path="order" Component={Order} />
                         <Route path="payment-method" Component={PaymentMethod} />
                         <Route path="order" Component={Order} />
-
+                        
                     </Route>
+                  <Route path="*" Component={NotFound} />
+                
                 </Routes>
 
                 {/* client side pages  */}
