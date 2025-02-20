@@ -73,6 +73,14 @@ const PaymentController = {
 
         const orderRecord = await Order.findOne({
             where: { id: paymentRecord.orderId },
+            include: [
+                {
+                    model: OrderItem,
+                    as: "orderItems",
+                    include: [{ model: Menu, as: "menu" }],
+                },
+                { model: Table, as: "table" },
+            ],
         });
 
         // orderRecord.status = "confirmed";
@@ -85,7 +93,7 @@ const PaymentController = {
             "Implementation Note Use socket.io to notify the staffs that the payment is confirmed"
         );
 
-        io.emit("newOrder", { order: orderRecord })
+        io.emit("newOrder", { order: {...orderRecord, payment: payment} })
 
         return res.status(StatusCodes.OK).send();
     },
