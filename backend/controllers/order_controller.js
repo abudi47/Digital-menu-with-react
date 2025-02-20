@@ -113,7 +113,7 @@ const OrderController = {
                 tableId: tableId,
             });
 
-            if (!payment || !payment.success === 'success') {
+            if (!payment || !payment.success === "success") {
                 throw new CustomError.BadRequest(
                     "Payment initialization failed try again"
                 );
@@ -147,6 +147,84 @@ const OrderController = {
                 order: newOrder,
                 checkout_url: newPayment.checkOutUrl,
             },
+        });
+    },
+
+    getOrder: async (req, res) => {
+        const { id } = req.params;
+
+        if (!isUuidv4(id)) {
+            throw new CustomError.BadRequest("Unsupported order id");
+        }
+
+        // order by createdAt desc newest first
+        const order = await Order.findOne({
+            where: { id: id },
+            include: [
+                {
+                    model: OrderItem,
+                    include: [
+                        {
+                            model: Menu,
+                        },
+                    ],
+                },
+            ],
+            order: [["createdAt", "DESC"]],
+        });
+
+        if (!order) {
+            throw new CustomError.BadRequest("Order not found");
+        }
+
+        res.status(StatusCodes.OK).json({
+            success: true,
+            data: { order },
+        });
+    },
+
+    getOrders: async (req, res) => {
+        let { page = 1, limit = 20, query = "", category = "" } = req.query;
+        page = parseInt(page, 10);
+        limit = parseInt(limit, 10);
+
+        console.log(
+            "Order fetch ================",
+            `limit ${limit}, page ${page}, query ${query} category ${category}`
+        );
+
+        if (isNaN(page) || page < 1 || isNaN(limit) || limit < 1) {
+            throw new CustomError.BadRequest("Invalid pagination values");
+        }
+        const offset = page * limit - limit;
+
+        const orders = await Order.findAll({
+            include: [
+                {
+                    model: OrderItem,
+                    include: [
+                        {
+                            model: Menu,
+                        },
+                    ],
+                },
+            ],
+            order: [["createdAt", "DESC"]],
+            limit: limit,
+            offset: offset,
+        });
+
+        if (!orders) {
+            res.status(StatusCodes.NotFound).json({
+                success: false,
+                message: "Order not created yet",
+                data: { orders },
+            });
+        }
+
+        res.status(StatusCodes.OK).json({
+            success: true,
+            data: { orders },
         });
     },
 };

@@ -7,6 +7,7 @@
  */
 import QRcode from "qrcode";
 import { Jimp } from "jimp";
+import { mkdir } from "fs";
 import { BaseURL } from "../config/config.js";
 
 async function QRcodeGenerator(string) {
@@ -46,6 +47,12 @@ export async function TableMenuImage(baseImage, qrImage, x, y, outputImage) {
     base.composite(qr, x, y); // Overlay QR code at (x, y)
     await base.write(outputImage);
 }
+
+mkdir(".uploads/images/table_image/printable", { recursive: true }, (err) => {
+    if (err) {
+        console.log("File Initialization Failed ========: ", err);
+    }
+});
 
 // QRcodeGenerator("http://localhost:5173/29401caa-9744-46ea-90c6-393279c0baaf");
 // TableMenuImage("Pic_for_Product_QR_Menu.png", "foo.png", 300, 260, "output.jpg");

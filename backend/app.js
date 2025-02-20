@@ -82,7 +82,7 @@ async function main() {
             customLog.success("Database synchronization competed.");
         });
     } catch (err) {
-        customLog.error("Unable to connect to the database.", error);
+        customLog.error("Unable to connect to the database.", err);
     }
     await redisClient.connect();
 

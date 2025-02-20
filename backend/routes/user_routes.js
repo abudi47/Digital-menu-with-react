@@ -10,6 +10,6 @@ const router = express.Router();
 router.get("/", authHandler, roleHandler([roles.admin]),UserController.getUsers);
 router.put("/", authHandler, roleHandler([roles.admin]), UserController.updateProfile);
 
-router.patch("/:id", roleHandler([roles.admin]), UserController.updateStatus);
+router.patch("/:id", authHandler, roleHandler([roles.admin]), UserController.updateStatus);
 
 export default router;

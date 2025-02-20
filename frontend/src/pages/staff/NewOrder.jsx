@@ -1,8 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import SearchField from "../../components/SearchField";
+import socket from "../../api/socket";
 
 export default function NewOrder() {
+    useEffect(() => {
+        socket.on("newOrder", (data) => {
+            console.log("New Order Received:", data);
+        });
+
+        return () => {
+            socket.off("newOrder");
+        };
+    }, []);
+
     const [expandedRow, setExpandedRow] = useState(null);
 
     const toggleMenu = (id) => {

@@ -137,23 +137,23 @@ export default function DashboardLayout() {
                         <ArrowForwardIosOutlinedIcon className="!w-3 !h-3" />
                     </Link>
 
-                    { user.role === "admin" && (
-                                            <Link
-                                            to="staff-member"
-                                            className={`flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer ${
-                                                activeTab === "staff"
-                                                    ? "bg-primary py-4 text-white"
-                                                    : ""
-                                            }`}
-                                            onClick={() => setActiveTab("staff")}
-                                        >
-                                            <div className="flex flex-row gap-4">
-                                                <PeopleAltOutlinedIcon className="" />
-                                                <p className="">Staff Members</p>
-                                            </div>
-                    
-                                            <ArrowForwardIosOutlinedIcon className="!w-3 !h-3" />
-                                        </Link>
+                    {user?.role === "admin" && (
+                        <Link
+                            to="staff-member"
+                            className={`flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer ${
+                                activeTab === "staff"
+                                    ? "bg-primary py-4 text-white"
+                                    : ""
+                            }`}
+                            onClick={() => setActiveTab("staff")}
+                        >
+                            <div className="flex flex-row gap-4">
+                                <PeopleAltOutlinedIcon className="" />
+                                <p className="">Staff Members</p>
+                            </div>
+
+                            <ArrowForwardIosOutlinedIcon className="!w-3 !h-3" />
+                        </Link>
                     )}
 
                     <div className="flex flex-row justify-between items-center text-gray-500 px-6 hover:bg-primary py-4 rounded-l-lg hover:text-white cursor-pointer">

@@ -21,6 +21,7 @@ export default function Menu() {
     const [overlayForm, setOverlayForm] = useState(false);
     const [activeMenu, setActiveMenu] = useState(null);
 
+    const [refresh, setRefresh] = useState("");
     const [menuItems, setMenuItems] = useState(null);
     const [newMenu, setNewMenu] = useState({
         name: "",
@@ -77,6 +78,15 @@ export default function Menu() {
                         dismiss: 9000,
                     },
                 });
+                setRefresh(Math.random());
+                setNewMenu({
+                    name: "",
+                    description: "",
+                    price: "",
+                    category: "",
+                    menu_image: "",
+                    isAvailable: true,
+                });
                 setOverlayForm(false);
             })
             .catch((err) => {
@@ -95,7 +105,7 @@ export default function Menu() {
         axiosPrivate.get(`/menu?page=${page}&limit=${limit}`).then((res) => {
             setMenuItems(res.data?.data);
         });
-    }, [page]);
+    }, [page, refresh]);
     return (
         <>
             <div>
@@ -186,7 +196,7 @@ export default function Menu() {
                                                                     menu
                                                                         .imageUrl[
                                                                         currentImage
-                                                                    ]+"_400"
+                                                                    ] + "_400"
                                                                 }
                                                                 alt="menu_image"
                                                                 className="w-full h-full object-cover"

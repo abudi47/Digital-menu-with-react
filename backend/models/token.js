@@ -27,7 +27,7 @@ const Token = db.define("token", {
 });
 
 User.hasMany(Token, {
-    foreignKey: "userID",
+    foreignKey: "userId",
     as: "user"
 
 })

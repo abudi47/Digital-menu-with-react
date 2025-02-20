@@ -42,7 +42,7 @@ function App() {
                         <Route path="" Component={Report} />
                         <Route path="new-order" Component={NewOrder} />
                         <Route path="order-history" Component={OrderHistory} />
-                        {user.role === "admin" && (
+                        {user?.role === "admin" && (
                              <Route path="staff-member" Component={StaffMember} />
                         )}
                         <Route path="report" Component={Report} />

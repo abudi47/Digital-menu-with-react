@@ -78,7 +78,7 @@ export default function MenuDetail() {
             <div className="flex flex-col w-full mx-2 borderx border-red-500x mt-4">
                 <div className="w-full max-h-34 min-h-32 rounded-lg overflow-hidden">
                     <img
-                        src={menu.imageUrl}
+                        src={menu.imageUrl + "_400"}
                         alt="menu_image"
                         className="w-full object-cover"
                     />

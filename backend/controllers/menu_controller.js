@@ -33,6 +33,7 @@ const MenuController = {
                 isAvailable: true,
                 category: category ? category : { [Op.like]: "%" },
             },
+            order: [["createdAt", "DESC"]],
             limit: limit,
             offset: offset,
         });

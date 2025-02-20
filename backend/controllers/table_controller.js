@@ -4,10 +4,12 @@
  * @description Contains the controller functions for table routes
  */
 import { StatusCodes } from "http-status-codes";
+import fs from "fs";
 import CustomError from "../error/index.js";
 import Table from "../models/table.js";
 import { tableCategories } from "../config/config.js";
 import { isUuidv4 } from "../utils/index.js";
+import { QRcodeGenerator } from "../utils/index.js";
 
 const TableController = {
     async getTables(req, res) {
@@ -27,6 +29,7 @@ const TableController = {
 
             // Build the query options
             const queryOptions = {
+              order: [["createdAt", "DESC"]],
                 limit: limit,
                 offset: offset,
             };
@@ -82,11 +85,11 @@ const TableController = {
     },
 
     createTable: async (req, res) => {
-        const { number, price, category, imageUrl, isAvailable } = req.body;
+        const { number, price, category, isAvailable = "true" } = req.body;
         if (!number || !price || !category || isAvailable === undefined) {
             throw new CustomError.BadRequest("All fields are required");
         }
-
+        
         if (!tableCategories.includes(category)) {
             throw new CustomError.BadRequest("Unsupported category");
         }
@@ -97,12 +100,26 @@ const TableController = {
         if (existingTable) {
             throw new CustomError.BadRequest("Table already exists");
         }
-        const table = await Table.create({
+
+        const table = new Table({
             number,
             price,
             category,
-            isAvailable: isAvailable == "true" ? true : false,
+            isAvailable: isAvailable == "true" || isAvailable == true ? true : false,
         });
+
+        const fileName = await QRcodeGenerator(table.id);
+
+        if (!fileName) {
+            throw new CustomError.BadRequest(
+                "Can't able to create QR identifier"
+            );
+        }
+
+        table.imageUrl = fileName;
+
+        await table.save();
+
         return res
             .status(StatusCodes.CREATED)
             .json({ success: true, message: "Table created", data: { table } });
@@ -133,7 +150,7 @@ const TableController = {
             price,
             category,
             imageUrl: [imageUrl],
-            isAvailable,
+            isAvailable: isAvailable == "true" || isAvailable == true ? true : false,
         });
         return res.status(StatusCodes.OK).json({
             success: true,
@@ -155,6 +172,23 @@ const TableController = {
         if (!table) {
             throw new CustomError.NotFound("Table not found");
         }
+
+        try {
+            await fs.promises.unlink(
+                `uploads/images/table_image/${table.imageUrl}`
+            );
+            await fs.promises.unlink(
+                `uploads/images/table_image/printable/${table.imageUrl}.jpg`
+            );
+        } catch (err) {
+            if (err.code === "ENOENT") {
+                console.log("File not found, skipping deletion:", err.path);
+            } else {
+                console.log("=======: ", err);
+                throw new CustomError.NotFound("Can't delete file");
+            }
+        }
+
         await table.destroy();
         return res
             .status(StatusCodes.OK)
