@@ -70,6 +70,14 @@ const OrderController = {
                         "The provided menu is not supported"
                     );
                 }
+                
+                const quantity = parseInt(item.quantity, 10);
+
+                if (isNaN(quantity)) {
+                    throw new CustomError.BadRequest(
+                        "Invalid quantity only number supported"
+                    );
+                }
 
                 const menu = await Menu.findOne({ where: { id: item.menu } }); // Await here
                 if (!menu) {
@@ -83,7 +91,7 @@ const OrderController = {
                         "Selected menu isn't available for now"
                     );
                 }
-                totalPrice += menu.price;
+                totalPrice += menu.price * quantity;
             }
         };
 
