@@ -200,6 +200,16 @@ const OrderController = {
 
         const orders = await Order.findAll({
             where: {},
+            include: [
+                {
+                    model: OrderItem,
+                    as: "orderItems",
+                    include: [{ model: Menu, as: "menu" }],
+                },
+                { model: Table, as: "table" },
+
+                { model: Payment, as: "payment" },
+            ],
             order: [["createdAt", "DESC"]],
             limit: limit || 10,
             offset: offset || 0,
@@ -214,9 +224,17 @@ const OrderController = {
             });
         }
 
+        let totalCount;
+        if (query !== "" && category !== "") {
+            totalCount = await Order.count();
+        } else {
+            totalCount = await Order.count();
+        }
+
         res.status(StatusCodes.OK).json({
             success: true,
             data: { orders },
+            data: { orders: orders, length: totalCount },
         });
     },
 };

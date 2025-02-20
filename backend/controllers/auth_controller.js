@@ -191,6 +191,8 @@ const AuthController = {
     logout: async (req, res) => {
         const authorization = req.headers?.authorization || req.cookies?.token;
         await redisClient.del(authorization);
+        // TODO: instead of deleting login make it history
+        await Token.destroy({ where: { token: authorization } })
         res.clearCookie("token");
 
         res.status(StatusCodes.OK).json({
