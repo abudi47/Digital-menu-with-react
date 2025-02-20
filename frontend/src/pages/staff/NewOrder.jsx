@@ -1,10 +1,24 @@
 import React, { useEffect, useState } from "react";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import SearchField from "../../components/SearchField";
+import { axiosPrivate } from "../../api/axios";
 import socket from "../../api/socket";
 
 export default function NewOrder() {
+    const [ordersx, setOrders] = useState([]);
+
     useEffect(() => {
+        axiosPrivate
+            .get("/order")
+            .then((res) => {
+                // setOrders(res.data);
+                console.log(res.data);
+                
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+
         socket.on("newOrder", (data) => {
             console.log("New Order Received:", data);
         });

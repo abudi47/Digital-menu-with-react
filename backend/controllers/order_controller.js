@@ -199,19 +199,11 @@ const OrderController = {
         const offset = page * limit - limit;
 
         const orders = await Order.findAll({
-            include: [
-                {
-                    model: OrderItem,
-                    include: [
-                        {
-                            model: Menu,
-                        },
-                    ],
-                },
-            ],
+            where: {},
             order: [["createdAt", "DESC"]],
-            limit: limit,
-            offset: offset,
+            limit: limit || 10,
+            offset: offset || 0,
+            subQuery: false,
         });
 
         if (!orders) {

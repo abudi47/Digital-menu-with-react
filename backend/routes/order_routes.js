@@ -9,6 +9,7 @@ import { authHandler, roleHandler, roles } from "../middlewares/index.js";
 
 const router = express.Router();
 
+router.get("/", authHandler, OrderController.getOrders);
 router.post("/create", OrderController.createOrder);
 
 
