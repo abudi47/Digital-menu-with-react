@@ -15,24 +15,35 @@ export default function NewOrder() {
 
     const [data, setData] = useState([]);
 
-    useEffect(() => {
-        axiosPrivate
-            .get(`/order?page=${page}&limit=${limit}`)
-            .then((res) => {
-                setData(res.data.data);
-                console.log(res.data.data.length);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+    const dateFormatter = (time) => {
+        const date = new Date(time)
+        return date.toLocaleString()
+    }
 
+    useEffect(() => {
+        console.log("=========: Socket useEffect");
         socket.on("newOrder", (data) => {
-            console.log("New Order Received:", data);
+            setData((prev) => ({
+                orders: [data?.order, ...(prev.orders || [])],
+                length: prev.length,
+            }));
+            console.log("New Order Received: ", data.order);
         });
 
         return () => {
             socket.off("newOrder");
         };
+    }, []);
+
+    useEffect(() => {
+        axiosPrivate
+            .get(`/order?page=${page}&limit=${limit}`)
+            .then((res) => {
+                setData(res.data.data);
+            })
+            .catch((err) => {
+                // console.log(err);
+            });
     }, [page, limit]);
 
     const [expandedRow, setExpandedRow] = useState(null);
@@ -40,33 +51,6 @@ export default function NewOrder() {
     const toggleMenu = (id) => {
         setExpandedRow(expandedRow === id ? null : id);
     };
-
-    const orders = [
-        {
-            id: 1,
-            name: "John Doe",
-            table: "2",
-            orderTime: new Date(),
-            menus: ["Egg", "Toast", "Juice"],
-            status: "Pending",
-        },
-        {
-            id: 2,
-            name: "Jane Smith",
-            table: "12",
-            orderTime: new Date(),
-            menus: ["Pasta", "Salad"],
-            status: "Pending",
-        },
-        {
-            id: 3,
-            name: "Sam Wilson",
-            table: "4",
-            orderTime: new Date(),
-            menus: ["Burger", "Fries", "Soda"],
-            status: "Served",
-        },
-    ];
     return (
         <div>
             {/* Table Header */}
@@ -105,16 +89,16 @@ export default function NewOrder() {
                             <React.Fragment key={order.id}>
                                 {/* Main Row */}
                                 <tr key={order.id} className="border-t">
-                                    <td className="p-3">{index}</td>
+                                    <td className="p-3">{index + 1}</td>
                                     <td className="p-3">{order.name}</td>
                                     <td className="p-3">
                                         {order?.table?.number || "Unknown"}
                                     </td>
                                     <td className="p-3">
                                         {/* {order.orderTime.toLocaleTimeString()} */}
-                                        Date
+                                        { dateFormatter(order.payment.updatedAt) }
                                     </td>
-                                    <td className="p-3 text-center">
+                                    <td className="p-3 text-left">
                                         <button
                                             onClick={() => toggleMenu(order.id)}
                                             className="text-blue-600 underline"
@@ -143,7 +127,7 @@ export default function NewOrder() {
                                 : "bg-red-100 text-red-700"
                         }`}
                                         >
-                                            {order.status}
+                                            {order?.payment?.status}
                                         </span>
                                     </td>
 

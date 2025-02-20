@@ -1,14 +1,13 @@
 /**
  * Order Model
  * This model represents an order in the database.
- * 
+ *
  * @module models/order
  */
 
 import { DataTypes } from "sequelize";
 import db from "../db/db.js";
 import Table from "./table.js";
-
 
 /**
  * Defines the Order model
@@ -17,7 +16,7 @@ import Table from "./table.js";
  * @property {UUIDV4} tableId - The unique identifier for the table
  * @property {string} status - The status of the order
  * @property {number} verificationNumber - The verification number of the order
- * 
+ *
  * @type {Model}
  */
 const Order = db.define("order", {
@@ -51,4 +50,3 @@ Order.belongsTo(Table, {
 });
 
 export default Order;
-

@@ -1,6 +1,9 @@
 import { StatusCodes } from "http-status-codes";
 import Payment from "../models/payment.js";
 import Order from "../models/order.js";
+import OrderItem from "../models/order_item.js";
+import Menu from "../models/menu.js";
+import Table from "../models/table.js";
 import CustomError from "../error/index.js";
 import { paymentOptions } from "../config/config.js";
 import { verifyChapaPayment } from "../utils/payment.js";
@@ -82,18 +85,12 @@ const PaymentController = {
                 { model: Table, as: "table" },
             ],
         });
-
-        // orderRecord.status = "confirmed";
-        // await orderRecord.save();
+        const jsonOrderRecord = orderRecord?.toJSON();
 
         console.log(
             "============================================ payment Confirmed"
         );
-        console.log(
-            "Implementation Note Use socket.io to notify the staffs that the payment is confirmed"
-        );
-
-        io.emit("newOrder", { order: {...orderRecord, payment: payment} })
+        io.emit("newOrder", { order: { ...jsonOrderRecord, payment: payment } });
 
         return res.status(StatusCodes.OK).send();
     },
