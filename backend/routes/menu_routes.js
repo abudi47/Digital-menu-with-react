@@ -39,5 +39,17 @@ router.put(
     MenuController.changeAvailability
 );
 
+router.put(
+    "/:id",
+    authHandler,
+    roleHandler([roles.admin]),
+    MenuController.updateMenu
+)
 
+router.post(
+    "/:id/images",
+    authHandler,
+    roleHandler([roles.admin]),
+    MenuController.updateMenu
+)
 export default router;

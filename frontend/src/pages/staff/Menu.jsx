@@ -62,6 +62,95 @@ export default function Menu() {
         );
     };
     // ===================
+    // Save Changes
+    const handleSaveChanges = async () => {
+        try {
+            const payload = {
+                ...activeMenu,
+                imageUrl: activeMenu.imageUrl, // Ensure imageUrl is included
+            };
+    
+            const response = await axiosPrivate.put(`/menu/${activeMenu.id}`, payload, {
+                headers: { "Content-Type": "application/json" },
+            });
+    
+            dispatch({
+                type: "SHOW_ALERT",
+                payload: {
+                    message: response?.data?.message || "Menu updated successfully",
+                    type: "success",
+                    dismiss: 9000,
+                },
+            });
+    
+            setRefresh(Math.random()); // Refresh the menu list
+        } catch (err) {
+            dispatch({
+                type: "SHOW_ALERT",
+                payload: {
+                    message: err?.response?.data?.error || "Failed to update menu",
+                    type: "warning",
+                    dismiss: 9000,
+                },
+            });
+        }
+    };
+
+// Remove Menu
+const handleRemoveMenu = async () => {
+    try {
+        const response = await axiosPrivate.delete(`/menu/${activeMenu.id}`);
+        dispatch({
+            type: "SHOW_ALERT",
+            payload: {
+                message: response?.data?.message || "Menu deleted successfully",
+                type: "success",
+                dismiss: 9000,
+            },
+        });
+        setRefresh(Math.random()); // Refresh the menu list
+        setExpandedRow(null); // Collapse the expanded row
+    } catch (err) {
+        dispatch({
+            type: "SHOW_ALERT",
+            payload: {
+                message: err?.response?.data?.error || "Failed to delete menu",
+                type: "warning",
+                dismiss: 9000,
+            },
+        });
+    }
+};
+
+const [forceRender, setForceRender] = useState(false);
+
+const handleAddImage = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const newImageUrl = URL.createObjectURL(file);
+        setActiveMenu((prev) => ({
+            ...prev,
+            imageUrl: prev.imageUrl ? [...prev.imageUrl, newImageUrl] : [newImageUrl],
+        }));
+        setForceRender((prev) => !prev); // Force re-render
+    }
+};
+
+// Remove Image
+const handleRemoveImage = () => {
+    setActiveMenu((prev) => {
+        const imageToRemove = prev.imageUrl[currentImage];
+        URL.revokeObjectURL(imageToRemove); // Clean up the URL
+        const updatedImageUrl = prev.imageUrl.filter((_, index) => index !== currentImage);
+        return {
+            ...prev,
+            imageUrl: updatedImageUrl,
+        };
+    });
+    setCurrentImage(0); // Reset to the first image
+};
+
+
 
     const handleNewMenu = async (e) => {
         e.preventDefault();
@@ -189,50 +278,53 @@ export default function Menu() {
                                             >
                                                 <div className="flex flex-col md:flex-row gap-6 items-centerx">
                                                     {/* Image section */}
-                                                    <div className="flex flex-col gap-3 w-64 md:w-56">
-                                                        <div className="relative w-full h-56 rounded-lg overflow-hidden shadow-lg border">
-                                                            <img
-                                                                src={
-                                                                    menu
-                                                                        .imageUrl[
-                                                                        currentImage
-                                                                    ] + "_400"
-                                                                }
-                                                                alt="menu_image"
-                                                                className="w-full h-full object-cover"
-                                                                loading="lazy"
-                                                            />
-                                                            {/* Image Navigation Buttons */}
-                                                            <div className="absolute inset-0 flex justify-between items-center px-2">
-                                                                <button
-                                                                    onClick={() =>
-                                                                        handlePrevImage(
-                                                                            activeMenu
-                                                                        )
-                                                                    }
-                                                                    className="bg-gray-700/80 text-white p-2 rounded-full hover:bg-gray-900 transition duration-300"
-                                                                >
-                                                                    <ChevronLeftOutlinedIcon className="!w-6 !h-6" />
-                                                                </button>
-                                                                <button
-                                                                    onClick={() =>
-                                                                        handleNextImage(
-                                                                            activeMenu
-                                                                        )
-                                                                    }
-                                                                    className="bg-gray-700/80 text-white p-2 rounded-full hover:bg-gray-900 transition duration-300"
-                                                                >
-                                                                    <ChevronRightOutlinedIcon className="!w-6 !h-6" />
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                        {/* Image Controls */}
-                                                        <div className="flex justify-between px-3">
-                                                            <AddPhotoAlternateOutlinedIcon className="cursor-pointer text-green-600 hover:text-green-800 transition duration-300" />
-                                                            <DeleteOutlineOutlinedIcon className="cursor-pointer text-red-600 hover:text-red-800 transition duration-300" />
-                                                        </div>
-                                                    </div>
-
+                                                    <div className="relative w-full h-56 rounded-lg overflow-hidden shadow-lg border">
+    {activeMenu.imageUrl && activeMenu.imageUrl.length > 0 ? (
+        <img
+            src={activeMenu.imageUrl[currentImage] + "_400"}
+            alt="menu_image"
+            className="w-full h-full object-cover"
+            loading="lazy"
+        />
+    ) : (
+        <div className="w-full h-full flex items-center justify-center bg-gray-100">
+            <span className="text-gray-500">No Image Available</span>
+        </div>
+    )}
+    {/* Image Navigation Buttons */}
+    <div className="absolute inset-0 flex justify-between items-center px-2">
+        <button
+            onClick={() => handlePrevImage(activeMenu)}
+            className="bg-gray-700/80 text-white p-2 rounded-full hover:bg-gray-900 transition duration-300"
+        >
+            <ChevronLeftOutlinedIcon className="!w-6 !h-6" />
+        </button>
+        <button
+            onClick={() => handleNextImage(activeMenu)}
+            className="bg-gray-700/80 text-white p-2 rounded-full hover:bg-gray-900 transition duration-300"
+        >
+            <ChevronRightOutlinedIcon className="!w-6 !h-6" />
+        </button>
+        
+    </div>
+    
+</div>
+<div className="flex justify-between items-end py-3">
+    <label htmlFor="add-image" className="cursor-pointer">
+        <AddPhotoAlternateOutlinedIcon className="text-green-600 hover:text-green-800 transition duration-300" />
+        <input
+            id="add-image"
+            type="file"
+            accept="image/*"
+            onChange={handleAddImage}
+            className="hidden"
+        />
+    </label>
+    <DeleteOutlineOutlinedIcon
+        onClick={handleRemoveImage}
+        className="cursor-pointer text-red-600 hover:text-red-800 transition duration-300"
+    />
+</div>
                                                     {/* Menu Details */}
                                                     <div className="flex flex-col flex-1 gap-4">
                                                         <div className="w-full max-w-sm min-w-[200px]">
@@ -290,32 +382,26 @@ export default function Menu() {
                                                         </div>
 
                                                         <div className="w-full max-w-sm min-w-[200px]">
-                                                            <label className="block mb-2 text-sm font-medium text-gray-700">
-                                                                Category
-                                                            </label>
-                                                            <input
-                                                                className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 shadow-sm text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none transition duration-300"
-                                                                placeholder="Type menu category here..."
-                                                                value={
-                                                                    activeMenu.category
-                                                                }
-                                                                onChange={(e) =>
-                                                                    setActiveMenu(
-                                                                        (
-                                                                            prev
-                                                                        ) => {
-                                                                            return {
-                                                                                ...prev,
-                                                                                category:
-                                                                                    e
-                                                                                        .target
-                                                                                        .value,
-                                                                            };
-                                                                        }
-                                                                    )
-                                                                }
-                                                            />
-                                                        </div>
+    <label className="block mb-2 text-sm font-medium text-gray-700">
+        Category
+    </label>
+    <select
+        className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 shadow-sm text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none transition duration-300"
+        value={activeMenu.category}
+        onChange={(e) =>
+            setActiveMenu((prev) => ({
+                ...prev,
+                category: e.target.value,
+            }))
+        }
+    >
+        <option value="">Select Category</option>
+        <option value="starter">Starter</option>
+        <option value="soft_drink">Soft Drink</option>
+        <option value="unknown">Unknown</option>
+    </select>
+</div>
+
                                                     </div>
 
                                                     {/* Description & Submit Button */}
@@ -350,12 +436,24 @@ export default function Menu() {
                                                         </div>
 
                                                         <div className="flex flex-row justify-between">
-                                                            <button className="px-6 py-2 mt-4 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition duration-300">
-                                                                Save Changes
-                                                            </button>
-                                                            <button className="px-6 py-2 mt-4 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition duration-300">
-                                                                Remove Menu
-                                                            </button>
+                                                        <button
+                                                                    onClick={handleSaveChanges}
+                                                                    className="px-6 py-2 mt-4 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition duration-300"
+                                                                >
+                                                                    Save Changes
+                                                        </button>
+                                                        <button
+                                                                    onClick={handleRemoveMenu}
+                                                                    className="px-6 py-2 mt-4 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition duration-300"
+                                                                >
+                                                                    Remove Menu
+                                                        </button>
+
+
+
+
+
+
                                                         </div>
                                                     </div>
                                                 </div>
