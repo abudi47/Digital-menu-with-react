@@ -3,8 +3,8 @@ import { useSelector } from "react-redux";
 
 export default function Order() {
     const cart = useSelector((state) => state.newOrder);
-
-    const totalPrice = cart.reduce((sum, item) => sum + item.menu.price, 0);
+    
+    const totalPrice = cart.reduce((sum, item) => sum + (item.menu.price * item.quantity), 0);
 
     return (
         <div className="h-screen w-screen relative">

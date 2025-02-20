@@ -75,8 +75,8 @@ const PaymentController = {
             where: { id: paymentRecord.orderId },
         });
 
-        orderRecord.status = "confirmed";
-        await orderRecord.save();
+        // orderRecord.status = "confirmed";
+        // await orderRecord.save();
 
         console.log(
             "============================================ payment Confirmed"
