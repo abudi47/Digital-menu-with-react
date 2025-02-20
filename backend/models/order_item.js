@@ -21,16 +21,16 @@ import Menu from "./menu.js";
  */
 const OrderItem = db.define("order_item", {
     id: {
-        type: DataTypes.UUIDV4,
+        type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
     },
     orderId: {
-        type: DataTypes.UUIDV4,
+        type: DataTypes.UUID,
         allowNull: false,
     },
     menuId: {
-        type: DataTypes.UUIDV4,
+        type: DataTypes.UUID,
         allowNull: false,
     },
     quantity: {
@@ -42,9 +42,20 @@ const OrderItem = db.define("order_item", {
 
 Order.hasMany(OrderItem, {
     foreignKey: "orderId",
+    as: "orderItems",
+});
+
+OrderItem.belongsTo(Order, {
+    foreignKey: "orderId",
     as: "order",
 });
+
 Menu.hasMany(OrderItem, {
+    foreignKey: "menuId",
+    as: "orderItems",
+});
+
+OrderItem.belongsTo(Menu, {
     foreignKey: "menuId",
     as: "menu",
 });

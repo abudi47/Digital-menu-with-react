@@ -38,12 +38,17 @@ const Order = db.define("order", {
     verificationNumber: {
         type: DataTypes.INTEGER,
         allowNull: false,
-    }
+    },
 });
 
 Table.hasMany(Order, {
+    foreignKey: "tableId",
+    as: "orders",
+});
+Order.belongsTo(Table, {
     foreignKey: "tableId",
     as: "table",
 });
 
 export default Order;
+
