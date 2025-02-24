@@ -68,5 +68,10 @@ Contributions are welcome! If you have any ideas, suggestions, or bug reports, p
     ```
 6. **Open a pull request**.
 
+## Authors
+- **Abduselam** - *Initial work* - [abudi47](https://github.com/abudi47)
+- **Beab1212** - *Contributor* - [beab1212](https://github.com/beab1212)
+
+
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
