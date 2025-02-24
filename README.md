@@ -34,7 +34,7 @@ To get started with the project, follow these steps:
     npm install
     npm start
     ```
-    for the backend
+    for the frontend
     ```bash
     cd frontend
     npm install
